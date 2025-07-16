@@ -1,11 +1,10 @@
-import React from "react";
 import { Routes, Route } from "react-router-dom";
-import Welcome from "../components/Welcome";
+import Home from "../components/Home";
 
 const MainRouter = () => {
     return (
         <Routes>
-            <Route path="/" element={<Welcome />} />
+            <Route path="/" element={<Home />} />
         </Routes>
     );
 };
