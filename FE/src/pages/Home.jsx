@@ -5,6 +5,7 @@ import {
 } from "@mui/material";
 import Header from "../components/Header";
 import CardFood from "../components/CardFood";
+import Navbar from "../components/Navbar";
 
 const productos = [
   {
@@ -30,6 +31,7 @@ const productos = [
 const Home = () => {
   return (
     <>
+      <Navbar />
       <Header />
       <Container sx={{ py: 5 }}>
         <Typography variant="h4" gutterBottom fontWeight="bold">

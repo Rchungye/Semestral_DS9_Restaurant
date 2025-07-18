@@ -2,11 +2,25 @@ import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 const Navbar = () => {
+
+  const getRoutePath = (item) => {
+    switch (item.toLowerCase()) {
+      case 'inicio':
+        return '/';
+      case 'pedir ya':
+        return '/pedir-ya';
+      case 'area staff':
+        return '/iniciar-sesion';
+      default:
+        return '/';
+    }
+  };
+
   return (
     <AppBar
       position="static"
       sx={{
-        bgcolor: '#d32f2f',
+        bgcolor: 'black',
         py: 1,
         boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
       }}
@@ -18,7 +32,6 @@ const Navbar = () => {
           to="/"
           sx={{
             fontWeight: 'bold',
-            color: 'black',
             fontFamily: '"Times New Roman", serif',
             textDecoration: 'none',
           }}
@@ -27,13 +40,13 @@ const Navbar = () => {
         </Typography>
 
         <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 2 }}>
-          {['Inicio', 'Menu', 'Pedir Ya', 'Iniciar Sesion'].map((item) => (
+          {['Inicio', 'Pedir Ya', 'Area Staff'].map((item) => (
             <Button
               key={item}
               component={Link}
-              to={`/${item.toLowerCase()}`}
+              to={getRoutePath(item)}
               sx={{
-                color: 'black',
+                color: 'white',
                 fontWeight: 'bold',
                 fontSize: '1rem',
               }}
