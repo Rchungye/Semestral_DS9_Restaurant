@@ -30,7 +30,7 @@ const Header = () => {
           </Typography>
 
           <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 2 }}>
-            {['INICIO', 'MENU', 'CONTÁCTANOS', 'PEDIR YA'].map((item) => (
+            {['Inicio', 'Menu', 'Pedir Ya', 'Iniciar Sesion'].map((item) => (
               <Button
                 key={item}
                 component={Link}
