@@ -36,7 +36,7 @@ const Header = () => {
                 component={Link}
                 to={`/${item.toLowerCase()}`}
                 sx={{
-                  color: 'black',
+                  color: 'white',
                   fontWeight: 'bold',
                   fontSize: '1rem',
                 }}
