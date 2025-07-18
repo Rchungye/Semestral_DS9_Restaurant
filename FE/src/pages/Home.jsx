@@ -3,7 +3,8 @@ import {
   Typography,
   Grid,
 } from "@mui/material";
-import Header from "../components/Header";
+import Navbar from "../components/Navbar";
+import AdsFood from "../components/AdsFood";
 import CardFood from "../components/CardFood";
 
 const productos = [
@@ -30,7 +31,8 @@ const productos = [
 const Home = () => {
   return (
     <>
-      <Header />
+      <Navbar />
+      <AdsFood />
       <Container sx={{ py: 5 }}>
         <Typography variant="h4" gutterBottom fontWeight="bold">
           Menú
