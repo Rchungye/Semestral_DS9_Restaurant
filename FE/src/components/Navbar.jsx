@@ -1,6 +1,13 @@
 import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
 import { Link } from 'react-router-dom';
 
+const navItems = [
+  { name: "Inicio", path: "/" },
+  { name: "Menu", path: "/" },
+  { name: "Pedir Ya", path: "/" },
+  { name: "Administrar", path: "/kitchen" },
+];
+
 const Navbar = () => {
   return (
     <AppBar
@@ -27,18 +34,18 @@ const Navbar = () => {
         </Typography>
 
         <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 2 }}>
-          {['Inicio', 'Menu', 'Pedir Ya', 'Iniciar Sesion'].map((item) => (
+          {navItems.map((item) => (
             <Button
-              key={item}
+              key={item.name}
               component={Link}
-              to={`/${item.toLowerCase()}`}
+              to={item.path} 
               sx={{
                 color: 'black',
                 fontWeight: 'bold',
                 fontSize: '1rem',
               }}
             >
-              {item}
+              {item.name}
             </Button>
           ))}
         </Box>
