@@ -19,7 +19,7 @@ import { Link } from 'react-router-dom';
 const navItems = [
   { name: "Inicio", path: "/" },
   { name: "Menu", path: "/" },
-  { name: "Pedir Ya", path: "/" },
+  { name: "Pedir Ya", path: "/pedir-ya" },
   { name: "Administrar", path: "/login" },
 ];
 
