@@ -1,9 +1,17 @@
-import { useState } from "react"
+import { useState } from "react";
 import { KitchenHeader } from "../components/kitchen-header";
 import { StatusCounters } from "../components/status-counters"
 import { OrderCard } from "../components/order-card"
+import { useNavigate } from "react-router-dom";
 
 export default function KitchenDashboard() {
+
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    navigate("/login"); // redirige al login o home
+  };
+
   const [orders, setOrders] = useState([
     {
       id: "1",
@@ -70,7 +78,7 @@ export default function KitchenDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <KitchenHeader />
+      <KitchenHeader onLogout={handleLogout} />
 
       <StatusCounters
         pending={pendingOrders.length}
