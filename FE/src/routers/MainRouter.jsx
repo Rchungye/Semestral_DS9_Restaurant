@@ -3,6 +3,8 @@ import Home from "../pages/Home";
 import PedirYa from "../pages/PedirYa";
 import IniciarSesion from "../pages/IniciarSesion";
 import Kitchen from "../pages/kitchen"
+import LoginPage from "../pages/Login";
+import Admin from "../pages/Admin";
 
 const MainRouter = () => {
     return (
@@ -11,6 +13,8 @@ const MainRouter = () => {
             <Route path="/pedir-ya" element={<PedirYa />} />
             <Route path="/iniciar-sesion" element={<IniciarSesion />} />
             <Route path="/kitchen" element={<Kitchen />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/admin" element={<Admin />} />
         </Routes>
     );
 };
