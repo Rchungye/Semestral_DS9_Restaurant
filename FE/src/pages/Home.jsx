@@ -14,10 +14,10 @@ import {
   useTheme,
   alpha,
 } from "@mui/material";
-import { 
-  Search, 
-  FilterList, 
-  Star, 
+import {
+  Search,
+  FilterList,
+  Star,
   LocalFireDepartment,
   Nature,
   Schedule
@@ -129,7 +129,7 @@ const Home = () => {
 
     // Filtro por búsqueda
     if (busqueda.trim()) {
-      resultado = resultado.filter(p => 
+      resultado = resultado.filter(p =>
         p.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
         p.descripcion.toLowerCase().includes(busqueda.toLowerCase()) ||
         p.etiquetas.some(etiqueta => etiqueta.toLowerCase().includes(busqueda.toLowerCase()))
@@ -147,7 +147,7 @@ const Home = () => {
     <>
       <Navbar />
       <AdsFood />
-      
+
       {/* Hero Section con estadísticas */}
       <Box
         sx={{
@@ -181,7 +181,7 @@ const Home = () => {
                 Descubre sabores tradicionales preparados con ingredientes frescos y técnicas milenarias
               </Typography>
             </Grid>
-            
+
             <Grid item xs={12} md={4}>
               <Grid container spacing={2}>
                 <Grid item xs={4}>
@@ -258,7 +258,7 @@ const Home = () => {
             >
               Nuestro Menú
             </Typography>
-            
+
             <Button
               variant="outlined"
               startIcon={<FilterList />}
