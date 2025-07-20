@@ -16,21 +16,15 @@ import {
 } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 
+const navItems = [
+  { name: "Inicio", path: "/" },
+  { name: "Menu", path: "/" },
+  { name: "Pedir Ya", path: "/" },
+  { name: "Administrar", path: "/kitchen" },
+];
+
 const Navbar = () => {
   const theme = useTheme();
-  
-  const getRoutePath = (item) => {
-    switch (item.toLowerCase()) {
-      case 'inicio':
-        return '/';
-      case 'pedir ya':
-        return '/pedir-ya';
-      case 'area staff':
-        return '/iniciar-sesion';
-      default:
-        return '/';
-    }
-  };
 
   return (
     <AppBar
@@ -98,13 +92,12 @@ const Navbar = () => {
           </Typography>
         </Box>
 
-        {/* Navigation mejorada */}
-        <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 1 }}>
-          {['Inicio', 'Area Staff', 'Pedir ya'].map((item) => (
+        <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 2 }}>
+          {navItems.map((item) => (
             <Button
-              key={item}
+              key={item.name}
               component={Link}
-              to={getRoutePath(item)}
+              to={item.path} 
               sx={{
                 color: 'white',
                 fontWeight: 600,
@@ -147,7 +140,7 @@ const Navbar = () => {
                 })
               }}
             >
-              {item}
+              {item.name}
             </Button>
           ))}
           
