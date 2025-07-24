@@ -16,15 +16,21 @@ import {
 } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 
-const navItems = [
-  { name: "Inicio", path: "/" },
-  { name: "Menu", path: "/" },
-  { name: "Pedir Ya", path: "/pedir-ya" },
-  { name: "Administrar", path: "/login" },
-];
-
 const Navbar = () => {
   const theme = useTheme();
+  
+  const getRoutePath = (item) => {
+    switch (item.toLowerCase()) {
+      case 'inicio':
+        return '/';
+      case 'pedir ya':
+        return '/pedir-ya';
+      case 'area staff':
+        return '/login';
+      default:
+        return '/';
+    }
+  };
 
   return (
     <AppBar
@@ -67,13 +73,9 @@ const Navbar = () => {
             }
           }}
         >
-          <Restaurant 
-            sx={{ 
-              fontSize: 40, 
-              color: '#ffa726',
-              filter: 'drop-shadow(0 2px 4px rgba(255,167,38,0.3))'
-            }} 
-          />
+          <Typography>
+            🐼 
+          </Typography>
           <Typography
             variant="h4"
             sx={{
@@ -88,16 +90,17 @@ const Navbar = () => {
               fontSize: { xs: '1.5rem', md: '2rem' }
             }}
           >
-            GOLDEN PANDA
+           Golden Panda
           </Typography>
         </Box>
 
-        <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 2 }}>
-          {navItems.map((item) => (
+        {/* Navigation mejorada */}
+        <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 1 }}>
+          {['Inicio','Area Staff', 'Pedir ya'].map((item) => (
             <Button
-              key={item.name}
+              key={item}
               component={Link}
-              to={item.path} 
+              to={getRoutePath(item)}
               sx={{
                 color: 'white',
                 fontWeight: 600,
@@ -140,7 +143,7 @@ const Navbar = () => {
                 })
               }}
             >
-              {item.name}
+              {item}
             </Button>
           ))}
           
