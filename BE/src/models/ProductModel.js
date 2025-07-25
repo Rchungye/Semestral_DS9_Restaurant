@@ -1,15 +1,16 @@
 // src/models/ProductModel.js
-class Product {
-  constructor(id, name, price, category) {
-    this.id = id
-    this.name = name
-    this.price = price
-    this.category = category
-  }
 
-  getPriceWithCurrency() {
-    return `$${this.price.toFixed(2)}`
-  }
-}
+const mongoose = require("mongoose");
 
-export default Product
+const productSchema = new mongoose.Schema({
+  nombre: { type: String, required: true },
+  descripcion: { type: String },
+  precio: { type: Number, required: true },
+  imagen: { type: String },
+  categoria: { type: String },
+  etiquetas: [String],
+  tiempo: { type: String },
+  rating: { type: Number }
+}, { timestamps: true });
+
+module.exports = mongoose.model("Product", productSchema);
