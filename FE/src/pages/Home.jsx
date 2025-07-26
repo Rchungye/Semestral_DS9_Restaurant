@@ -1,95 +1,10 @@
-import {
-  Container,
-  Typography,
-  Grid,
-  Box,
-  Chip,
-  Button,
-  TextField,
-  InputAdornment,
-  Tabs,
-  Tab,
-  Fade,
-  Paper,
-  useTheme,
-  alpha,
-} from "@mui/material";
-import {
-  Search,
-  FilterList,
-  Star,
-  LocalFireDepartment,
-  Nature,
-  Schedule
-} from "@mui/icons-material";
-import { useState, useMemo } from "react";
+import { Container, Typography, Grid, Box, Chip, Button, TextField, InputAdornment, Tabs, Tab, Fade, Paper, useTheme, alpha } from "@mui/material";
+import { Search, FilterList, Star, LocalFireDepartment, Nature } from "@mui/icons-material";
+import { useState, useMemo, useEffect } from "react";
+import { fetchProductos } from "../services/productService";
 import CardFood from "../components/CardFood";
 import Navbar from "../components/Navbar";
 import AdsFood from "../components/AdsFood";
-
-// Productos expandidos con más datos
-const productos = [
-  {
-    nombre: "Siu mai",
-    descripcion: "4 piezas · Puerco y Camarón - Tradicional dim sum cantonés con textura jugosa",
-    precio: 4,
-    imagen: "https://images.squarespace-cdn.com/content/v1/51f7fb1ee4b03d20c9b4c34b/1376340296181-YWXEZXB9NTE9JQQ6BBPB/shu-mai.jpg",
-    categoria: "dim-sum",
-    etiquetas: ["popular", "tradicional"],
-    tiempo: "15 min",
-    rating: 4.8,
-  },
-  {
-    nombre: "Hakao",
-    descripcion: "4 piezas · Empanaditas de Camarón - Delicados dumplings translúcidos",
-    precio: 5.50,
-    imagen: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpyE0H-gVsbYZ7uy0Z31Z3uUkMeemgTPAweg&s",
-    categoria: "dim-sum",
-    etiquetas: ["premium", "especial"],
-    tiempo: "12 min",
-    rating: 4.9,
-  },
-  {
-    nombre: "Chee Cheong Fun",
-    descripcion: "3 rollos · Rollos de Arroz con Puerco - Suaves láminas de arroz rellenas",
-    precio: 4.50,
-    imagen: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-s-9FjeDBAXslrP4g4tqFmCu5ZaEm3TA5Q&s",
-    categoria: "dim-sum",
-    etiquetas: ["veggie-friendly", "ligero"],
-    tiempo: "10 min",
-    rating: 4.6,
-  },
-  {
-    nombre: "Wonton Frito",
-    descripcion: "6 piezas · Crujientes wontons rellenos de camarón y cerdo",
-    precio: 6.25,
-    imagen: "https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=400&h=300&fit=crop",
-    categoria: "fritos",
-    etiquetas: ["crujiente", "popular"],
-    tiempo: "8 min",
-    rating: 4.7,
-  },
-  {
-    nombre: "Rollitos Primavera con Carne",
-    descripcion: "4 piezas · Vegetales frescos envueltos, opción vegetariana",
-    precio: 3.75,
-    imagen: "https://content-cocina.lecturas.com/medio/2022/03/03/rollitos-de-primavera-con-carne-y-salsa-de-soja_00000000_240402112349_1200x1200.jpg",
-    categoria: "dim-sum",
-    etiquetas: ["saludable", "eco"],
-    tiempo: "5 min",
-    rating: 4.4,
-  },
-  {
-    nombre: "Pato Laqueado",
-    descripcion: "Porción individual · Pato glaseado con salsa hoisin y cebollín",
-    precio: 12.99,
-    imagen: "https://images.unsplash.com/photo-1567620832903-9fc6debc209f?w=400&h=300&fit=crop",
-    categoria: "premium",
-    etiquetas: ["premium", "especial"],
-    tiempo: "25 min",
-    rating: 4.9,
-  }
-];
 
 const categorias = [
   { id: "todos", label: "Todos", icon: "🍽️" },
@@ -114,9 +29,17 @@ const etiquetasColores = {
 
 const Home = () => {
   const theme = useTheme();
+  const [productos, setProductos] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [busqueda, setBusqueda] = useState("");
   const [categoriaActiva, setCategoriaActiva] = useState("todos");
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
+
+  useEffect(() => {
+    fetchProductos()
+      .then(data => setProductos(data))
+      .finally(() => setLoading(false));
+  }, []);
 
   // Filtrar productos
   const productosFiltrados = useMemo(() => {
@@ -403,53 +326,6 @@ const Home = () => {
             )}
           </Box>
         </Fade>
-
-        {/* Call to Action */}
-        <Box
-          sx={{
-            mt: 8,
-            p: 4,
-            borderRadius: 4,
-            background: `linear-gradient(135deg, ${theme.palette.primary.main}15, ${theme.palette.secondary.main}10)`,
-            textAlign: 'center',
-            border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
-          }}
-        >
-          <Typography variant="h4" fontWeight="bold" gutterBottom>
-            ¿No encuentras lo que buscas?
-          </Typography>
-          <Typography variant="body1" color="text.secondary" sx={{ mb: 3, maxWidth: 600, mx: 'auto' }}>
-            Tenemos más de 50 platos tradicionales. Explora nuestro menú completo o contáctanos para recomendaciones personalizadas.
-          </Typography>
-          <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Button
-              variant="contained"
-              size="large"
-              sx={{
-                borderRadius: 3,
-                px: 4,
-                py: 1.5,
-                fontWeight: 600,
-                textTransform: 'none',
-              }}
-            >
-              Ver menú completo
-            </Button>
-            <Button
-              variant="outlined"
-              size="large"
-              sx={{
-                borderRadius: 3,
-                px: 4,
-                py: 1.5,
-                fontWeight: 600,
-                textTransform: 'none',
-              }}
-            >
-              Contactar chef
-            </Button>
-          </Box>
-        </Box>
       </Container>
     </>
   );

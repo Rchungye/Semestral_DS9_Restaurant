@@ -1,6 +1,7 @@
 import Fastify from 'fastify'
 import dotenv from 'dotenv'
 import routes from './routes/IndexRoutes.js'
+import cors from '@fastify/cors'
 import { conectarDB } from './config/MongoDbConfig.js'
 
 // Cargar variables de entorno
@@ -8,15 +9,18 @@ dotenv.config()
 
 const fastify = Fastify({ logger: true })
 
+await fastify.register(cors, {
+    origin: '*', 
+})
+
 routes(fastify)
 
 const iniciarServidor = async () => {
     try {
-        // await conectarDB()
+        await conectarDB()
 
         const puerto = process.env.PORT
-        const host = process.env.HOST
-        await fastify.listen({ port: puerto, host: host })
+        await fastify.listen({ port: puerto})
 
         console.log('\n🎉 Servidor iniciado en http://localhost:' + puerto)
     } catch (error) {

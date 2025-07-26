@@ -1,6 +1,4 @@
-// src/models/ProductModel.js
-
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const productSchema = new mongoose.Schema({
   nombre: { type: String, required: true },
@@ -13,4 +11,5 @@ const productSchema = new mongoose.Schema({
   rating: { type: Number }
 }, { timestamps: true });
 
-module.exports = mongoose.model("Product", productSchema);
+const Product = mongoose.model("Product", productSchema);
+export default Product;
