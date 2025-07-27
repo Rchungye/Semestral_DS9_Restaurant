@@ -51,11 +51,3 @@ export const deleteTable = async (idIncremental) => {
   const resultado = await Table.findOneAndDelete({ idIncremental: id })
   return resultado !== null
 }
-
-export const getAvailableTables = async () => {
-  return await Table.find({ status: 'disponible' })
-}
-
-export const getOccupiedTables = async () => {
-  return await Table.find({ status: 'ocupada' })
-}

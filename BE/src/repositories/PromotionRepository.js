@@ -50,31 +50,6 @@ export const getActivePromotions = async () => {
     })
 }
 
-export const getPromotionsByCategory = async (category) => {
-    const now = new Date()
-    return await Promotion.find({
-        isActive: true,
-        validFrom: { $lte: now },
-        validTo: { $gte: now },
-        applicableToCategories: category
-    })
-}
-
-export const getPromotionsForToday = async () => {
-    const now = new Date()
-    const today = now.getDay() // 0=Domingo, 6=Sábado
-
-    return await Promotion.find({
-        isActive: true,
-        validFrom: { $lte: now },
-        validTo: { $gte: now },
-        $or: [
-            { validDays: { $size: 0 } }, // Sin restricción de días
-            { validDays: today }
-        ]
-    })
-}
-
 export const incrementPromotionUsage = async (idIncremental) => {
     const id = parseInt(idIncremental)
     if (isNaN(id) || id <= 0) {
@@ -86,18 +61,4 @@ export const incrementPromotionUsage = async (idIncremental) => {
         { $inc: { currentUses: 1 } },
         { new: true }
     )
-}
-
-export const getExpiredPromotions = async () => {
-    const now = new Date()
-    return await Promotion.find({
-        validTo: { $lt: now }
-    })
-}
-
-export const getUpcomingPromotions = async () => {
-    const now = new Date()
-    return await Promotion.find({
-        validFrom: { $gt: now }
-    })
 }

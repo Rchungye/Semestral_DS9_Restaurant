@@ -10,9 +10,14 @@ import {
 import { verificarToken } from '../middleware/AuthMiddleware.js'
 
 export default function (fastify) {
-    fastify.get('/api/dishes', listDishes)
-    fastify.get('/api/dishes/:id', getDish)
-    fastify.post('/api/dishes', createDish)
-    fastify.put('/api/dishes/:id', updateDish)
-    fastify.delete('/api/dishes/:id', deleteDish)
+    // API RESTful endpoints - todos en inglés
+    fastify.get('/api/dishes', { preHandler: verificarToken }, listDishes)
+    fastify.get('/api/dishes/:id', { preHandler: verificarToken }, getDish)
+    fastify.post('/api/dishes', { preHandler: verificarToken }, createDish)
+    fastify.put('/api/dishes/:id', { preHandler: verificarToken }, updateDish)
+    fastify.delete('/api/dishes/:id', { preHandler: verificarToken }, deleteDish)
+
+    // Endpoints públicos para el frontend del cliente (sin autenticación)
+    fastify.get('/public/dishes', listDishes)
+    fastify.get('/public/dishes/:id', getDish)
 }
