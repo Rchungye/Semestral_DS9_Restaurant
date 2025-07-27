@@ -148,3 +148,31 @@ export const getActivePromotions = async (request, reply) => {
     return reply.code(500).send({ error: 'Error retrieving active promotions' })
   }
 }
+
+export const validatePromotion = async (request, reply) => {
+  try {
+    const { category } = request.body;
+
+    if (!category) {
+      return reply.code(400).send({
+        error: 'Missing required field: category'
+      });
+    }
+
+    const promotions = await promotionRepo.validatePromotionForDish(category);
+
+    if (!promotions || promotions.length === 0) {
+      return reply.code(200).send({
+        applicable: false,
+        promotions: []
+      });
+    }
+
+    return reply.code(200).send({
+      applicable: true,
+      promotions
+    });
+  } catch (error) {
+    return reply.code(500).send({ error: 'Error validating promotion' });
+  }
+};

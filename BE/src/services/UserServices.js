@@ -1,9 +1,9 @@
 // src/services/UserServices.js
 import * as userRepo from '../repositories/UserRepository.js'
-import { 
-  encryptPassword, 
-  comparePasswords, 
-  generateToken 
+import {
+  encryptPassword,
+  comparePasswords,
+  generateToken
 } from '../helpers/CryptoHelper.js'
 
 // ============= AUTENTICACIÓN =============
@@ -11,26 +11,26 @@ import {
 export const login = async (request, reply) => {
   try {
     const { username, password } = request.body
-    
+
     if (!username || !password) {
-      return reply.code(400).send({ 
-        error: 'Username and password are required' 
+      return reply.code(400).send({
+        error: 'Username and password are required'
       })
     }
 
     // Buscar usuario con password incluido
     const user = await userRepo.getUserForAuth(username)
     if (!user) {
-      return reply.code(401).send({ 
-        error: 'Invalid credentials' 
+      return reply.code(401).send({
+        error: 'Invalid credentials'
       })
     }
 
     // Verificar password
     const isValidPassword = comparePasswords(password, user.password)
     if (!isValidPassword) {
-      return reply.code(401).send({ 
-        error: 'Invalid credentials' 
+      return reply.code(401).send({
+        error: 'Invalid credentials'
       })
     }
 
@@ -39,7 +39,7 @@ export const login = async (request, reply) => {
 
     // Respuesta exitosa sin incluir password
     const { password: _, ...userWithoutPassword } = user.toObject()
-    
+
     return reply.code(200).send({
       message: 'Login successful',
       user: userWithoutPassword,
@@ -49,8 +49,8 @@ export const login = async (request, reply) => {
 
   } catch (error) {
     console.error('Login error:', error)
-    return reply.code(500).send({ 
-      error: 'Internal server error during login' 
+    return reply.code(500).send({
+      error: 'Internal server error during login'
     })
   }
 }
@@ -63,8 +63,8 @@ export const logout = async (request, reply) => {
       note: 'Token invalidated on client side'
     })
   } catch (error) {
-    return reply.code(500).send({ 
-      error: 'Error during logout' 
+    return reply.code(500).send({
+      error: 'Error during logout'
     })
   }
 }
@@ -99,19 +99,19 @@ export const getUser = async (request, reply) => {
 export const createUser = async (request, reply) => {
   try {
     const data = request.body
-    
+
     // Validar campos obligatorios
     if (!data.name || !data.lastName || !data.username || !data.password || !data.role) {
-      return reply.code(400).send({ 
-        error: 'Missing required fields: name, lastName, username, password, role' 
+      return reply.code(400).send({
+        error: 'Missing required fields: name, lastName, username, password, role'
       })
     }
 
     // Verificar que el username no exista
     const existingUser = await userRepo.getUserByUsername(data.username)
     if (existingUser) {
-      return reply.code(409).send({ 
-        error: 'Username already exists' 
+      return reply.code(409).send({
+        error: 'Username already exists'
       })
     }
 
@@ -120,10 +120,10 @@ export const createUser = async (request, reply) => {
 
     // Crear usuario
     const newUser = await userRepo.createUser(data)
-    
+
     // Responder sin password
     const { password: _, ...userWithoutPassword } = newUser.toObject()
-    
+
     return reply.code(201).send(userWithoutPassword)
   } catch (error) {
     if (error.code === 11000) {
@@ -147,7 +147,7 @@ export const updateUser = async (request, reply) => {
     if (!updatedUser) {
       return reply.code(404).send({ error: 'User not found' })
     }
-    
+
     return updatedUser
   } catch (error) {
     if (error.message === 'ID incremental inválido') {
@@ -167,7 +167,7 @@ export const deleteUser = async (request, reply) => {
     if (!deleted) {
       return reply.code(404).send({ error: 'User not found' })
     }
-    return reply.code(200).send({ 
+    return reply.code(200).send({
       message: 'User deleted successfully',
       id: parseInt(idIncremental)
     })
@@ -176,5 +176,43 @@ export const deleteUser = async (request, reply) => {
       return reply.code(400).send({ error: 'Invalid incremental ID' })
     }
     return reply.code(500).send({ error: 'Error deleting user' })
+  }
+}
+
+export const getUserProfile = async (request, reply) => {
+  try {
+    // El middleware verificarToken ya ha validado el token y agregado request.user
+    const userId = request.user.id // ID incremental del usuario del token
+
+    // Buscar el usuario en la base de datos
+    const user = await userRepo.getUserProfileById(userId)
+
+    if (!user) {
+      return reply.code(404).send({
+        error: 'User not found',
+        message: 'The authenticated user no longer exists in the system'
+      })
+    }
+
+    // Responder con el perfil del usuario (sin password)
+    return reply.code(200).send({
+      message: 'Profile retrieved successfully',
+      user: user.toObject()
+    })
+
+  } catch (error) {
+    console.error('Get profile error:', error)
+
+    if (error.message === 'ID incremental inválido') {
+      return reply.code(400).send({
+        error: 'Invalid user ID',
+        message: 'The user ID in the token is invalid'
+      })
+    }
+
+    return reply.code(500).send({
+      error: 'Internal server error',
+      message: 'Error retrieving user profile'
+    })
   }
 }

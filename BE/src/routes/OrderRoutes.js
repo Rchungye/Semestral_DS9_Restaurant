@@ -1,64 +1,66 @@
 // src/routes/OrderRoutes.js
 import {
-  listOrders,
-  getOrder,
-  createOrder,
-  updateOrder,
-  deleteOrder,
-  getKitchenOrders,
-  updateOrderStatus,
-  getOrdersByStatus,
-  getOrdersByType,
-  getOrderHistory,
-  getTodayOrders,
-  getDailyStats,
-  getOrderByInvoice
+    listOrders,
+    getOrder,
+    createOrder,
+    updateOrder,
+    deleteOrder,
+    getKitchenOrders,
+    updateOrderStatus,
+    getOrdersByStatus,
+    getOrdersByType,
+    getOrderHistory,
+    getTodayOrders,
+    getDailyStats,
+    getOrderByInvoice
 } from '../services/OrderServices.js'
 
 import { verificarToken, verificarAdmin, verificarCocina } from '../middleware/AuthMiddleware.js'
 
 export default function (fastify) {
-  // ============= CRUD BÁSICO (Solo administradores) =============
-  fastify.get('/api/orders', { preHandler: verificarAdmin }, listOrders)
-  fastify.get('/api/orders/:id', { preHandler: verificarToken }, getOrder)
-  fastify.post('/api/orders', { preHandler: verificarToken }, createOrder)
-  fastify.put('/api/orders/:id', { preHandler: verificarAdmin }, updateOrder)
-  fastify.delete('/api/orders/:id', { preHandler: verificarAdmin }, deleteOrder)
+    // ============= CRUD BÁSICO (Solo administradores) =============
+    fastify.get('/api/admin/orders', { preHandler: verificarAdmin }, listOrders)
+    fastify.get('/api/admin/orders/:id', { preHandler: verificarAdmin }, getOrder)
+    fastify.put('/api/admin/orders/:id', { preHandler: verificarAdmin }, updateOrder)
+    fastify.delete('/api/admin/orders/:id', { preHandler: verificarAdmin }, deleteOrder)
 
-  // ============= ENDPOINTS PARA COCINEROS =============
-  // US-012: Visualizar órdenes para cocina
-  fastify.get('/api/kitchen/orders', { preHandler: verificarCocina }, getKitchenOrders)
-  
-  // US-015 y US-016: Cambiar estado de órdenes
-  fastify.patch('/api/kitchen/orders/:id/status', { preHandler: verificarCocina }, updateOrderStatus)
+    // ============= ENDPOINTS PARA COCINEROS =============
+    // US-012, US-013, US-014: Visualizar órdenes para cocina con info de mesa/factura
+    fastify.get('/api/kitchen/orders', { preHandler: verificarCocina }, getKitchenOrders)
 
-  // ============= ENDPOINTS PARA ADMINISTRADORES =============
-  // US-023: Supervisar flujo en tiempo real
-  fastify.get('/api/admin/orders/status', { preHandler: verificarAdmin }, getOrdersByStatus)
-  
-  // US-021: Órdenes por tipo (local/takeout)
-  fastify.get('/api/admin/orders/type/:type', { preHandler: verificarAdmin }, getOrdersByType)
-  
-  // US-022: Historial de ventas con filtros
-  fastify.get('/api/admin/orders/history', { preHandler: verificarAdmin }, getOrderHistory)
-  
-  // Órdenes de hoy
-  fastify.get('/api/admin/orders/today', { preHandler: verificarAdmin }, getTodayOrders)
-  
-  // US-021: Estadísticas diarias
-  fastify.get('/api/admin/stats/daily', { preHandler: verificarAdmin }, getDailyStats)
+    // US-015 y US-016: Cambiar estado de órdenes (preparando → finalizado)
+    fastify.patch('/api/kitchen/orders/:id/status', { preHandler: verificarCocina }, updateOrderStatus)
 
-  // ============= ENDPOINTS PÚBLICOS PARA CLIENTES =============
-  // US-008: Crear pedido para llevar (sin autenticación)
-  fastify.post('/public/orders/takeout', createOrder)
-  
-  // US-001: Crear pedido local via QR (sin autenticación)
-  fastify.post('/public/orders/local', createOrder)
-  
-  // Consultar orden por número de factura (takeout)
-  fastify.get('/public/orders/invoice/:invoice', getOrderByInvoice)
+    // ============= ENDPOINTS PARA ADMINISTRADORES =============
+    // US-023: Supervisar flujo en tiempo real de pedidos
+    fastify.get('/api/admin/orders/monitor', { preHandler: verificarAdmin }, getOrdersByStatus)
 
-  // ============= ENDPOINTS ADICIONALES =============
-  // Webhook para notificaciones en tiempo real (futuro)
-  // fastify.post('/api/orders/:id/notify', { preHandler: verificarToken }, notifyOrderUpdate)
+    // US-021: Estadísticas de ventas diarias
+    fastify.get('/api/admin/dashboard/stats', { preHandler: verificarAdmin }, getDailyStats)
+
+    // US-022: Historial de ventas con filtros de fecha
+    fastify.get('/api/admin/sales/history', { preHandler: verificarAdmin }, getOrderHistory)
+
+    // Órdenes de hoy para dashboard
+    fastify.get('/api/admin/orders/today', { preHandler: verificarAdmin }, getTodayOrders)
+
+    // Órdenes por tipo (local/takeout) para análisis
+    fastify.get('/api/admin/orders/type/:type', { preHandler: verificarAdmin }, getOrdersByType)
+
+    // ============= ENDPOINTS PÚBLICOS PARA CLIENTES =============
+    // US-001: Crear pedido local via QR (escaneo de mesa)
+    fastify.post('/api/orders/local', createOrder)
+
+    // US-008: Crear pedido para llevar (sin QR)
+    fastify.post('/api/orders/takeout', createOrder)
+
+    // US-010: Consultar orden por número de factura (confirmación)
+    fastify.get('/api/orders/invoice/:invoice', getOrderByInvoice)
+
+    // US-011: Consultar estado de orden (tiempo estimado)
+    fastify.get('/api/orders/:id/status', getOrder)
+
+    // ============= ENDPOINTS ADICIONALES =============
+    // Para futuras integraciones de notificaciones en tiempo real
+    // fastify.post('/api/orders/:id/notify', { preHandler: verificarToken }, notifyOrderUpdate)
 }

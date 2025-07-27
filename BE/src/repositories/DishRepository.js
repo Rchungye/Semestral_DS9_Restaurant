@@ -39,3 +39,7 @@ export const deleteDish = async (idIncremental) => {
   const resultado = await Dish.findOneAndDelete({ idIncremental: id })
   return resultado !== null
 }
+
+export const getAvailableDishes = async () => {
+  return await Dish.find({ availability: true })
+}

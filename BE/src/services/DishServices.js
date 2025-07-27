@@ -80,3 +80,12 @@ export const deleteDish = async (request, reply) => {
         return reply.code(500).send({ error: 'Error deleting dish' })
     }
 }
+
+export const getAvailableDishes = async (request, reply) => {
+    try {
+        const dishes = await dishRepo.getAvailableDishes()
+        return dishes
+    } catch (error) {
+        return reply.code(500).send({ error: 'Error retrieving available dishes' })
+    }
+}

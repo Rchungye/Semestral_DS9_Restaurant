@@ -4,20 +4,26 @@ import {
     getDish,
     createDish,
     updateDish,
-    deleteDish
+    deleteDish,
+    getAvailableDishes
 } from '../services/DishServices.js'
 
-import { verificarToken } from '../middleware/AuthMiddleware.js'
+import { verificarAdmin } from '../middleware/AuthMiddleware.js'
 
 export default function (fastify) {
-    // API RESTful endpoints - todos en inglés
-    fastify.get('/api/dishes', { preHandler: verificarToken }, listDishes)
-    fastify.get('/api/dishes/:id', { preHandler: verificarToken }, getDish)
-    fastify.post('/api/dishes', { preHandler: verificarToken }, createDish)
-    fastify.put('/api/dishes/:id', { preHandler: verificarToken }, updateDish)
-    fastify.delete('/api/dishes/:id', { preHandler: verificarToken }, deleteDish)
+    // ============= ENDPOINTS PARA ADMINISTRADORES =============
+    // US-020: Gestionar menú del restaurante (crear, editar, eliminar)
+    fastify.get('/api/admin/dishes', { preHandler: verificarAdmin }, listDishes)
+    fastify.get('/api/admin/dishes/:id', { preHandler: verificarAdmin }, getDish)
+    fastify.post('/api/admin/dishes', { preHandler: verificarAdmin }, createDish)
+    fastify.put('/api/admin/dishes/:id', { preHandler: verificarAdmin }, updateDish)
+    fastify.delete('/api/admin/dishes/:id', { preHandler: verificarAdmin }, deleteDish)
 
-    // Endpoints públicos para el frontend del cliente (sin autenticación)
-    fastify.get('/public/dishes', listDishes)
-    fastify.get('/public/dishes/:id', getDish)
+    // ============= ENDPOINTS PÚBLICOS PARA CLIENTES =============
+    // US-002: Visualización del menú (nombres, precios, fotografías)
+    fastify.get('/api/menu', getAvailableDishes)
+
+    // US-003: Ver descripción detallada del platillo
+    fastify.get('/api/menu/:id', getDish)
+
 }

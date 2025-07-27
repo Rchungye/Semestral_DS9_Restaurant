@@ -41,7 +41,7 @@ export const verificarToken = async (request, reply) => {
 
     } catch (error) {
         console.error('🚫 Error de autenticación:', error.message)
-
+        
         // Manejar diferentes tipos de errores JWT
         if (error.name === 'TokenExpiredError') {
             return reply.code(401).send({
@@ -49,14 +49,14 @@ export const verificarToken = async (request, reply) => {
                 message: 'Please login again to get a new token'
             })
         }
-
+        
         if (error.name === 'JsonWebTokenError') {
             return reply.code(401).send({
                 error: 'Invalid token',
                 message: 'The provided token is malformed or invalid'
             })
         }
-
+        
         if (error.message === 'Invalid token') {
             return reply.code(401).send({
                 error: 'Invalid or expired token',
@@ -75,7 +75,10 @@ export const verificarToken = async (request, reply) => {
 export const verificarAdmin = async (request, reply) => {
     // Primero verificar el token
     await verificarToken(request, reply)
-
+    
+    // Si hay error en la verificación del token, se habrá enviado la respuesta ya
+    if (reply.sent) return
+    
     // Si llegamos aquí, el token es válido
     if (request.user && request.user.role !== 'administrador') {
         return reply.code(403).send({
@@ -89,7 +92,10 @@ export const verificarAdmin = async (request, reply) => {
 export const verificarCocina = async (request, reply) => {
     // Primero verificar el token
     await verificarToken(request, reply)
-
+    
+    // Si hay error en la verificación del token, se habrá enviado la respuesta ya
+    if (reply.sent) return
+    
     // Si llegamos aquí, el token es válido
     if (request.user && !['administrador', 'cocinero'].includes(request.user.role)) {
         return reply.code(403).send({

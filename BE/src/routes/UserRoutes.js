@@ -6,20 +6,25 @@ import {
     getUser,
     createUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    getUserProfile
 } from '../services/UserServices.js'
 
-import { verificarToken } from '../middleware/AuthMiddleware.js'
+import { verificarToken, verificarAdmin } from '../middleware/AuthMiddleware.js'
 
 export default function (fastify) {
     // ============= RUTAS DE AUTENTICACIÓN (públicas) =============
     fastify.post('/api/auth/login', login)
     fastify.post('/api/auth/logout', { preHandler: verificarToken }, logout)
+    
+    // Obtener perfil del usuario autenticado
+    fastify.get('/api/auth/profile', { preHandler: verificarToken }, getUserProfile)
 
-    // ============= RUTAS CRUD USUARIOS (protegidas) =============
-    fastify.get('/api/users', { preHandler: verificarToken }, listUsers)
-    fastify.get('/api/users/:id', { preHandler: verificarToken }, getUser)
-    fastify.post('/api/users', { preHandler: verificarToken }, createUser)
-    fastify.put('/api/users/:id', { preHandler: verificarToken }, updateUser)
-    fastify.delete('/api/users/:id', { preHandler: verificarToken }, deleteUser)
+    // ============= ENDPOINTS PARA ADMINISTRADORES =============
+    // US-025: Gestionar usuarios y roles (solo administradores)
+    fastify.get('/api/admin/users', { preHandler: verificarAdmin }, listUsers)
+    fastify.get('/api/admin/users/:id', { preHandler: verificarAdmin }, getUser)
+    fastify.post('/api/admin/users', { preHandler: verificarAdmin }, createUser)
+    fastify.put('/api/admin/users/:id', { preHandler: verificarAdmin }, updateUser)
+    fastify.delete('/api/admin/users/:id', { preHandler: verificarAdmin }, deleteUser)
 }

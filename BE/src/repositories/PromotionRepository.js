@@ -62,3 +62,26 @@ export const incrementPromotionUsage = async (idIncremental) => {
         { new: true }
     )
 }
+
+export const validatePromotionForDish = async (dishCategory) => {
+    const now = new Date();
+
+    // Buscar promociones activas y vigentes
+    const promotions = await Promotion.find({
+        isActive: true,
+        validFrom: { $lte: now },
+        validTo: { $gte: now },
+    });
+
+    // Filtrar si aplica a la categoría
+    const applicablePromotions = promotions.filter(promo => {
+        // Si no tiene categorías específicas, aplica a todos
+        if (!promo.applicableToCategories || promo.applicableToCategories.length === 0) {
+            return true;
+        }
+        // Caso contrario, valida si la categoría está incluida
+        return promo.applicableToCategories.includes(dishCategory);
+    });
+
+    return applicablePromotions;
+};

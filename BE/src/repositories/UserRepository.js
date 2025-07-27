@@ -48,3 +48,11 @@ export const deleteUser = async (idIncremental) => {
 export const getUserForAuth = async (username) => {
   return await User.findOne({ username }) // Incluye password para verificación
 }
+
+export const getUserProfileById = async (idIncremental) => {
+  const id = parseInt(idIncremental)
+  if (isNaN(id) || id <= 0) {
+    throw new Error('ID incremental inválido')
+  }
+  return await User.findOne({ idIncremental: id }).select('-password')
+}
