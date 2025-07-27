@@ -6,5 +6,5 @@ const counterSchema = new mongoose.Schema({
   seq: { type: Number, default: 0 }
 })
 
-const Counter = mongoose.model('Counter', counterSchema)
-export default Counter
+const Sequence = mongoose.model('Sequence', counterSchema)
+export default Sequence
