@@ -5,8 +5,12 @@ export const getAllProducts = async () => {
   return await Product.find()
 }
 
-export const getProductById = async (id) => {
-  return await Product.findById(id)
+export const getProductByIncrementalId = async (idIncremental) => {
+  const id = parseInt(idIncremental)
+  if (isNaN(id) || id <= 0) {
+    throw new Error('ID incremental inválido')
+  }
+  return await Product.findOne({ idIncremental: id })
 }
 
 export const createProduct = async (data) => {
@@ -14,11 +18,24 @@ export const createProduct = async (data) => {
   return await nuevoProducto.save()
 }
 
-export const updateProduct = async (id, data) => {
-  return await Product.findByIdAndUpdate(id, data, { new: true })
+export const updateProduct = async (idIncremental, data) => {
+  const id = parseInt(idIncremental)
+  if (isNaN(id) || id <= 0) {
+    throw new Error('ID incremental inválido')
+  }
+  delete data.idIncremental
+  return await Product.findOneAndUpdate(
+    { idIncremental: id },
+    data,
+    { new: true }
+  )
 }
 
-export const deleteProduct = async (id) => {
-  const resultado = await Product.findByIdAndDelete(id)
+export const deleteProduct = async (idIncremental) => {
+  const id = parseInt(idIncremental)
+  if (isNaN(id) || id <= 0) {
+    throw new Error('ID incremental inválido')
+  }
+  const resultado = await Product.findOneAndDelete({ idIncremental: id })
   return resultado !== null
 }

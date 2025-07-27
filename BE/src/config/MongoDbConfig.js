@@ -3,7 +3,7 @@ import mongoose from 'mongoose'
 
 export async function conectarDB() {
     try {
-        const uri = process.env.MONGO_URI || 'mongodb://localhost:27017/golden_panda'
+        const uri = process.env.MONGO_URI
         console.log('Intentando conectar a:', uri); // <-- Aquí el log
         await mongoose.connect(uri)
 

@@ -1,6 +1,13 @@
-import mongoose from "mongoose";
+// src/models/ProductModel.js
+import mongoose from "mongoose"
+import { getNextSequence } from '../helpers/SequenceHelper.js'
 
 const productSchema = new mongoose.Schema({
+  idIncremental: {
+    type: Number,
+    unique: true,
+    index: true
+  },
   nombre: { type: String, required: true },
   descripcion: { type: String },
   precio: { type: Number, required: true },
@@ -11,5 +18,12 @@ const productSchema = new mongoose.Schema({
   rating: { type: Number }
 }, { timestamps: true });
 
-const Product = mongoose.model("Product", productSchema);
-export default Product;
+productSchema.pre('save', async function (next) {
+  if (this.isNew) {
+    this.idIncremental = await getNextSequence('productid')
+  }
+  next()
+})
+
+const Product = mongoose.model("Product", productSchema)
+export default Product
