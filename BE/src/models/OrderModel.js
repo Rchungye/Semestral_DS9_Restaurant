@@ -21,7 +21,6 @@ const orderSchema = new mongoose.Schema({
     enum: ['pendiente', 'preparando', 'finalizado', 'entregado', 'cancelado'], 
     default: 'pendiente' 
   },
-  employeeId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   
   // Para pedidos locales
   tableId: { type: mongoose.Schema.Types.ObjectId, ref: 'Table' },
@@ -29,13 +28,10 @@ const orderSchema = new mongoose.Schema({
   // Para pedidos takeout - datos del cliente
   customerName: { type: String },
   customerEmail: { type: String }, // Para enviar factura
-  invoiceNumber: { type: String }, // Número de factura para takeout
+  invoiceNumber: { type: String }, // Número de factura
   
   // Notas adicionales
   notes: { type: String },
-  
-  // Tiempo estimado de preparación (en minutos)
-  estimatedTime: { type: Number, default: 20 }
 }, { timestamps: true })
 
 orderSchema.pre('save', async function (next) {

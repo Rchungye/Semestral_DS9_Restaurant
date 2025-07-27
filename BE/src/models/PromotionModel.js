@@ -18,7 +18,6 @@ const promotionSchema = new mongoose.Schema({
   discountValue: { type: Number, required: true }, // Porcentaje o monto
   
   // Aplicabilidad
-  applicableToDishes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Dish' }],
   applicableToCategories: [{ 
     type: String,
     enum: ['entrada', 'plato_principal', 'postre', 'bebida', 'acompañamiento']
@@ -28,17 +27,10 @@ const promotionSchema = new mongoose.Schema({
   validFrom: { type: Date, required: true },
   validTo: { type: Date, required: true },
   
-  // Horarios (opcional)
-  validHours: {
-    start: { type: String }, // "14:00"
-    end: { type: String }    // "18:00"
-  },
-  
   // Días de la semana aplicables (0=Domingo, 6=Sábado)
   validDays: [{ type: Number, min: 0, max: 6 }],
   
   isActive: { type: Boolean, default: true },
-  maxUses: { type: Number }, // Límite de usos
   currentUses: { type: Number, default: 0 }
 }, { timestamps: true })
 
