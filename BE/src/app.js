@@ -1,3 +1,5 @@
+// src/app.js
+
 import Fastify from 'fastify'
 import dotenv from 'dotenv'
 import routes from './routes/IndexRoutes.js'
