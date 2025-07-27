@@ -29,41 +29,41 @@ export const getPromotion = async (request, reply) => {
 export const createPromotion = async (request, reply) => {
   try {
     const data = request.body
-    
+
     // Validar campos obligatorios
     if (!data.name || !data.discountType || data.discountValue == null || !data.validFrom || !data.validTo) {
-      return reply.code(400).send({ 
-        error: 'Missing required fields: name, discountType, discountValue, validFrom, validTo' 
+      return reply.code(400).send({
+        error: 'Missing required fields: name, discountType, discountValue, validFrom, validTo'
       })
     }
 
     // Validar fechas
     const validFrom = new Date(data.validFrom)
     const validTo = new Date(data.validTo)
-    
+
     if (validFrom >= validTo) {
-      return reply.code(400).send({ 
-        error: 'validFrom must be before validTo' 
+      return reply.code(400).send({
+        error: 'validFrom must be before validTo'
       })
     }
 
     // Validar descuento
     if (data.discountType === 'porcentaje' && (data.discountValue <= 0 || data.discountValue > 100)) {
-      return reply.code(400).send({ 
-        error: 'Percentage discount must be between 1 and 100' 
+      return reply.code(400).send({
+        error: 'Percentage discount must be between 1 and 100'
       })
     }
 
     if (data.discountType === 'monto_fijo' && data.discountValue <= 0) {
-      return reply.code(400).send({ 
-        error: 'Fixed amount discount must be greater than 0' 
+      return reply.code(400).send({
+        error: 'Fixed amount discount must be greater than 0'
       })
     }
 
     // Validar días de la semana
     if (data.validDays && data.validDays.some(day => day < 0 || day > 6)) {
-      return reply.code(400).send({ 
-        error: 'Valid days must be between 0 (Sunday) and 6 (Saturday)' 
+      return reply.code(400).send({
+        error: 'Valid days must be between 0 (Sunday) and 6 (Saturday)'
       })
     }
 
@@ -83,10 +83,10 @@ export const updatePromotion = async (request, reply) => {
     if (data.validFrom && data.validTo) {
       const validFrom = new Date(data.validFrom)
       const validTo = new Date(data.validTo)
-      
+
       if (validFrom >= validTo) {
-        return reply.code(400).send({ 
-          error: 'validFrom must be before validTo' 
+        return reply.code(400).send({
+          error: 'validFrom must be before validTo'
         })
       }
     }
@@ -94,16 +94,16 @@ export const updatePromotion = async (request, reply) => {
     // Validar descuento si se proporciona
     if (data.discountType === 'porcentaje' && data.discountValue != null) {
       if (data.discountValue <= 0 || data.discountValue > 100) {
-        return reply.code(400).send({ 
-          error: 'Percentage discount must be between 1 and 100' 
+        return reply.code(400).send({
+          error: 'Percentage discount must be between 1 and 100'
         })
       }
     }
 
     if (data.discountType === 'monto_fijo' && data.discountValue != null) {
       if (data.discountValue <= 0) {
-        return reply.code(400).send({ 
-          error: 'Fixed amount discount must be greater than 0' 
+        return reply.code(400).send({
+          error: 'Fixed amount discount must be greater than 0'
         })
       }
     }
@@ -128,7 +128,7 @@ export const deletePromotion = async (request, reply) => {
     if (!deleted) {
       return reply.code(404).send({ error: 'Promotion not found' })
     }
-    return reply.code(200).send({ 
+    return reply.code(200).send({
       message: 'Promotion deleted successfully',
       id: parseInt(idIncremental)
     })
@@ -152,11 +152,11 @@ export const getActivePromotions = async (request, reply) => {
 export const getPromotionsByCategory = async (request, reply) => {
   try {
     const category = request.params.category
-    
+
     // Validar categoría
-    const validCategories = ['entrada', 'plato_principal', 'postre', 'bebida', 'acompañamiento']
+    const validCategories = ['entrada', 'plato_principal', 'bebida', 'acompañamiento']
     if (!validCategories.includes(category)) {
-      return reply.code(400).send({ 
+      return reply.code(400).send({
         error: 'Invalid category. Must be one of: ' + validCategories.join(', ')
       })
     }
@@ -181,10 +181,10 @@ export const togglePromotionStatus = async (request, reply) => {
   try {
     const idIncremental = request.params.id
     const { isActive } = request.body
-    
+
     if (typeof isActive !== 'boolean') {
-      return reply.code(400).send({ 
-        error: 'isActive must be a boolean value' 
+      return reply.code(400).send({
+        error: 'isActive must be a boolean value'
       })
     }
 
@@ -192,7 +192,7 @@ export const togglePromotionStatus = async (request, reply) => {
     if (!updatedPromotion) {
       return reply.code(404).send({ error: 'Promotion not found' })
     }
-    
+
     return {
       message: `Promotion ${isActive ? 'activated' : 'deactivated'} successfully`,
       promotion: updatedPromotion
@@ -208,7 +208,7 @@ export const togglePromotionStatus = async (request, reply) => {
 export const usePromotion = async (request, reply) => {
   try {
     const idIncremental = request.params.id
-    
+
     // Verificar que la promoción existe y está activa
     const promotion = await promotionRepo.getPromotionByIncrementalId(idIncremental)
     if (!promotion) {
@@ -235,7 +235,7 @@ export const usePromotion = async (request, reply) => {
 
     // Incrementar uso
     const updatedPromotion = await promotionRepo.incrementPromotionUsage(idIncremental)
-    
+
     return {
       message: 'Promotion used successfully',
       promotion: updatedPromotion,

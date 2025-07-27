@@ -16,7 +16,7 @@ const dishSchema = new mongoose.Schema({
   category: { 
     type: String, 
     required: true,
-    enum: ['entrada', 'plato_principal', 'postre', 'bebida', 'acompañamiento']
+    enum: ['entrada', 'plato_principal', 'bebida', 'acompañamiento']
   },
   // Campos opcionales para promociones
   hasPromotion: { type: Boolean, default: false },

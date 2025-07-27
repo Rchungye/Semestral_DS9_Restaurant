@@ -20,7 +20,7 @@ const promotionSchema = new mongoose.Schema({
   // Aplicabilidad
   applicableToCategories: [{ 
     type: String,
-    enum: ['entrada', 'plato_principal', 'postre', 'bebida', 'acompañamiento']
+    enum: ['entrada', 'plato_principal', 'bebida', 'acompañamiento']
   }],
   
   // Vigencia

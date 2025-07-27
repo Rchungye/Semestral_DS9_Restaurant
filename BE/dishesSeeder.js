@@ -94,47 +94,9 @@ const dishes = [
     name: "Pollo Agridulce",
     description: "Trozos de pollo empanizado con salsa agridulce y piña",
     price: 10.50,
-    photo: "https://images.unsplash.com/photo-1576466628252-c0d4a0ac9fb4?w=400&h=300&fit=crop",
+    photo: "https://www.recetasnestle.com.do/sites/default/files/styles/recipe_detail_desktop_new/public/srh_recipes/cac5ab3885002b6ead9d202fcf7ee64e.webp?itok=p-Np4zS9",
     category: "plato_principal",
     availability: true,
-    hasPromotion: false
-  },
-  {
-    name: "Beef and Broccoli",
-    description: "Carne de res salteada con brócoli fresco en salsa de ostras",
-    price: 11.25,
-    photo: "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop",
-    category: "plato_principal",
-    availability: true,
-    hasPromotion: false
-  },
-
-  // POSTRES
-  {
-    name: "Pastel de Luna",
-    description: "Tradicional pastel chino relleno de pasta de frijol rojo",
-    price: 4.25,
-    photo: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&h=300&fit=crop",
-    category: "postre",
-    availability: true,
-    hasPromotion: false
-  },
-  {
-    name: "Helado Frito",
-    description: "Helado de vainilla empanizado y frito, servido caliente",
-    price: 5.99,
-    photo: "https://images.unsplash.com/photo-1551024506-0bccd828d307?w=400&h=300&fit=crop",
-    category: "postre",
-    availability: true,
-    hasPromotion: false
-  },
-  {
-    name: "Frutas de la Fortuna",
-    description: "Selección de frutas frescas de temporada con miel",
-    price: 3.50,
-    photo: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=400&h=300&fit=crop",
-    category: "postre",
-    availability: false, // Fuera de temporada
     hasPromotion: false
   },
 
@@ -143,7 +105,7 @@ const dishes = [
     name: "Té Verde Jasmine",
     description: "Té verde aromático con flores de jazmín",
     price: 2.50,
-    photo: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=400&h=300&fit=crop",
+    photo: "https://puntodete.com/img/cms/blog/POST/te%20de%20jazmin/flor-de-té-ben-4%202.jpg",
     category: "bebida",
     availability: true,
     hasPromotion: false
@@ -152,31 +114,13 @@ const dishes = [
     name: "Té Oolong Premium",
     description: "Té tradicional chino con sabor suave y aromático",
     price: 3.25,
-    photo: "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=400&h=300&fit=crop",
+    photo: "https://sakiproducts.com/cdn/shop/articles/20221031112901-oolong-tea-recipe_98aeef4f-4c3e-4958-a358-0fbf28eddb72_1920x1080.jpg?v=1667216317",
     category: "bebida",
     availability: true,
     hasPromotion: true,
     promotionPrice: 2.75,
     promotionValidFrom: new Date('2024-01-01'),
     promotionValidTo: new Date('2024-03-31')
-  },
-  {
-    name: "Sake Caliente",
-    description: "Sake tradicional japonés servido a temperatura ideal",
-    price: 6.99,
-    photo: "https://images.unsplash.com/photo-1551334787-21e6bd3ab135?w=400&h=300&fit=crop",
-    category: "bebida",
-    availability: true,
-    hasPromotion: false
-  },
-  {
-    name: "Limonada de Lichi",
-    description: "Refrescante bebida con sabor a lichi y limón",
-    price: 3.75,
-    photo: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400&h=300&fit=crop",
-    category: "bebida",
-    availability: true,
-    hasPromotion: false
   },
 
   // ACOMPAÑAMIENTOS
@@ -194,15 +138,6 @@ const dishes = [
     description: "Mix de vegetales frescos salteados con ajo y jengibre",
     price: 4.50,
     photo: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop",
-    category: "acompañamiento",
-    availability: true,
-    hasPromotion: false
-  },
-  {
-    name: "Salsa Agridulce",
-    description: "Salsa tradicional china con balance perfecto de sabores",
-    price: 1.50,
-    photo: "https://images.unsplash.com/photo-1606787906806-7d4b3e3b0c7c?w=400&h=300&fit=crop",
     category: "acompañamiento",
     availability: true,
     hasPromotion: false
@@ -254,7 +189,7 @@ async function insertarDishes() {
     console.log(`\n✅ ${insertedDishes.length} platillos insertados correctamente`)
 
     // Mostrar resumen por categoría
-    const categorias = ['entrada', 'plato_principal', 'postre', 'bebida', 'acompañamiento']
+    const categorias = ['entrada', 'plato_principal', 'bebida', 'acompañamiento']
     console.log('\n📊 Resumen por categoría:')
     
     for (const categoria of categorias) {
