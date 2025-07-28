@@ -9,7 +9,6 @@ const tableSchema = new mongoose.Schema({
     index: true
   },
   tableNumber: { type: Number, required: true, unique: true },
-  qrCode: { type: String, unique: true }, // Código QR único para la mesa
   capacity: { type: Number, default: 4 } // Capacidad de personas
 }, { timestamps: true })
 
