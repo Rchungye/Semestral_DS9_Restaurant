@@ -1,4 +1,4 @@
-// src/reoutes/PublicRoutes.js
+// src/routes/PublicRoutes.js
 import { dishPublicRoutes } from "../modules/DishModule/DishRoutes.js";
 import { orderPublicRoutes } from "../modules/OrderModule/OrderRoutes.js";
 import { orderDetailPublicRoutes } from "../modules/OrderDetailModule/OrderDetailRoutes.js";

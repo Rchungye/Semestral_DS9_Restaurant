@@ -10,14 +10,7 @@
   "scripts": {
     "start": "node src/app.js",
     "dev": "node --watch src/app.js",
-    "seed": "node seeders/masterSeeder.js",
-    "seeddishes": "node seeders/dishesSeeder.js",
-    "seedusers": "node seeders/usersSeeder.js",
-    "seedtables": "node seeders/tablesSeeder.js",
-    "seedpromotions": "node seeders/promotionsSeeder.js",
-    "seedorders": "node seeders/ordersSeeder.js",
-    "seedorderdetails": "node seeders/orderDetailsSeeder.js",
-    "seedtransactions": "node seeders/transactionsSeeder.js"
+    "seed": "node seeders/masterSeeder.js"
   },
   "keywords": [],
   "author": "",
