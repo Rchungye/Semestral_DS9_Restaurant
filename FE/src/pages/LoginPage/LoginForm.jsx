@@ -107,11 +107,6 @@ export default function LoginForm() {
         </form>
 
         <Box mt={3} textAlign="center">
-          <Typography variant="body2" color="text.secondary">
-            <strong>Credenciales de prueba:</strong><br />
-            Admin: <code>admin / [tu contraseña]</code><br />
-            Cocina: <code>[usuario cocinero] / [contraseña]</code>
-          </Typography>
           <Button
             variant="outlined"
             size="small"

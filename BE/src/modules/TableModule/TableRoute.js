@@ -14,19 +14,19 @@ import { verificarAdmin } from '../../common/middleware/AuthMiddleware.js'
 export function tableAdminRoutes(fastify) {
     // US-024: Gestionar información de mesas del restaurante
     fastify.get('/api/admin/tables',
-        // { preHandler: verificarAdmin }, 
+        { preHandler: verificarAdmin }, 
         listTables)
     fastify.get('/api/admin/tables/:id',
-        // { preHandler: verificarAdmin }, 
+        { preHandler: verificarAdmin }, 
         getTable)
     fastify.post('/api/admin/tables',
-        // { preHandler: verificarAdmin }, 
+        { preHandler: verificarAdmin }, 
         createTable)
     fastify.put('/api/admin/tables/:id',
-        // { preHandler: verificarAdmin }, 
+        { preHandler: verificarAdmin }, 
         updateTable)
     fastify.delete('/api/admin/tables/:id',
-        // { preHandler: verificarAdmin }, 
+        { preHandler: verificarAdmin }, 
         deleteTable)
 }
 

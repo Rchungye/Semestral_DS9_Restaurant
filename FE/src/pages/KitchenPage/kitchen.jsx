@@ -1,15 +1,24 @@
+// src/pages/KitchenPage/kitchen.jsx
 import { useState } from "react";
 import { KitchenHeader } from "./kitchen-header.jsx";
 import { StatusCounters } from "../../components/status-counters.jsx"
 import { OrderCard } from "../../components/order-card.jsx"
 import { useNavigate } from "react-router-dom";
+import useUserStore from "../../store/userStore";
 
 export default function KitchenDashboard() {
-
   const navigate = useNavigate();
+  const { logout } = useUserStore();
 
-  const handleLogout = () => {
-    navigate("/login"); // redirige al login o home
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate("/login");
+    } catch (error) {
+      console.error("Error during logout:", error);
+      // Navigate to login anyway
+      navigate("/login");
+    }
   };
 
   const [orders, setOrders] = useState([

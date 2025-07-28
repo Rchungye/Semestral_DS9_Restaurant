@@ -17,16 +17,16 @@ export function dishAdminRoutes(fastify) {
         // { preHandler: verificarAdmin },
         listDishes)
     fastify.get('/api/admin/dishes/:id',
-        // { preHandler: verificarAdmin }, 
+        { preHandler: verificarAdmin }, 
         getDish)
     fastify.post('/api/admin/dishes',
-        // { preHandler: verificarAdmin }, 
+        { preHandler: verificarAdmin }, 
         createDish)
     fastify.put('/api/admin/dishes/:id',
-        // { preHandler: verificarAdmin }, 
+        { preHandler: verificarAdmin }, 
         updateDish)
     fastify.delete('/api/admin/dishes/:id',
-        // { preHandler: verificarAdmin }, 
+        { preHandler: verificarAdmin }, 
         deleteDish)
 }
 

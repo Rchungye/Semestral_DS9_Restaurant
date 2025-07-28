@@ -22,32 +22,32 @@ export function orderAdminRoutes(fastify) {
         // { preHandler: verificarAdmin },
         listOrders)
     fastify.get('/api/admin/orders/:id',
-        // { preHandler: verificarAdmin }, 
+        { preHandler: verificarAdmin }, 
         getOrder)
     fastify.put('/api/admin/orders/:id',
-        // { preHandler: verificarAdmin }, 
+        { preHandler: verificarAdmin }, 
         updateOrder)
     fastify.delete('/api/admin/orders/:id',
-        // { preHandler: verificarAdmin }, 
+        { preHandler: verificarAdmin }, 
         deleteOrder)
 
 
 
     // US-023: Supervisar flujo en tiempo real de pedidos
     fastify.get('/api/admin/orders/monitor',
-        // { preHandler: verificarAdmin }, 
+        { preHandler: verificarAdmin }, 
         getOrdersByStatus)
     // US-021: Estadísticas de ventas diarias
     fastify.get('/api/admin/dashboard/stats',
-        // { preHandler: verificarAdmin }, 
+        { preHandler: verificarAdmin }, 
         getDailyStats)
     // Órdenes de hoy para dashboard
     fastify.get('/api/admin/orders/today',
-        // { preHandler: verificarAdmin }, 
+        { preHandler: verificarAdmin }, 
         getTodayOrders)
     // Órdenes por tipo (local/takeout) para análisis
     fastify.get('/api/admin/orders/type/:type',
-        // { preHandler: verificarAdmin }, 
+        { preHandler: verificarAdmin }, 
         getOrdersByType)
 
 
@@ -70,11 +70,11 @@ export function orderPublicRoutes(fastify) {
 export function orderChefRoutes(fastify) {
     // US-012, US-013, US-014: Visualizar órdenes para cocina con info de mesa/factura
     fastify.get('/api/kitchen/orders',
-        // { preHandler: verificarCocina },
+        { preHandler: verificarCocina },
         getKitchenOrders)
     // US-015 y US-016: Cambiar estado de órdenes (preparando → finalizado)
     fastify.patch('/api/kitchen/orders/:id/status',
-        // { preHandler: verificarCocina },
+        { preHandler: verificarCocina },
         updateOrderStatus)
 
 }

@@ -1,6 +1,10 @@
-import { Box, Typography, Button } from '@mui/material';
+// src/pages/KitchenPage/kitchen-header.jsx
+import { Box, Typography, Button, CircularProgress } from '@mui/material';
+import useUserStore from '../../store/userStore';
 
 export function KitchenHeader({ onLogout }) {
+  const { user, isLoading } = useUserStore();
+
   return (
     <Box component="header" sx={{
       backgroundColor: '#d32f2f',
@@ -20,9 +24,27 @@ export function KitchenHeader({ onLogout }) {
         </Typography>
       </Box>
 
-      <Button color="inherit" onClick={onLogout}>
-        × Cerrar sesión
-      </Button>
+      <Box display="flex" alignItems="center" gap={2}>
+        {user && (
+          <Typography variant="body2">
+            Bienvenido, {user.name} {user.lastName} ({user.role})
+          </Typography>
+        )}
+        <Button
+          color="inherit"
+          onClick={onLogout}
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <>
+              <CircularProgress size={16} color="inherit" sx={{ mr: 1 }} />
+              Cerrando...
+            </>
+          ) : (
+            "× Cerrar sesión"
+          )}
+        </Button>
+      </Box>
     </Box>
   );
 }

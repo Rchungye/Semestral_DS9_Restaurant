@@ -1,5 +1,6 @@
+// src/pages/AdminPage/admin-dashboard.jsx
 "use client"
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 import { useState } from "react"
 import {
   AppBar,
@@ -14,7 +15,9 @@ import {
   Toolbar,
   Typography,
   Button,
+  CircularProgress,
 } from "@mui/material"
+import useUserStore from "../../store/userStore";
 
 // Importar todos los componentes
 import DashboardResumen from "./dashboard-resumen"
@@ -42,11 +45,19 @@ const sidebarItems = [
 export default function AdminDashboard() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [activeSection, setActiveSection] = useState("dashboard")
-  
-  const navigate = useNavigate();
 
-  const handleLogout = () => {
-    navigate("/login"); // redirige al login
+  const navigate = useNavigate();
+  const { user, logout, isLoading } = useUserStore();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate("/login");
+    } catch (error) {
+      console.error("Error during logout:", error);
+      // Navigate to login anyway
+      navigate("/login");
+    }
   };
 
   const handleDrawerToggle = () => {
@@ -83,7 +94,7 @@ export default function AdminDashboard() {
   const drawer = (
     <Box>
       <Toolbar>
-        <Typography variant="h6" noWrap component="div" sx={{ fontWeight: "bold", color: "#ffa726"}}>
+        <Typography variant="h6" noWrap component="div" sx={{ fontWeight: "bold", color: "#ffa726" }}>
           🐼 Golden Panda
         </Typography>
       </Toolbar>
@@ -138,9 +149,27 @@ export default function AdminDashboard() {
             Panel de Administración
           </Typography>
 
-          <Box sx={{ display: "flex", gap: 1 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            {user && (
+              <Typography variant="body2" sx={{ mr: 2 }}>
+                Bienvenido, {user.name} {user.lastName}
+              </Typography>
+            )}
             <Button color="inherit">⚙ Configuración</Button>
-            <Button color="inherit" onClick={handleLogout}>× Cerrar Sesión</Button>
+            <Button
+              color="inherit"
+              onClick={handleLogout}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <CircularProgress size={16} sx={{ mr: 1 }} />
+                  Cerrando...
+                </>
+              ) : (
+                "× Cerrar Sesión"
+              )}
+            </Button>
           </Box>
         </Toolbar>
       </AppBar>

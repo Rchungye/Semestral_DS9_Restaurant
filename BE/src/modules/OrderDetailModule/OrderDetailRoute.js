@@ -17,19 +17,19 @@ import { verificarAdmin, verificarCocina } from '../../common/middleware/AuthMid
 export function orderDetailAdminRoutes(fastify) {
     // US-020: Gestionar menú del restaurante (crear, editar, eliminar)
     fastify.get('/api/admin/order-details',
-        // { preHandler: verificarAdmin }, 
+        { preHandler: verificarAdmin }, 
         listOrderDetails)
     fastify.get('/api/admin/order-details/:id',
-        // { preHandler: verificarAdmin }, 
+        { preHandler: verificarAdmin }, 
         getOrderDetail)
     fastify.post('/api/admin/order-details',
-        // { preHandler: verificarAdmin }, 
+        { preHandler: verificarAdmin }, 
         createOrderDetail)
     fastify.put('/api/admin/order-details/:id',
-        // { preHandler: verificarAdmin }, 
+        { preHandler: verificarAdmin }, 
         updateOrderDetail)
     fastify.delete('/api/admin/order-details/:id',
-        // { preHandler: verificarAdmin }, 
+        { preHandler: verificarAdmin }, 
         deleteOrderDetail)
 }
 
@@ -51,11 +51,11 @@ export function orderDetailPublicRoutes(fastify) {
 export function orderDetailChefRoutes(fastify) {
     // US-017: Ver personalizaciones del platillo para preparar comida correctamente
     fastify.get('/api/kitchen/orders/:orderId/details',
-        // { preHandler: verificarCocina }, 
+        { preHandler: verificarCocina }, 
         getOrderDetailsForKitchen)
     // Ver solo las personalizaciones especiales
     fastify.get('/api/kitchen/orders/:orderId/customizations',
-        // { preHandler: verificarCocina },
+        { preHandler: verificarCocina },
         getCustomizationsForKitchen)
 }
 
