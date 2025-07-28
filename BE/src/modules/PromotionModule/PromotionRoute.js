@@ -7,7 +7,7 @@ import {
   deletePromotion,
   getActivePromotions,
   validatePromotion
-} from './PromotionServices.js'
+} from './PromotionService.js'
 
 import { verificarAdmin } from '../../common/middleware/AuthMiddleware.js'
 

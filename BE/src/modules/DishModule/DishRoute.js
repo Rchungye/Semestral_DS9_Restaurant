@@ -6,7 +6,7 @@ import {
     updateDish,
     deleteDish,
     getAvailableDishes
-} from './DishServices.js'
+} from './DishService.js'
 
 import { verificarAdmin } from '../../common/middleware/AuthMiddleware.js'
 

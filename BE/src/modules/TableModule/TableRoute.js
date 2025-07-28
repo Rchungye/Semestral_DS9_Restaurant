@@ -6,7 +6,7 @@ import {
     createTable,
     updateTable,
     deleteTable
-} from './TableServices.js'
+} from './TableService.js'
 
 import { verificarAdmin } from '../../common/middleware/AuthMiddleware.js'
 

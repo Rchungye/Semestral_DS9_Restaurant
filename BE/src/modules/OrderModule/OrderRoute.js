@@ -12,7 +12,7 @@ import {
     getTodayOrders,
     getDailyStats,
     getOrderByInvoice
-} from './OrderServices.js'
+} from './OrderService.js'
 
 import { verificarAdmin, verificarCocina } from '../../common/middleware/AuthMiddleware.js'
 

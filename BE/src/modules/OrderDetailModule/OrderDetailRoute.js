@@ -9,7 +9,7 @@ import {
     getCartDetails,
     createMultipleOrderDetails,
     getCustomizationsForKitchen
-} from './OrderDetailServices.js'
+} from './OrderDetailService.js'
 
 import { verificarAdmin, verificarCocina } from '../../common/middleware/AuthMiddleware.js'
 

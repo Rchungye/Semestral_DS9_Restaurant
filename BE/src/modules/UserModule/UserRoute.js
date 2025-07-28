@@ -8,7 +8,7 @@ import {
     updateUser,
     deleteUser,
     getUserProfile
-} from './UserServices.js'
+} from './UserService.js'
 
 import { verificarToken, verificarAdmin } from '../../common/middleware/AuthMiddleware.js'
 

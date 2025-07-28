@@ -2,7 +2,7 @@
 
 import Fastify from 'fastify'
 import dotenv from 'dotenv'
-import routes from './routes/IndexRoutes.js'
+import routes from './routes/IndexRoute.js'
 import cors from '@fastify/cors'
 import { conectarDB } from './common/config/MongoDbConfig.js'
 

@@ -1,7 +1,7 @@
 // src/routes/IndexRoutes.js
-import AdminRoutes from './AdminRoutes.js'
-import PublicRoutes from './PublicRoutes.js'
-import ChefRoutes from './ChefRoutes.js'
+import AdminRoutes from './AdminRoute.js'
+import PublicRoutes from './PublicRoute.js'
+import ChefRoutes from './ChefRoute.js'
 
 export default function (fastify) {
     AdminRoutes(fastify)

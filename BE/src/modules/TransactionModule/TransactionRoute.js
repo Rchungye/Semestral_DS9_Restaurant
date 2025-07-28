@@ -12,7 +12,7 @@ import {
     getTransactionHistory,
     getFailedTransactions,
     updatePaymentStatus
-} from './TransactionServices.js'
+} from './TransactionService.js'
 
 import { verificarAdmin } from '../../common/middleware/AuthMiddleware.js'
 
