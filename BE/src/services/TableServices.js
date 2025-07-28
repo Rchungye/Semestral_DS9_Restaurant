@@ -1,6 +1,5 @@
 // src/services/TableServices.js
 import * as tableRepo from '../repositories/TableRepository.js'
-import { randomUUID } from 'crypto'
 
 export const listTables = async (request, reply) => {
   try {
@@ -43,15 +42,19 @@ export const getTableByNumber = async (request, reply) => {
   }
 }
 
+// Función actualizada para obtener mesa por MongoDB ID (desde QR)
 export const getTableByQR = async (request, reply) => {
   try {
-    const qrCode = request.params.qr
-    const table = await tableRepo.getTableByQRCode(qrCode)
+    const mongoId = request.params.qr // El QR ahora contiene el MongoDB _id
+    const table = await tableRepo.getTableByMongoId(mongoId)
     if (!table) {
       return reply.code(404).send({ error: 'Table not found for this QR code' })
     }
     return table
   } catch (error) {
+    if (error.message === 'MongoDB ID inválido') {
+      return reply.code(400).send({ error: 'Invalid QR code format' })
+    }
     return reply.code(500).send({ error: 'Error retrieving table by QR' })
   }
 }
@@ -59,7 +62,7 @@ export const getTableByQR = async (request, reply) => {
 export const createTable = async (request, reply) => {
   try {
     const data = request.body
-    
+
     // Validar campos obligatorios
     if (!data.tableNumber) {
       return reply.code(400).send({ error: 'Missing required field: tableNumber' })
@@ -71,20 +74,12 @@ export const createTable = async (request, reply) => {
       return reply.code(409).send({ error: 'Table number already exists' })
     }
 
-    // Generar QR code único si no se proporciona
-    if (!data.qrCode) {
-      data.qrCode = `QR-TABLE-${data.tableNumber}-${randomUUID().slice(0, 8)}`
-    }
-
     const newTable = await tableRepo.createTable(data)
     return reply.code(201).send(newTable)
   } catch (error) {
     if (error.code === 11000) {
       if (error.keyPattern.tableNumber) {
         return reply.code(409).send({ error: 'Table number already exists' })
-      }
-      if (error.keyPattern.qrCode) {
-        return reply.code(409).send({ error: 'QR code already exists' })
       }
     }
     return reply.code(500).send({ error: 'Error creating table' })
@@ -95,7 +90,7 @@ export const updateTable = async (request, reply) => {
   try {
     const idIncremental = request.params.id
     const data = request.body
-    
+
     const updatedTable = await tableRepo.updateTable(idIncremental, data)
     if (!updatedTable) {
       return reply.code(404).send({ error: 'Table not found' })
@@ -109,9 +104,6 @@ export const updateTable = async (request, reply) => {
       if (error.keyPattern.tableNumber) {
         return reply.code(409).send({ error: 'Table number already exists' })
       }
-      if (error.keyPattern.qrCode) {
-        return reply.code(409).send({ error: 'QR code already exists' })
-      }
     }
     return reply.code(500).send({ error: 'Error updating table' })
   }
@@ -124,7 +116,7 @@ export const deleteTable = async (request, reply) => {
     if (!deleted) {
       return reply.code(404).send({ error: 'Table not found' })
     }
-    return reply.code(200).send({ 
+    return reply.code(200).send({
       message: 'Table deleted successfully',
       id: parseInt(idIncremental)
     })

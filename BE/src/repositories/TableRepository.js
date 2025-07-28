@@ -1,5 +1,6 @@
 // src/repositories/TableRepository.js
 import Table from '../models/TableModel.js'
+import mongoose from 'mongoose'
 
 export const getAllTables = async () => {
   return await Table.find()
@@ -21,8 +22,13 @@ export const getTableByNumber = async (tableNumber) => {
   return await Table.findOne({ tableNumber: number })
 }
 
-export const getTableByQRCode = async (qrCode) => {
-  return await Table.findOne({ qrCode })
+// Nueva función: Obtener mesa por MongoDB ObjectId (desde QR)
+export const getTableByMongoId = async (mongoId) => {
+  // Validar que sea un ObjectId válido
+  if (!mongoose.Types.ObjectId.isValid(mongoId)) {
+    throw new Error('MongoDB ID inválido')
+  }
+  return await Table.findById(mongoId)
 }
 
 export const createTable = async (data) => {

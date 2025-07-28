@@ -5,8 +5,7 @@ import {
     getTableByQR,
     createTable,
     updateTable,
-    deleteTable,
-    // generateQRForTable
+    deleteTable
 } from '../services/TableServices.js'
 
 import { verificarAdmin } from '../middleware/AuthMiddleware.js'
@@ -20,11 +19,8 @@ export default function (fastify) {
     fastify.put('/api/admin/tables/:id', { preHandler: verificarAdmin }, updateTable)
     fastify.delete('/api/admin/tables/:id', { preHandler: verificarAdmin }, deleteTable)
 
-    // US-024: Asignar o reemplazar códigos QR por mesa
-    // fastify.post('/api/admin/tables/:id/qr/regenerate', { preHandler: verificarAdmin }, generateQRForTable)
-
     // ============= ENDPOINTS PÚBLICOS PARA CLIENTES =============
     // US-001: Escaneo de código QR para identificar mesa
+    // Ahora el parámetro :qr contiene el MongoDB _id de la mesa
     fastify.get('/api/qr/:qr', getTableByQR)
-
 }
