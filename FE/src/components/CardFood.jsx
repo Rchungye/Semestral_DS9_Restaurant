@@ -13,12 +13,13 @@ import {
 import { AddShoppingCart, LocalOffer } from "@mui/icons-material";
 import { useState } from "react";
 
-const CardFood = ({ name, description, price, photo, category, hasPromotion }) => {
+const CardFood = ({ name, description, price, photo, category, hasPromotion, onAddToCart }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
 
   const handleAddClick = () => {
     setIsAdding(true)
+    if (onAddToCart) onAddToCart();
     setTimeout(() => setIsAdding(false), 800)
   }
 

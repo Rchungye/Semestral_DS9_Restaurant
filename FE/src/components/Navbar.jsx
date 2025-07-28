@@ -1,22 +1,8 @@
-import { 
-  AppBar, 
-  Toolbar, 
-  Typography, 
-  Button, 
-  Box, 
-  IconButton,
-  Badge,
-  useTheme,
-  alpha
-} from '@mui/material';
-import { 
-  ShoppingCart, 
-  Restaurant, 
-  Menu as MenuIcon 
-} from '@mui/icons-material';
+import { AppBar, Toolbar, Typography, Button, Box, IconButton, Badge, useTheme, alpha } from '@mui/material';
+import { ShoppingCart, Menu } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 
-const Navbar = () => {
+const Navbar = ({ onCartClick, cartCount = 0 }) => {
   const theme = useTheme();
   
   const getRoutePath = (item) => {
@@ -161,9 +147,10 @@ const Navbar = () => {
                 transform: 'scale(1.1)',
               }
             }}
+            onClick={onCartClick}
           >
             <Badge 
-              badgeContent={3} 
+              badgeContent={cartCount} 
               sx={{
                 '& .MuiBadge-badge': {
                   backgroundColor: '#d32f2f',

@@ -1,29 +1,14 @@
 "use client"
 
-import {
-  Container,
-  Typography,
-  Grid,
-  Box,
-  Chip,
-  Button,
-  TextField,
-  InputAdornment,
-  Tabs,
-  Tab,
-  Fade,
-  Paper,
-  useTheme,
-  alpha,
-} from "@mui/material"
-import { Search, FilterList, Star, LocalFireDepartment, Nature } from "@mui/icons-material"
+import { Container, Typography, Grid, Box, Chip, Button, TextField, InputAdornment, Drawer, Tabs, Tab, Fade, Paper, useTheme, alpha } from "@mui/material"
+import { Search, FilterList, Star } from "@mui/icons-material"
 import { useState, useMemo, useEffect } from "react"
 import { fetchDishes } from "../services/dishService"
 import CardFood from "../components/CardFood"
 import Navbar from "../components/Navbar"
 import AdsFood from "../components/AdsFood"
 
-// Categorías que coinciden con el backend
+
 const categorias = [
   { id: "todos", label: "Todos", icon: "🍽️" },
   { id: "entrada", label: "Entradas", icon: "🥟" },
@@ -33,16 +18,9 @@ const categorias = [
 ]
 
 const etiquetasColores = {
-  popular: { color: "#ff5722", icon: <LocalFireDepartment fontSize="small" /> },
   premium: { color: "#9c27b0", icon: <Star fontSize="small" /> },
-  veggie: { color: "#4caf50", icon: <Nature fontSize="small" /> },
-  "veggie-friendly": { color: "#4caf50", icon: <Nature fontSize="small" /> },
-  eco: { color: "#4caf50", icon: <Nature fontSize="small" /> },
   tradicional: { color: "#795548", icon: null },
-  especial: { color: "#e91e63", icon: <Star fontSize="small" /> },
   crujiente: { color: "#ff9800", icon: null },
-  ligero: { color: "#2196f3", icon: null },
-  saludable: { color: "#4caf50", icon: <Nature fontSize="small" /> },
 }
 
 const Home = () => {
@@ -52,6 +30,20 @@ const Home = () => {
   const [busqueda, setBusqueda] = useState("")
   const [categoriaActiva, setCategoriaActiva] = useState("todos")
   const [mostrarFiltros, setMostrarFiltros] = useState(false)
+  const [cartOpen, setCartOpen] = useState(false)
+  const [cartItems, setCartItems] = useState([])
+
+  const handleAddToCart = (dish) => {
+    setCartItems((prev) => {
+      const idx = prev.findIndex(item => item.name === dish.name)
+      if (idx !== -1) {
+        const updated = [...prev]
+        updated[idx].quantity += 1
+        return updated
+      }
+      return [...prev, { ...dish, quantity: 1 }]
+    })
+  }
 
   useEffect(() => {
     fetchDishes() // Solo platos con availability: true
@@ -107,7 +99,35 @@ const Home = () => {
 
   return (
     <>
-      <Navbar />
+      <Navbar onCartClick={() => setCartOpen(true)} cartCount={cartItems.length} />
+          <Drawer anchor="right" open={cartOpen} onClose={() => setCartOpen(false)}>
+          <Box sx={{ width: 350, p: 2 }}>
+            <Typography variant="h5" fontWeight="bold" gutterBottom>
+              Tu carrito
+            </Typography>
+            {cartItems.length === 0 ? (
+              <Typography color="text.secondary">El carrito está vacío.</Typography>
+            ) : (
+              cartItems.map((item, idx) => (
+                <Box key={idx} sx={{ mb: 2 }}>
+                  <Typography variant="subtitle1">{item.name}</Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    ${item.price} x {item.quantity}
+                  </Typography>
+                </Box>
+              ))
+            )}
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              sx={{ mt: 2 }}
+              disabled={cartItems.length === 0}
+            >
+              Ir a pagar
+            </Button>
+          </Box>
+        </Drawer>
       <AdsFood />
 
       {/* Hero Section con estadísticas */}
@@ -201,7 +221,7 @@ const Home = () => {
         </Container>
       </Box>
 
-      <Container maxWidth="lg" sx={{ py: 6 }}>
+      <Container id="menu" maxWidth="lg" sx={{ py: 6 }}>
         {/* Header del menú con búsqueda */}
         <Box sx={{ mb: 4 }}>
           <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 3 }}>
@@ -354,6 +374,7 @@ const Home = () => {
                           photo={dish.photo}
                           category={categorias.find((c) => c.id === dish.category)?.label}
                           hasPromotion={dish.hasPromotion}
+                          onAddToCart={() => handleAddToCart(dish)}
                         />
                       </Box>
                     </Fade>

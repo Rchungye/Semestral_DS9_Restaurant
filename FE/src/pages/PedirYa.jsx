@@ -6,12 +6,13 @@ const PedirYa = () => {
         <>
             <Navbar />
             <Box sx={{ 
+                position: 'relative',
                 display: 'flex', 
                 flexDirection: 'column', 
                 alignItems: 'center', 
                 justifyContent: 'center', 
                 minHeight: '100vh',
-                p: 3
+                p: 3,
             }}>
                 <Typography variant="h3" gutterBottom sx={{ mb: 5, fontWeight: 'bold', color: '#d32f2f' }}>
                     ¿Cómo prefieres recibir tu pedido?

@@ -12,18 +12,27 @@ const AdsFood = () => {
       title: "¡Nuevos Sabores Asiáticos!",
       subtitle: "Descubre nuestra nueva línea de comida oriental",
       description: "Sushi fresco, ramen auténtico y más delicias asiáticas",
-      image: "https://images.unsplash.com/photo-1563379091339-03246963d96c?w=1200&h=600&fit=crop",
+      image: "https://somelikeithot.shop/cdn/shop/articles/noodle-soup-how-to-level-up-your-instant-ramen.png?crop=center&height=1200&v=1704596330&width=1200",
       cta: "Explorar Menú",
-      color: "#e91e63"
+      color: "#e91e63",
+      onClick: () => {
+        const menuSection = document.getElementById('menu');
+        if (menuSection) {
+          menuSection.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
     },
     {
       id: 2,
-      title: "HAY QUE CAMBIAR ESTO PORQUE NO OFRECEMOS DELIVERY",
-      subtitle: "-----------------------------------------",
-      description: "Recibe tu comida favorita sin costo de envío",
-      image: "https://images.unsplash.com/photo-1526367790999-0150786686a2?w=1200&h=600&fit=crop",
+      title: "¡Pide tu comida favorita!",
+      subtitle: "Ordena online y elige cómo disfrutarla",
+      description: "Haz tu pedido desde la web y decide si quieres comer en nuestro local o retirarlo cuando esté listo. ¡Rápido y sencillo!",
+      image: "https://asianinspirations.com.au/wp-content/uploads/2019/12/ModernAsianCuisne_FeatImg.jpg",
       cta: "Pedir ya",
-      color: "#4caf50"
+      color: "#4caf50",
+      onClick: () => {
+        window.location.href = '/pedir-ya';
+      }
     }
   ];
 
@@ -66,25 +75,6 @@ const AdsFood = () => {
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           transition: 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)',
-        }}
-      />
-
-      {/* Particles/decorative elements */}
-      <Box
-        sx={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: `radial-gradient(circle at 20% 80%, ${currentSlideData.color}40 0%, transparent 50%), 
-                       radial-gradient(circle at 80% 20%, ${currentSlideData.color}30 0%, transparent 50%)`,
-          animation: 'float 6s ease-in-out infinite',
-          '@keyframes float': {
-            '0%': { transform: 'translateY(0px)' },
-            '50%': { transform: 'translateY(-20px)' },
-            '100%': { transform: 'translateY(0px)' },
-          },
         }}
       />
 
@@ -168,6 +158,7 @@ const AdsFood = () => {
                 boxShadow: `0 12px 40px ${currentSlideData.color}60`,
               },
             }}
+            onClick={currentSlideData.onClick}
           >
             {currentSlideData.cta}
           </Button>
