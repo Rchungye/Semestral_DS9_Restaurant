@@ -2,8 +2,8 @@
 
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
-import Order from '../src/models/OrderModel.js'
-import Table from '../src/models/TableModel.js'
+import Order from '../src/modules/OrderModule/OrderModel.js'
+import Table from '../src/modules/TableModule/TableModel.js'
 
 dotenv.config()
 

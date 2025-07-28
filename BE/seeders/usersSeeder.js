@@ -2,7 +2,7 @@
 
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
-import User from '../src/models/UserModel.js'
+import User from '../src/modules/UserModule/UserModel.js'
 import { encryptPassword } from '../src/helpers/CryptoHelper.js'
 
 dotenv.config()

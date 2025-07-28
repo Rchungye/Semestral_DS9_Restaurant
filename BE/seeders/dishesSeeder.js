@@ -2,7 +2,7 @@
 
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
-import Dish from '../src/models/DishModel.js'
+import Dish from '../src/modules/DishModule/DishModel.js' 
 
 dotenv.config()
 

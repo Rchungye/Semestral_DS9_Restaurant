@@ -3,8 +3,8 @@
 
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
-import Transaction from '../src/models/TransactionModel.js'
-import Order from '../src/models/OrderModel.js'
+import Transaction from '../src/modules/TransactionModule/TransactionModel.js'
+import Order from '../src/modules/OrderModule/OrderModel.js'
 
 dotenv.config()
 
