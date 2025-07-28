@@ -190,24 +190,6 @@ export const getOrdersByType = async (request, reply) => {
   }
 }
 
-// US-022: Historial de ventas con filtros
-export const getOrderHistory = async (request, reply) => {
-  try {
-    const { startDate, endDate } = request.query
-    
-    if (!startDate || !endDate) {
-      return reply.code(400).send({ 
-        error: 'startDate and endDate query parameters are required' 
-      })
-    }
-    
-    const orders = await orderRepo.getOrdersByDateRange(startDate, endDate)
-    return orders
-  } catch (error) {
-    return reply.code(500).send({ error: 'Error retrieving order history' })
-  }
-}
-
 // Obtener órdenes de hoy
 export const getTodayOrders = async (request, reply) => {
   try {

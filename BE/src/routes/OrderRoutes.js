@@ -9,13 +9,12 @@ import {
     updateOrderStatus,
     getOrdersByStatus,
     getOrdersByType,
-    getOrderHistory,
     getTodayOrders,
     getDailyStats,
     getOrderByInvoice
 } from '../services/OrderServices.js'
 
-import { verificarToken, verificarAdmin, verificarCocina } from '../middleware/AuthMiddleware.js'
+import { verificarAdmin, verificarCocina } from '../middleware/AuthMiddleware.js'
 
 export default function (fastify) {
     // ============= CRUD BÁSICO (Solo administradores) =============
@@ -38,9 +37,6 @@ export default function (fastify) {
     // US-021: Estadísticas de ventas diarias
     fastify.get('/api/admin/dashboard/stats', { preHandler: verificarAdmin }, getDailyStats)
 
-    // US-022: Historial de ventas con filtros de fecha
-    fastify.get('/api/admin/sales/history', { preHandler: verificarAdmin }, getOrderHistory)
-
     // Órdenes de hoy para dashboard
     fastify.get('/api/admin/orders/today', { preHandler: verificarAdmin }, getTodayOrders)
 
@@ -60,7 +56,4 @@ export default function (fastify) {
     // US-011: Consultar estado de orden (tiempo estimado)
     fastify.get('/api/orders/:id/status', getOrder)
 
-    // ============= ENDPOINTS ADICIONALES =============
-    // Para futuras integraciones de notificaciones en tiempo real
-    // fastify.post('/api/orders/:id/notify', { preHandler: verificarToken }, notifyOrderUpdate)
 }
