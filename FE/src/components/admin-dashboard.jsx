@@ -83,8 +83,8 @@ export default function AdminDashboard() {
   const drawer = (
     <Box>
       <Toolbar>
-        <Typography variant="h6" noWrap component="div" sx={{ fontWeight: "bold" }}>
-          🐼 Admin Golden Panda
+        <Typography variant="h6" noWrap component="div" sx={{ fontWeight: "bold", color: "#ffa726"}}>
+          🐼 Golden Panda
         </Typography>
       </Toolbar>
       <List sx={{ px: 2 }}>
