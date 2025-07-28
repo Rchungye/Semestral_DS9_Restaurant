@@ -1,18 +1,36 @@
-import { Container, Typography, Grid, Box, Chip, Button, TextField, InputAdornment, Tabs, Tab, Fade, Paper, useTheme, alpha } from "@mui/material";
-import { Search, FilterList, Star, LocalFireDepartment, Nature } from "@mui/icons-material";
-import { useState, useMemo, useEffect } from "react";
-import { fetchProductos } from "../services/productService";
-import CardFood from "../components/CardFood";
-import Navbar from "../components/Navbar";
-import AdsFood from "../components/AdsFood";
+"use client"
 
+import {
+  Container,
+  Typography,
+  Grid,
+  Box,
+  Chip,
+  Button,
+  TextField,
+  InputAdornment,
+  Tabs,
+  Tab,
+  Fade,
+  Paper,
+  useTheme,
+  alpha,
+} from "@mui/material"
+import { Search, FilterList, Star, LocalFireDepartment, Nature } from "@mui/icons-material"
+import { useState, useMemo, useEffect } from "react"
+import { fetchDishes } from "../services/dishService"
+import CardFood from "../components/CardFood"
+import Navbar from "../components/Navbar"
+import AdsFood from "../components/AdsFood"
+
+// Categorías que coinciden con el backend
 const categorias = [
   { id: "todos", label: "Todos", icon: "🍽️" },
-  { id: "dim-sum", label: "Dim Sum", icon: "🥟" },
-  { id: "fritos", label: "Fritos", icon: "🍤" },
-  { id: "vegetariano", label: "Vegetariano", icon: "🥬" },
-  { id: "premium", label: "Premium", icon: "⭐" },
-];
+  { id: "entrada", label: "Entradas", icon: "🥟" },
+  { id: "plato_principal", label: "Platos Principales", icon: "🍜" },
+  { id: "bebida", label: "Bebidas", icon: "🥤" },
+  { id: "acompañamiento", label: "Acompañamientos", icon: "🍚" },
+]
 
 const etiquetasColores = {
   popular: { color: "#ff5722", icon: <LocalFireDepartment fontSize="small" /> },
@@ -25,46 +43,68 @@ const etiquetasColores = {
   crujiente: { color: "#ff9800", icon: null },
   ligero: { color: "#2196f3", icon: null },
   saludable: { color: "#4caf50", icon: <Nature fontSize="small" /> },
-};
+}
 
 const Home = () => {
-  const theme = useTheme();
-  const [productos, setProductos] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [busqueda, setBusqueda] = useState("");
-  const [categoriaActiva, setCategoriaActiva] = useState("todos");
-  const [mostrarFiltros, setMostrarFiltros] = useState(false);
+  const theme = useTheme()
+  const [dishes, setDishes] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [busqueda, setBusqueda] = useState("")
+  const [categoriaActiva, setCategoriaActiva] = useState("todos")
+  const [mostrarFiltros, setMostrarFiltros] = useState(false)
 
   useEffect(() => {
-    fetchProductos()
-      .then(data => setProductos(data))
-      .finally(() => setLoading(false));
-  }, []);
+    fetchDishes() // Solo platos con availability: true
+      .then((data) => {
+        console.log("Dishes loaded:", data)
+        setDishes(data)
+      })
+      .catch((error) => {
+        console.error("Error loading dishes:", error)
+        setDishes([])
+      })
+      .finally(() => setLoading(false))
+  }, [])
 
-  // Filtrar productos
-  const productosFiltrados = useMemo(() => {
-    let resultado = productos;
+  // Filtrar platos
+  const dishesFiltrados = useMemo(() => {
+    let resultado = dishes
 
     // Filtro por categoría
     if (categoriaActiva !== "todos") {
-      resultado = resultado.filter(p => p.categoria === categoriaActiva);
+      resultado = resultado.filter((dish) => dish.category === categoriaActiva)
     }
 
     // Filtro por búsqueda
     if (busqueda.trim()) {
-      resultado = resultado.filter(p =>
-        p.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
-        p.descripcion.toLowerCase().includes(busqueda.toLowerCase()) ||
-        p.etiquetas.some(etiqueta => etiqueta.toLowerCase().includes(busqueda.toLowerCase()))
-      );
+      resultado = resultado.filter(
+        (dish) =>
+          dish.name.toLowerCase().includes(busqueda.toLowerCase()) ||
+          (dish.description && dish.description.toLowerCase().includes(busqueda.toLowerCase())),
+      )
     }
 
-    return resultado;
-  }, [categoriaActiva, busqueda]);
+    return resultado
+  }, [dishes, categoriaActiva, busqueda])
 
   const handleCategoriaChange = (event, nuevaCategoria) => {
-    setCategoriaActiva(nuevaCategoria);
-  };
+    setCategoriaActiva(nuevaCategoria)
+  }
+
+  if (loading) {
+    return (
+      <>
+        <Navbar />
+        <Container maxWidth="lg" sx={{ py: 6 }}>
+          <Box sx={{ textAlign: "center", py: 8 }}>
+            <Typography variant="h5" color="text.secondary">
+              Cargando menú...
+            </Typography>
+          </Box>
+        </Container>
+      </>
+    )
+  }
 
   return (
     <>
@@ -90,21 +130,16 @@ const Home = () => {
                   fontSize: { xs: "2.5rem", md: "3.5rem" },
                   mb: 2,
                   background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
                 }}
               >
                 Auténtica Cocina Asiática
               </Typography>
-              <Typography
-                variant="h5"
-                color="text.secondary"
-                sx={{ mb: 3, lineHeight: 1.4 }}
-              >
+              <Typography variant="h5" color="text.secondary" sx={{ mb: 3, lineHeight: 1.4 }}>
                 Descubre sabores tradicionales preparados con ingredientes frescos y técnicas milenarias
               </Typography>
             </Grid>
-
             <Grid item xs={12} md={4}>
               <Grid container spacing={2}>
                 <Grid item xs={4}>
@@ -154,7 +189,7 @@ const Home = () => {
                     }}
                   >
                     <Typography variant="h4" fontWeight="bold" color="info.main">
-                      50+
+                      {dishes.length}+
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
                       Platos
@@ -181,7 +216,6 @@ const Home = () => {
             >
               Nuestro Menú
             </Typography>
-
             <Button
               variant="outlined"
               startIcon={<FilterList />}
@@ -212,7 +246,7 @@ const Home = () => {
             }}
             sx={{
               mb: 3,
-              '& .MuiOutlinedInput-root': {
+              "& .MuiOutlinedInput-root": {
                 borderRadius: 3,
                 backgroundColor: alpha(theme.palette.background.paper, 0.8),
               },
@@ -220,17 +254,17 @@ const Home = () => {
           />
 
           {/* Tabs de categorías */}
-          <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+          <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 3 }}>
             <Tabs
               value={categoriaActiva}
               onChange={handleCategoriaChange}
               variant="scrollable"
               scrollButtons="auto"
               sx={{
-                '& .MuiTab-root': {
-                  textTransform: 'none',
+                "& .MuiTab-root": {
+                  textTransform: "none",
                   fontWeight: 600,
-                  fontSize: '1rem',
+                  fontSize: "1rem",
                   minHeight: 48,
                 },
               }}
@@ -240,7 +274,7 @@ const Home = () => {
                   key={categoria.id}
                   value={categoria.id}
                   label={
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                       <span>{categoria.icon}</span>
                       {categoria.label}
                     </Box>
@@ -256,7 +290,7 @@ const Home = () => {
               <Typography variant="subtitle1" fontWeight="medium" sx={{ mb: 2 }}>
                 Etiquetas populares:
               </Typography>
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
                 {Object.entries(etiquetasColores).map(([etiqueta, config]) => (
                   <Chip
                     key={etiqueta}
@@ -267,7 +301,7 @@ const Home = () => {
                       backgroundColor: alpha(config.color, 0.1),
                       color: config.color,
                       fontWeight: 500,
-                      '&:hover': {
+                      "&:hover": {
                         backgroundColor: alpha(config.color, 0.2),
                       },
                     }}
@@ -278,15 +312,15 @@ const Home = () => {
           </Fade>
         </Box>
 
-        {/* Productos */}
+        {/* Platos */}
         <Fade in={true} timeout={600}>
           <Box>
-            {productosFiltrados.length === 0 ? (
+            {dishesFiltrados.length === 0 ? (
               <Paper
                 elevation={0}
                 sx={{
                   p: 6,
-                  textAlign: 'center',
+                  textAlign: "center",
                   backgroundColor: alpha(theme.palette.grey[100], 0.5),
                   borderRadius: 3,
                 }}
@@ -300,8 +334,8 @@ const Home = () => {
                 <Button
                   variant="contained"
                   onClick={() => {
-                    setBusqueda("");
-                    setCategoriaActiva("todos");
+                    setBusqueda("")
+                    setCategoriaActiva("todos")
                   }}
                   sx={{ borderRadius: 2 }}
                 >
@@ -310,13 +344,17 @@ const Home = () => {
               </Paper>
             ) : (
               <Grid container spacing={3}>
-                {productosFiltrados.map((producto, index) => (
-                  <Grid item key={producto.nombre} xs={12} sm={6} lg={4}>
+                {dishesFiltrados.map((dish, index) => (
+                  <Grid item key={dish.idIncremental || dish._id} xs={12} sm={6} lg={4}>
                     <Fade in={true} timeout={800 + index * 200}>
-                      <Box sx={{ height: '100%' }}>
+                      <Box sx={{ height: "100%" }}>
                         <CardFood
-                          {...producto}
-                          categoria={categorias.find(c => c.id === producto.categoria)?.label}
+                          name={dish.name}
+                          description={dish.description}
+                          price={dish.price}
+                          photo={dish.photo}
+                          category={categorias.find((c) => c.id === dish.category)?.label}
+                          hasPromotion={dish.hasPromotion}
                         />
                       </Box>
                     </Fade>
@@ -328,7 +366,7 @@ const Home = () => {
         </Fade>
       </Container>
     </>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home

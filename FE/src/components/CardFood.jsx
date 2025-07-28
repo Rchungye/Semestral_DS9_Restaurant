@@ -1,27 +1,28 @@
-import {
-  Card,
-  CardMedia,
-  CardContent,
-  Typography,
-  CardActions,
-  Button,
-  Box,
+"use client"
+
+import { 
+  Card, 
+  CardMedia, 
+  CardContent, 
+  Typography, 
+  CardActions, 
+  Button, 
+  Box, 
   Chip,
 } from "@mui/material";
 import { AddShoppingCart, LocalOffer } from "@mui/icons-material";
 import { useState } from "react";
 
-const CardFood = ({ nombre, descripcion, precio, imagen, categoria, descuento }) => {
+const CardFood = ({ name, description, price, photo, category, hasPromotion }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
 
   const handleAddClick = () => {
-    setIsAdding(true);
-    // Simular operación async
-    setTimeout(() => setIsAdding(false), 800);
-  };
+    setIsAdding(true)
+    setTimeout(() => setIsAdding(false), 800)
+  }
 
-  const precioConDescuento = descuento ? precio * (1 - descuento / 100) : precio;
+  const precioValido = typeof price === "number" ? price : 0
 
   return (
     <Card
@@ -51,10 +52,10 @@ const CardFood = ({ nombre, descripcion, precio, imagen, categoria, descuento })
             transition: "transform 0.5s ease",
             transform: isHovered ? "scale(1.1)" : "scale(1)",
           }}
-          image={imagen}
-          alt={nombre}
+          image={photo || "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=400&h=300&fit=crop"}
+          alt={name}
         />
-        
+
         {/* Overlay gradient */}
         <Box
           sx={{
@@ -64,16 +65,16 @@ const CardFood = ({ nombre, descripcion, precio, imagen, categoria, descuento })
             right: 0,
             bottom: 0,
             background: isHovered 
-              ? "linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.1) 100%)"
-              : "transparent",
+            ? "linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.1) 100%)" 
+            : "transparent",
             transition: "background 0.3s ease",
           }}
         />
 
         {/* Badge de categoría */}
-        {categoria && (
+        {category && (
           <Chip
-            label={categoria}
+            label={category}
             size="small"
             sx={{
               position: "absolute",
@@ -87,11 +88,11 @@ const CardFood = ({ nombre, descripcion, precio, imagen, categoria, descuento })
           />
         )}
 
-        {/* Badge de descuento */}
-        {descuento && (
+        {/* Badge de promoción */}
+        {hasPromotion && (
           <Chip
             icon={<LocalOffer sx={{ fontSize: 16 }} />}
-            label={`-${descuento}%`}
+            label="Promoción"
             size="small"
             color="error"
             sx={{
@@ -118,8 +119,8 @@ const CardFood = ({ nombre, descripcion, precio, imagen, categoria, descuento })
           p: 2.5,
         }}
       >
-        <Typography 
-          variant="h6" 
+        <Typography
+          variant="h6"
           component="h3"
           sx={{
             fontWeight: 700,
@@ -130,9 +131,9 @@ const CardFood = ({ nombre, descripcion, precio, imagen, categoria, descuento })
           }}
           noWrap
         >
-          {nombre}
+          {name}
         </Typography>
-        
+
         <Typography
           variant="body2"
           color="text.secondary"
@@ -146,45 +147,32 @@ const CardFood = ({ nombre, descripcion, precio, imagen, categoria, descuento })
             mb: 2,
           }}
         >
-          {descripcion}
+          {description || "Delicioso plato de nuestra cocina"}
         </Typography>
 
         {/* Contenedor de precio */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          {descuento ? (
-            <>
-              <Typography
-                variant="body2"
-                sx={{
-                  textDecoration: "line-through",
-                  color: "text.disabled",
-                  fontSize: "0.9rem",
-                }}
-              >
-                ${precio.toFixed(2)}
-              </Typography>
-              <Typography
-                variant="h6"
-                sx={{
-                  fontWeight: 700,
-                  color: "error.main",
-                  fontSize: "1.25rem",
-                }}
-              >
-                ${precioConDescuento.toFixed(2)}
-              </Typography>
-            </>
-          ) : (
-            <Typography
-              variant="h6"
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 700,
+              color: "primary.main",
+              fontSize: "1.25rem",
+            }}
+          >
+            ${precioValido.toFixed(2)}
+          </Typography>
+          {hasPromotion && (
+            <Chip
+              label="¡Oferta!"
+              size="small"
+              color="error"
+              variant="outlined"
               sx={{
-                fontWeight: 700,
-                color: "primary.main",
-                fontSize: "1.25rem",
+                fontSize: "0.7rem",
+                height: "20px",
               }}
-            >
-              ${precio.toFixed(2)}
-            </Typography>
+            />
           )}
         </Box>
       </CardContent>
@@ -202,7 +190,7 @@ const CardFood = ({ nombre, descripcion, precio, imagen, categoria, descuento })
             fontWeight: 600,
             textTransform: "none",
             fontSize: "0.95rem",
-            background: isAdding 
+            background: isAdding
               ? "linear-gradient(45deg, #4caf50 30%, #66bb6a 90%)"
               : "linear-gradient(45deg, #2196f3 30%, #21cbf3 90%)",
             boxShadow: "0 3px 15px rgba(33, 150, 243, 0.3)",
