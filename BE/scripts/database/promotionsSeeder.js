@@ -2,7 +2,7 @@
 
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
-import Promotion from '../src/modules/PromotionModule/PromotionModel.js'
+import Promotion from '../../src/modules/PromotionModule/PromotionModel.js'
 
 dotenv.config()
 

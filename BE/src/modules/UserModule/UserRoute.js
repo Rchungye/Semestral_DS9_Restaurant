@@ -21,21 +21,11 @@ export function userAdminRoutes(fastify) {
     fastify.get('/api/auth/profile', { preHandler: verificarToken }, getUserProfile)
     // ============= ENDPOINTS PARA ADMINISTRADORES =============
     // US-025: Gestionar usuarios y roles (solo administradores)
-    fastify.get('/api/admin/users',
-        // { preHandler: verificarAdmin }, 
-        listUsers)
-    fastify.get('/api/admin/users/:id',
-        // { preHandler: verificarAdmin }, 
-        getUser)
-    fastify.post('/api/admin/users',
-        // { preHandler: verificarAdmin }, 
-        createUser)
-    fastify.put('/api/admin/users/:id',
-        // { preHandler: verificarAdmin }, 
-        updateUser)
-    fastify.delete('/api/admin/users/:id',
-        // { preHandler: verificarAdmin }, 
-        deleteUser)
+    fastify.get('/api/admin/users', { preHandler: verificarAdmin }, listUsers)
+    fastify.get('/api/admin/users/:id', { preHandler: verificarAdmin }, getUser)
+    fastify.post('/api/admin/users', { preHandler: verificarAdmin }, createUser)
+    fastify.put('/api/admin/users/:id', { preHandler: verificarAdmin }, updateUser)
+    fastify.delete('/api/admin/users/:id', { preHandler: verificarAdmin }, deleteUser)
 }
 
 // Exportación por defecto (todas las rutas juntas)

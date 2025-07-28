@@ -1,4 +1,4 @@
-// src/helpers/sequenceHelper.js
+// src/common/helpers/sequenceHelper.js
 import Sequence from './SequenceModel.js'
 
 export async function getNextSequence(name) {

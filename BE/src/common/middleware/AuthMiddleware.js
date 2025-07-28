@@ -1,4 +1,4 @@
-// src/middleware/AuthMiddleware.js
+// src/common/middleware/AuthMiddleware.js
 import { verifyToken } from '../helpers/CryptoHelper.js'
 
 export const verificarToken = async (request, reply) => {

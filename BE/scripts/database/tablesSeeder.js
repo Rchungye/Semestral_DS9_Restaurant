@@ -2,7 +2,7 @@
 
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
-import Table from '../src/modules/TableModule/TableModel.js'
+import Table from '../../src/modules/TableModule/TableModel.js'
 
 dotenv.config()
 

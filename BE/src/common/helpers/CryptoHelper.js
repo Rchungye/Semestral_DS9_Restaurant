@@ -1,4 +1,4 @@
-// src/helpers/CryptoHelper.js - Versión limpia con solo SHA-256
+// src/common/helpers/CryptoHelper.js - Versión limpia con solo SHA-256
 
 import crypto from 'crypto'
 import jwt from 'jsonwebtoken'

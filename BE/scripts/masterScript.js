@@ -2,13 +2,13 @@
 
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
-import { seedUsers } from './usersSeeder.js'
-import { seedDishes } from './dishesSeeder.js'
-import { seedTables } from './tablesSeeder.js'
-import { seedPromotions } from './promotionsSeeder.js'
-import { seedOrders } from './ordersSeeder.js'
-import { seedOrderDetails } from './orderDetailsSeeder.js'
-import { seedTransactions } from './transactionsSeeder.js'
+import { seedUsers } from './database/usersSeeder.js'
+import { seedDishes } from './database/dishesSeeder.js'
+import { seedTables } from './database/tablesSeeder.js'
+import { seedPromotions } from './database/promotionsSeeder.js'
+import { seedOrders } from './database/ordersSeeder.js'
+import { seedOrderDetails } from './database/orderDetailsSeeder.js'
+import { seedTransactions } from './database/transactionsSeeder.js'
 
 dotenv.config()
 

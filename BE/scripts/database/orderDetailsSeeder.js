@@ -2,9 +2,9 @@
 
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
-import OrderDetail from '../src/modules/OrderDetailModule/OrderDetailModel.js'
-import Order from '../src/modules/OrderModule/OrderModel.js'
-import Dish from '../src/modules/DishModule/DishModel.js'
+import OrderDetail from '../../src/modules/OrderDetailModule/OrderDetailModel.js'
+import Order from '../../src/modules/OrderModule/OrderModel.js'
+import Dish from '../../src/modules/DishModule/DishModel.js'
 
 dotenv.config()
 

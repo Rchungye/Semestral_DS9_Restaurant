@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { KitchenHeader } from "../components/kitchen-header";
-import { StatusCounters } from "../components/status-counters"
-import { OrderCard } from "../components/order-card"
+import { KitchenHeader } from "./kitchen-header.jsx";
+import { StatusCounters } from "../../components/status-counters.jsx"
+import { OrderCard } from "../../components/order-card.jsx"
 import { useNavigate } from "react-router-dom";
 
 export default function KitchenDashboard() {
