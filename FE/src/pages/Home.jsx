@@ -56,7 +56,6 @@ const Home = () => {
   useEffect(() => {
     fetchDishes() // Solo platos con availability: true
       .then((data) => {
-        console.log("Dishes loaded:", data)
         setDishes(data)
       })
       .catch((error) => {
