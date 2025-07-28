@@ -1,6 +1,6 @@
 // src/modules/TableModule/TableModel.js
 import mongoose from 'mongoose'
-import { getNextSequence } from '../../helpers/SequenceHelper.js'
+import { getNextSequence } from '../../common/helpers/SequenceHelper.js'
 
 const tableSchema = new mongoose.Schema({
   idIncremental: {

@@ -8,7 +8,7 @@ import {
     getAvailableDishes
 } from './DishServices.js'
 
-import { verificarAdmin } from '../../middleware/AuthMiddleware.js'
+import { verificarAdmin } from '../../common/middleware/AuthMiddleware.js'
 
 // Rutas de administrador
 export function dishAdminRoutes(fastify) {

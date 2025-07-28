@@ -10,7 +10,7 @@ import {
     getUserProfile
 } from './UserServices.js'
 
-import { verificarToken, verificarAdmin } from '../../middleware/AuthMiddleware.js'
+import { verificarToken, verificarAdmin } from '../../common/middleware/AuthMiddleware.js'
 
 // Rutas de administrador
 export function userAdminRoutes(fastify) {

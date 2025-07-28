@@ -1,6 +1,6 @@
 // src/modules/DishModule/DishModel.js
 import mongoose from 'mongoose'
-import { getNextSequence } from '../../helpers/SequenceHelper.js'
+import { getNextSequence } from '../../common/helpers/SequenceHelper.js'
 
 const dishSchema = new mongoose.Schema({
   idIncremental: {

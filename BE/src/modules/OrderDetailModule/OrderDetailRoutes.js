@@ -11,7 +11,7 @@ import {
     getCustomizationsForKitchen
 } from './OrderDetailServices.js'
 
-import { verificarAdmin, verificarCocina } from '../../middleware/AuthMiddleware.js'
+import { verificarAdmin, verificarCocina } from '../../common/middleware/AuthMiddleware.js'
 
 // Rutas de administrador
 export function orderDetailAdminRoutes(fastify) {

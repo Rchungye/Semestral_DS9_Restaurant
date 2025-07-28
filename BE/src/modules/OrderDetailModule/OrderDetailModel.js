@@ -1,6 +1,6 @@
 // src/modules/OrderDetailModule/OrderDetailModel.js
 import mongoose from 'mongoose'
-import { getNextSequence } from '../../helpers/SequenceHelper.js'
+import { getNextSequence } from '../../common/helpers/SequenceHelper.js'
 
 const orderDetailSchema = new mongoose.Schema({
   idIncremental: {

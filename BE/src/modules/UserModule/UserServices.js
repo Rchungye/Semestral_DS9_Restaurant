@@ -4,7 +4,7 @@ import {
   encryptPassword,
   comparePasswords,
   generateToken
-} from '../../helpers/CryptoHelper.js'
+} from '../../common/helpers/CryptoHelper.js'
 
 // ============= AUTENTICACIÓN =============
 

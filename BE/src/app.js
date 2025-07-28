@@ -4,7 +4,7 @@ import Fastify from 'fastify'
 import dotenv from 'dotenv'
 import routes from './routes/IndexRoutes.js'
 import cors from '@fastify/cors'
-import { conectarDB } from './config/MongoDbConfig.js'
+import { conectarDB } from './common/config/MongoDbConfig.js'
 
 // Cargar variables de entorno
 dotenv.config()

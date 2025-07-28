@@ -1,6 +1,6 @@
 // src/modules/UserModule/Model.js
 import mongoose from 'mongoose'
-import { getNextSequence } from '../../helpers/SequenceHelper.js'
+import { getNextSequence } from '../../common/helpers/SequenceHelper.js'
 
 const userSchema = new mongoose.Schema({
   idIncremental: {

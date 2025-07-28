@@ -1,6 +1,6 @@
 // src/modules/TransactionModel.js
 import mongoose from 'mongoose'
-import { getNextSequence } from '../../helpers/SequenceHelper.js'
+import { getNextSequence } from '../../common/helpers/SequenceHelper.js'
 
 const transactionSchema = new mongoose.Schema({
   idIncremental: {

@@ -14,7 +14,7 @@ import {
     getOrderByInvoice
 } from './OrderServices.js'
 
-import { verificarAdmin, verificarCocina } from '../../middleware/AuthMiddleware.js'
+import { verificarAdmin, verificarCocina } from '../../common/middleware/AuthMiddleware.js'
 
 // Rutas de administrador
 export function orderAdminRoutes(fastify) {
