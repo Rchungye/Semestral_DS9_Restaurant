@@ -16,7 +16,7 @@ import {
   useTheme,
   alpha,
 } from "@mui/material"
-import { Search, FilterList, Star, LocalFireDepartment, Nature } from "@mui/icons-material"
+import { Search, FilterList, Star } from "@mui/icons-material"
 import { useState, useMemo, useEffect } from "react"
 import { fetchDishes } from "../services/dishService"
 import CardFood from "../components/CardFood"
@@ -33,16 +33,9 @@ const categorias = [
 ]
 
 const etiquetasColores = {
-  popular: { color: "#ff5722", icon: <LocalFireDepartment fontSize="small" /> },
   premium: { color: "#9c27b0", icon: <Star fontSize="small" /> },
-  veggie: { color: "#4caf50", icon: <Nature fontSize="small" /> },
-  "veggie-friendly": { color: "#4caf50", icon: <Nature fontSize="small" /> },
-  eco: { color: "#4caf50", icon: <Nature fontSize="small" /> },
   tradicional: { color: "#795548", icon: null },
-  especial: { color: "#e91e63", icon: <Star fontSize="small" /> },
   crujiente: { color: "#ff9800", icon: null },
-  ligero: { color: "#2196f3", icon: null },
-  saludable: { color: "#4caf50", icon: <Nature fontSize="small" /> },
 }
 
 const Home = () => {
