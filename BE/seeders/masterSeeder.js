@@ -6,6 +6,9 @@ import { seedUsers } from './usersSeeder.js'
 import { seedDishes } from './dishesSeeder.js'
 import { seedTables } from './tablesSeeder.js'
 import { seedPromotions } from './promotionsSeeder.js'
+import { seedOrders } from './ordersSeeder.js'
+import { seedOrderDetails } from './orderDetailsSeeder.js'
+import { seedTransactions } from './transactionsSeeder.js'
 
 dotenv.config()
 
@@ -55,6 +58,27 @@ async function runMasterSeeder() {
         console.log(`⏱️  Completado en ${Date.now() - startPromotions}ms`)
         console.log('')
 
+        // 5. Órdenes
+        console.log('📋 Seeding órdenes...')
+        const startOrders = Date.now()
+        results.orders = await seedOrders()
+        console.log(`⏱️  Completado en ${Date.now() - startOrders}ms`)
+        console.log('')
+
+        // 6. Detalles de órdenes
+        console.log('📝 Seeding detalles de órdenes...')
+        const startOrderDetails = Date.now()
+        results.orderDetails = await seedOrderDetails()
+        console.log(`⏱️  Completado en ${Date.now() - startOrderDetails}ms`)
+        console.log('')
+
+        // 7. Transacciones
+        console.log('💳 Seeding transacciones...')
+        const startTransactions = Date.now()
+        results.transactions = await seedTransactions()
+        console.log(`⏱️  Completado en ${Date.now() - startTransactions}ms`)
+        console.log('')
+
         // Resumen final
         totalTime = Date.now() - totalTime
         console.log('================================================')
@@ -65,6 +89,9 @@ async function runMasterSeeder() {
         console.log(`   🍜 Platillos: ${results.dishes.length}`)
         console.log(`   🪑 Mesas: ${results.tables.length}`)
         console.log(`   🎁 Promociones: ${results.promotions.length}`)
+        console.log(`   📋 Órdenes: ${results.orders.length}`)
+        console.log(`   📝 Detalles de orden: ${results.orderDetails.length}`)
+        console.log(`   💳 Transacciones: ${results.transactions.length}`)
         console.log('')
         console.log('🔐 Credenciales de acceso:')
         console.log('   Admin: admin / admin123')
@@ -74,6 +101,7 @@ async function runMasterSeeder() {
         console.log(`⏱️  Tiempo total: ${totalTime}ms`)
         console.log('')
         console.log('🏮 El restaurante Golden Panda está listo para funcionar!')
+        console.log('📈 Sistema completo con flujo de trabajo realista')
 
     } catch (error) {
         console.error('❌ Error en el seeder maestro:', error.message)

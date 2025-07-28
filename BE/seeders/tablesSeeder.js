@@ -35,13 +35,6 @@ export async function seedTables() {
     try {
         await mongoose.connect(process.env.MONGO_URI)
 
-        // Eliminar índice obsoleto de qrCode si existe
-        try {
-            await Table.collection.dropIndex('qrCode_1')
-        } catch (indexError) {
-            // Índice no existe, continuar normalmente
-        }
-
         await Table.deleteMany()
 
         const insertedTables = []

@@ -14,7 +14,10 @@
     "seeddishes": "node seeders/dishesSeeder.js",
     "seedusers": "node seeders/usersSeeder.js",
     "seedtables": "node seeders/tablesSeeder.js",
-    "seedpromotions": "node seeders/promotionsSeeder.js"
+    "seedpromotions": "node seeders/promotionsSeeder.js",
+    "seedorders": "node seeders/ordersSeeder.js",
+    "seedorderdetails": "node seeders/orderDetailsSeeder.js",
+    "seedtransactions": "node seeders/transactionsSeeder.js"
   },
   "keywords": [],
   "author": "",

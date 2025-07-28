@@ -5,7 +5,7 @@ import Order from '../models/OrderModel.js'
 
 export const getAllOrders = async () => {
   return await Order.find()
-    .populate('tableId', 'tableNumber qrCode')
+    .populate('tableId', 'tableNumber capacity')
     .sort({ orderDate: -1 }) // Más recientes primero
 }
 
@@ -15,7 +15,7 @@ export const getOrderByIncrementalId = async (idIncremental) => {
     throw new Error('ID incremental inválido')
   }
   return await Order.findOne({ idIncremental: id })
-    .populate('tableId', 'tableNumber qrCode')
+    .populate('tableId', 'tableNumber capacity')
 }
 
 export const createOrder = async (data) => {
@@ -33,7 +33,7 @@ export const updateOrder = async (idIncremental, data) => {
     { idIncremental: id },
     data,
     { new: true }
-  ).populate('tableId', 'tableNumber qrCode')
+  ).populate('tableId', 'tableNumber capacity')
 }
 
 export const deleteOrder = async (idIncremental) => {
@@ -49,11 +49,11 @@ export const deleteOrder = async (idIncremental) => {
 
 // US-012: Visualizar órdenes con tipo de pedido (para cocineros)
 export const getOrdersForKitchen = async () => {
-  return await Order.find({ 
-    status: { $in: ['pendiente', 'preparando'] } 
+  return await Order.find({
+    status: { $in: ['pendiente', 'preparando'] }
   })
-  .populate('tableId', 'tableNumber')
-  .sort({ orderDate: 1 }) // Más antiguos primero (FIFO)
+    .populate('tableId', 'tableNumber')
+    .sort({ orderDate: 1 }) // Más antiguos primero (FIFO)
 }
 
 // US-015 y US-016: Cambiar estado de orden (cocinero)
@@ -62,24 +62,24 @@ export const updateOrderStatus = async (idIncremental, status) => {
   if (isNaN(id) || id <= 0) {
     throw new Error('ID incremental inválido')
   }
-  
+
   const validStatuses = ['pendiente', 'preparando', 'finalizado', 'entregado', 'cancelado']
   if (!validStatuses.includes(status)) {
     throw new Error('Estado inválido')
   }
-  
+
   return await Order.findOneAndUpdate(
     { idIncremental: id },
     { status },
     { new: true }
-  ).populate('tableId', 'tableNumber qrCode')
+  ).populate('tableId', 'tableNumber capacity')
 }
 
 // US-023: Supervisar flujo en tiempo real (administrador)
 export const getOrdersByStatus = async (status) => {
   const query = status ? { status } : {}
   return await Order.find(query)
-    .populate('tableId', 'tableNumber qrCode')
+    .populate('tableId', 'tableNumber capacity')
     .sort({ orderDate: -1 })
 }
 
@@ -100,14 +100,14 @@ export const getOrdersByDateRange = async (startDate, endDate) => {
     }
   }
   return await Order.find(query)
-    .populate('tableId', 'tableNumber qrCode')
+    .populate('tableId', 'tableNumber capacity')
     .sort({ orderDate: -1 })
 }
 
 // Consulta por mesa específica (para pedidos locales)
 export const getOrdersByTable = async (tableId) => {
   return await Order.find({ tableId })
-    .populate('tableId', 'tableNumber qrCode')
+    .populate('tableId', 'tableNumber capacity')
     .sort({ orderDate: -1 })
 }
 
@@ -122,15 +122,15 @@ export const getTodayOrders = async () => {
   today.setHours(0, 0, 0, 0)
   const tomorrow = new Date(today)
   tomorrow.setDate(tomorrow.getDate() + 1)
-  
+
   return await Order.find({
     orderDate: {
       $gte: today,
       $lt: tomorrow
     }
   })
-  .populate('tableId', 'tableNumber qrCode')
-  .sort({ orderDate: -1 })
+    .populate('tableId', 'tableNumber capacity')
+    .sort({ orderDate: -1 })
 }
 
 // Obtener estadísticas diarias
@@ -139,7 +139,7 @@ export const getDailyStats = async (date) => {
   startOfDay.setHours(0, 0, 0, 0)
   const endOfDay = new Date(date)
   endOfDay.setHours(23, 59, 59, 999)
-  
+
   return await Order.aggregate([
     {
       $match: {
