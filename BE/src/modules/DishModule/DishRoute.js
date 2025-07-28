@@ -13,11 +13,21 @@ import { verificarAdmin } from '../../common/middleware/AuthMiddleware.js'
 // Rutas de administrador
 export function dishAdminRoutes(fastify) {
     // US-020: Gestionar menú del restaurante (crear, editar, eliminar)
-    fastify.get('/api/admin/dishes', { preHandler: verificarAdmin }, listDishes)
-    fastify.get('/api/admin/dishes/:id', { preHandler: verificarAdmin }, getDish)
-    fastify.post('/api/admin/dishes', { preHandler: verificarAdmin }, createDish)
-    fastify.put('/api/admin/dishes/:id', { preHandler: verificarAdmin }, updateDish)
-    fastify.delete('/api/admin/dishes/:id', { preHandler: verificarAdmin }, deleteDish)
+    fastify.get('/api/admin/dishes',
+        // { preHandler: verificarAdmin },
+        listDishes)
+    fastify.get('/api/admin/dishes/:id',
+        // { preHandler: verificarAdmin }, 
+        getDish)
+    fastify.post('/api/admin/dishes',
+        // { preHandler: verificarAdmin }, 
+        createDish)
+    fastify.put('/api/admin/dishes/:id',
+        // { preHandler: verificarAdmin }, 
+        updateDish)
+    fastify.delete('/api/admin/dishes/:id',
+        // { preHandler: verificarAdmin }, 
+        deleteDish)
 }
 
 // Rutas públicas

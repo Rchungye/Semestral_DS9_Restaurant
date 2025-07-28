@@ -18,25 +18,45 @@ import { verificarAdmin } from '../../common/middleware/AuthMiddleware.js'
 
 // Rutas de administrador
 export function transactionAdminRoutes(fastify) {
-    fastify.get('/api/admin/transactions', { preHandler: verificarAdmin }, listTransactions)
-    fastify.get('/api/admin/transactions/:id', { preHandler: verificarAdmin }, getTransaction)
-    fastify.post('/api/admin/transactions', { preHandler: verificarAdmin }, createTransaction)
-    fastify.put('/api/admin/transactions/:id', { preHandler: verificarAdmin }, updateTransaction)
-    fastify.delete('/api/admin/transactions/:id', { preHandler: verificarAdmin }, deleteTransaction)
+    fastify.get('/api/admin/transactions',
+        // { preHandler: verificarAdmin }, 
+        listTransactions)
+    fastify.get('/api/admin/transactions/:id',
+        // { preHandler: verificarAdmin }, 
+        getTransaction)
+    fastify.post('/api/admin/transactions',
+        // { preHandler: verificarAdmin }, 
+        createTransaction)
+    fastify.put('/api/admin/transactions/:id',
+        // { preHandler: verificarAdmin }, 
+        updateTransaction)
+    fastify.delete('/api/admin/transactions/:id',
+        // { preHandler: verificarAdmin }, 
+        deleteTransaction)
 
     // ============= ENDPOINTS PARA ADMINISTRADORES - ANÁLISIS =============
     // US-021: Estadísticas de ventas diarias
-    fastify.get('/api/admin/sales/stats', { preHandler: verificarAdmin }, getSalesStats)
+    fastify.get('/api/admin/sales/stats',
+        // { preHandler: verificarAdmin }, 
+        getSalesStats)
     // US-022: Historial de ventas con filtros de fecha
-    fastify.get('/api/admin/sales/history', { preHandler: verificarAdmin }, getTransactionHistory)
+    fastify.get('/api/admin/sales/history',
+        // { preHandler: verificarAdmin }, 
+        getTransactionHistory)
     // Transacciones de hoy para dashboard
-    fastify.get('/api/admin/transactions/today', { preHandler: verificarAdmin }, getTodayTransactions)
+    fastify.get('/api/admin/transactions/today',
+        // { preHandler: verificarAdmin }, 
+        getTodayTransactions)
     // Análisis de transacciones fallidas
-    fastify.get('/api/admin/transactions/failed', { preHandler: verificarAdmin }, getFailedTransactions)
+    fastify.get('/api/admin/transactions/failed',
+        // { preHandler: verificarAdmin }, 
+        getFailedTransactions)
 
     // ============= ENDPOINTS PARA REPORTES =============
     // Endpoint adicional para obtener resumen financiero del día (dashboard)
-    fastify.get('/api/admin/financial/summary', { preHandler: verificarAdmin }, async (request, reply) => {
+    fastify.get('/api/admin/financial/summary',
+        // { preHandler: verificarAdmin }, 
+        async (request, reply) => {
         try {
             const today = new Date().toISOString().split('T')[0]
             const salesStats = await getSalesStats({

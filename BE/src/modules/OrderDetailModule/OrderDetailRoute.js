@@ -16,11 +16,21 @@ import { verificarAdmin, verificarCocina } from '../../common/middleware/AuthMid
 // Rutas de administrador
 export function orderDetailAdminRoutes(fastify) {
     // US-020: Gestionar menú del restaurante (crear, editar, eliminar)
-    fastify.get('/api/admin/order-details', { preHandler: verificarAdmin }, listOrderDetails)
-    fastify.get('/api/admin/order-details/:id', { preHandler: verificarAdmin }, getOrderDetail)
-    fastify.post('/api/admin/order-details', { preHandler: verificarAdmin }, createOrderDetail)
-    fastify.put('/api/admin/order-details/:id', { preHandler: verificarAdmin }, updateOrderDetail)
-    fastify.delete('/api/admin/order-details/:id', { preHandler: verificarAdmin }, deleteOrderDetail)
+    fastify.get('/api/admin/order-details',
+        // { preHandler: verificarAdmin }, 
+        listOrderDetails)
+    fastify.get('/api/admin/order-details/:id',
+        // { preHandler: verificarAdmin }, 
+        getOrderDetail)
+    fastify.post('/api/admin/order-details',
+        // { preHandler: verificarAdmin }, 
+        createOrderDetail)
+    fastify.put('/api/admin/order-details/:id',
+        // { preHandler: verificarAdmin }, 
+        updateOrderDetail)
+    fastify.delete('/api/admin/order-details/:id',
+        // { preHandler: verificarAdmin }, 
+        deleteOrderDetail)
 }
 
 // Rutas públicas
@@ -40,9 +50,13 @@ export function orderDetailPublicRoutes(fastify) {
 // Rutas cocina
 export function orderDetailChefRoutes(fastify) {
     // US-017: Ver personalizaciones del platillo para preparar comida correctamente
-    fastify.get('/api/kitchen/orders/:orderId/details', { preHandler: verificarCocina }, getOrderDetailsForKitchen)
+    fastify.get('/api/kitchen/orders/:orderId/details',
+        // { preHandler: verificarCocina }, 
+        getOrderDetailsForKitchen)
     // Ver solo las personalizaciones especiales
-    fastify.get('/api/kitchen/orders/:orderId/customizations', { preHandler: verificarCocina }, getCustomizationsForKitchen)
+    fastify.get('/api/kitchen/orders/:orderId/customizations',
+        // { preHandler: verificarCocina },
+        getCustomizationsForKitchen)
 }
 
 // Exportación por defecto (todas las rutas juntas)
