@@ -34,7 +34,10 @@ export default function KitchenDashboard() {
         const mapped = data.map(order => ({
           id: order._id, // para React key
           idIncremental: order.idIncremental, // para backend
-          mesa: order.type === 'local' && order.tableId ? `Mesa ${order.tableId.tableNumber}` : 'Para Llevar',
+          mesa:
+            order.type === 'local'
+              ? (order.tableId ? `Mesa ${order.tableId.tableNumber}` : 'Local (sin mesa)')
+              : 'Para Llevar',
           items: (order.details || []).map(item => ({
             quantity: item.quantity,
             name: item.dishId?.name || 'Platillo',

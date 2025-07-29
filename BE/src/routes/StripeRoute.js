@@ -4,7 +4,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export default function stripeRoutes(fastify) {
   fastify.post('/api/stripe/create-checkout-session', async (request, reply) => {
-    const { cartItems, note } = request.body;
+    const { cartItems, note, orderId } = request.body;
     try {
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ['card'],
@@ -20,7 +20,7 @@ export default function stripeRoutes(fastify) {
           quantity: item.quantity,
         })),
         mode: 'payment',
-        success_url: 'http://localhost:5173/success',
+        success_url: `http://localhost:5173/success?orderId=${orderId}`,
         cancel_url: 'http://localhost:5173/cancel',
       });
       reply.send({ url: session.url });

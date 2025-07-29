@@ -1,3 +1,8 @@
+// Cambiar estado de una orden a 'pendiente' (endpoint público)
+export const updateOrderStatusPublic = async (orderId) => {
+  const response = await ApiService.patch(`/api/orders/${orderId}/status`, { status: 'pendiente' });
+  return response.data;
+};
 import { ApiService } from "./api.config"
 
 // ============= GESTIÓN DE ÓRDENES =============
