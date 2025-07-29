@@ -20,8 +20,8 @@ export default function stripeRoutes(fastify) {
           quantity: item.quantity,
         })),
         mode: 'payment',
-        success_url: 'http://localhost:3000/success',
-        cancel_url: 'http://localhost:3000/cancel',
+        success_url: 'http://localhost:5173/success',
+        cancel_url: 'http://localhost:5173/cancel',
       });
       reply.send({ url: session.url });
     } catch (err) {

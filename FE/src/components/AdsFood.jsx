@@ -1,4 +1,4 @@
-import { Box, Typography, Button, Container, IconButton, useTheme } from '@mui/material';
+import { Box, Typography, Button, Container, IconButton } from '@mui/material';
 import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material';
 import { useState, useEffect } from 'react';
 
@@ -31,7 +31,10 @@ const AdsFood = () => {
       cta: "Pedir ya",
       color: "#4caf50",
       onClick: () => {
-        window.location.href = '/pedir-ya';
+        const menuSection = document.getElementById('menu');
+        if (menuSection) {
+          menuSection.scrollIntoView({ behavior: 'smooth' });
+        }
       }
     }
   ];

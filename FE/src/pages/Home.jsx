@@ -1,8 +1,9 @@
 "use client"
 
-import { Container, Typography, Grid, Box, Chip, Button, IconButton, TextField, InputAdornment, Drawer, Tabs, Tab, Fade, Paper, useTheme, alpha } from "@mui/material"
+import { Container, Typography, Grid, Box, Chip, Button, IconButton, TextField, InputAdornment, Drawer, Tabs, Tab, Fade, Paper, RadioGroup, FormControlLabel, Radio, FormLabel, useTheme, alpha } from "@mui/material"
 import { Search, FilterList, Star, Add, Remove, Delete } from "@mui/icons-material"
 import { useState, useMemo, useEffect } from "react"
+import { useSearchParams } from "react-router-dom"
 import { loadStripe } from "@stripe/stripe-js"
 import { fetchDishes } from "../services/dishService"
 import CardFood from "../components/CardFood"
@@ -31,9 +32,20 @@ const Home = () => {
   const [busqueda, setBusqueda] = useState("")
   const [categoriaActiva, setCategoriaActiva] = useState("todos")
   const [mostrarFiltros, setMostrarFiltros] = useState(false)
+  const [orderType, setOrderType] = useState("local")
+  const [tableNumber, setTableNumber] = useState("")
   const [cartOpen, setCartOpen] = useState(false)
   const [cartItems, setCartItems] = useState([])
   const [cartNote, setCartNote] = useState("")
+  const [searchParams] = useSearchParams()
+
+  useEffect(() => {
+  const mesa = searchParams.get("mesa");
+  if (mesa) {
+    setOrderType("local");
+    setTableNumber(mesa);
+  }
+}, [searchParams]);
 
   const handleAddToCart = (dish) => {
     setCartItems((prev) => {
@@ -65,10 +77,10 @@ const Home = () => {
 
   const handleCheckout = async () => {
     const stripe = await stripePromise;
-    const response = await fetch('http://localhost:3000/api/stripe/create-checkout-session', {
+    const response = await fetch(`${import.meta.env.VITE_BE_URL}/api/stripe/create-checkout-session`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ cartItems, note: cartNote }),
+      body: JSON.stringify({ cartItems, note: cartNote, orderType, tableNumber }),
     });
     const data = await response.json();
     if (data.url) {
@@ -178,6 +190,26 @@ const Home = () => {
                   onChange={e => setCartNote(e.target.value)}
                   sx={{ mb: 2 }}
                 />
+                <FormLabel component="legend" sx={{ mb: 1 }}>¿Cómo quieres tu pedido?</FormLabel>
+                <RadioGroup
+                  row
+                  value={orderType}
+                  onChange={e => setOrderType(e.target.value)}
+                  sx={{ mb: 2 }}
+                >
+                  <FormControlLabel value="local" control={<Radio />} label="Comer en local" />
+                  <FormControlLabel value="retirar" control={<Radio />} label="Para retirar" />
+                </RadioGroup>
+                {orderType === "local" && (
+                  <TextField
+                    label="Número de mesa"
+                    type="number"
+                    value={tableNumber}
+                    onChange={e => setTableNumber(e.target.value)}
+                    fullWidth
+                    sx={{ mb: 2 }}
+                  />
+                )}
                 <Button
                   variant="contained"
                   color="primary"
@@ -254,7 +286,7 @@ const Home = () => {
                     }}
                   >
                     <Typography variant="h4" fontWeight="bold" color="warning.main">
-                      15
+                      20
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
                       Min
@@ -285,7 +317,7 @@ const Home = () => {
         </Container>
       </Box>
 
-      <Container id="menu" maxWidth="lg" sx={{ py: 6 }}>
+      <Container id="menu" maxWidth="lg" sx={{ py: 6, mt: 5, scrollMarginTop: { xs: "90px", md: "110px" } }}>
         {/* Header del menú con búsqueda */}
         <Box sx={{ mb: 4 }}>
           <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 3 }}>

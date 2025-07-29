@@ -1,16 +1,13 @@
 import { AppBar, Toolbar, Typography, Button, Box, IconButton, Badge, useTheme, alpha } from '@mui/material';
-import { ShoppingCart, Menu } from '@mui/icons-material';
+import { ShoppingCart } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 
 const Navbar = ({ onCartClick, cartCount = 0 }) => {
-  const theme = useTheme();
   
   const getRoutePath = (item) => {
     switch (item.toLowerCase()) {
       case 'inicio':
         return '/';
-      case 'pedir ya':
-        return '/pedir-ya';
       case 'area staff':
         return '/login';
       default:
@@ -82,7 +79,7 @@ const Navbar = ({ onCartClick, cartCount = 0 }) => {
 
           {/* Navigation mejorada */}
           <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 1 }}>
-            {['Inicio','Area Staff', 'Pedir ya'].map((item) => (
+            {['Inicio','Area Staff'].map((item) => (
               <Button
                 key={item}
                 component={Link}
@@ -116,17 +113,6 @@ const Navbar = ({ onCartClick, cartCount = 0 }) => {
                       width: '100%',
                     }
                   },
-                  // Estilo especial para "Pedir Ya"
-                  ...(item === 'Pedir ya' && {
-                    background: 'linear-gradient(45deg, #d32f2f, #f44336)',
-                    color: 'white',
-                    boxShadow: '0 4px 12px rgba(211,47,47,0.3)',
-                    '&:hover': {
-                      background: 'linear-gradient(45deg, #f44336, #ff5722)',
-                      transform: 'translateY(-2px)',
-                      boxShadow: '0 6px 16px rgba(211,47,47,0.4)',
-                    }
-                  })
                 }}
               >
                 {item}
