@@ -2,13 +2,14 @@
 import { Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
 import Home from "../pages/Home";
-import PedirYa from "../pages/PedirYa";
 import Kitchen from "../pages/KitchenPage/kitchen.jsx";
 import LoginPage from "../pages/LoginPage/Login.jsx";
 import Admin from "../pages/AdminPage/Admin.jsx";
 import AdminGuard from "../guards/AdminGuard.jsx";
 import ChefGuard from "../guards/ChefGuard.jsx";
 import useUserStore from "../store/userStore";
+import Success from "../pages/Success.jsx";
+import Cancel from "../pages/Cancel.jsx";
 
 const MainRouter = () => {
     const { initializeAuth } = useUserStore();
@@ -22,8 +23,9 @@ const MainRouter = () => {
         <Routes>
             {/* Public routes */}
             <Route path="/" element={<Home />} />
-            <Route path="/pedir-ya" element={<PedirYa />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/success" element={<Success />} />
+            <Route path="/cancel" element={<Cancel />} />
 
             {/* Protected routes */}
             <Route

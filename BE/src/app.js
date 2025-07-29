@@ -12,7 +12,10 @@ dotenv.config()
 const fastify = Fastify({ logger: true })
 
 await fastify.register(cors, {
-    origin: '*', 
+    origin: '*',
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // ← ESTO ES LO IMPORTANTE
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+    credentials: true,
 })
 
 routes(fastify)

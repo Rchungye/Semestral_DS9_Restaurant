@@ -1,29 +1,30 @@
 "use client"
+import { Card, CardMedia, CardContent, Typography, CardActions, Button, Box, Chip } from "@mui/material"
+import { AddShoppingCart, LocalOffer } from "@mui/icons-material"
+import { useState } from "react"
 
-import { 
-  Card, 
-  CardMedia, 
-  CardContent, 
-  Typography, 
-  CardActions, 
-  Button, 
-  Box, 
-  Chip,
-} from "@mui/material";
-import { AddShoppingCart, LocalOffer } from "@mui/icons-material";
-import { useState } from "react";
-
-const CardFood = ({ name, description, price, photo, category, hasPromotion, onAddToCart }) => {
-  const [isHovered, setIsHovered] = useState(false);
-  const [isAdding, setIsAdding] = useState(false);
+const CardFood = ({
+  name,
+  description,
+  price,
+  photo,
+  category,
+  hasPromotion,
+  promotionPrice,
+  promotionDetails,
+  onAddToCart,
+}) => {
+  const [isHovered, setIsHovered] = useState(false)
+  const [isAdding, setIsAdding] = useState(false)
 
   const handleAddClick = () => {
     setIsAdding(true)
-    if (onAddToCart) onAddToCart();
+    if (onAddToCart) onAddToCart()
     setTimeout(() => setIsAdding(false), 800)
   }
 
   const precioValido = typeof price === "number" ? price : 0
+  const precioPromocionValido = typeof promotionPrice === "number" ? promotionPrice : precioValido
 
   return (
     <Card
@@ -65,9 +66,7 @@ const CardFood = ({ name, description, price, photo, category, hasPromotion, onA
             left: 0,
             right: 0,
             bottom: 0,
-            background: isHovered 
-            ? "linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.1) 100%)" 
-            : "transparent",
+            background: isHovered ? "linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.1) 100%)" : "transparent",
             transition: "background 0.3s ease",
           }}
         />
@@ -151,31 +150,94 @@ const CardFood = ({ name, description, price, photo, category, hasPromotion, onA
           {description || "Delicioso plato de nuestra cocina"}
         </Typography>
 
-        {/* Contenedor de precio */}
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <Typography
-            variant="h6"
-            sx={{
-              fontWeight: 700,
-              color: "primary.main",
-              fontSize: "1.25rem",
-            }}
-          >
-            ${precioValido.toFixed(2)}
-          </Typography>
-          {hasPromotion && (
-            <Chip
-              label="¡Oferta!"
-              size="small"
-              color="error"
-              variant="outlined"
-              sx={{
-                fontSize: "0.7rem",
-                height: "20px",
-              }}
-            />
+        {/* Contenedor de precio - MODIFICADO PARA PROMOCIONES */}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1, flexWrap: "wrap" }}>
+          {hasPromotion && promotionPrice ? (
+            <>
+              {/* Precio original tachado */}
+              <Typography
+                variant="body2"
+                sx={{
+                  textDecoration: "line-through",
+                  color: "text.secondary",
+                  fontSize: "1rem",
+                  fontWeight: 500,
+                }}
+              >
+                ${precioValido.toFixed(2)}
+              </Typography>
+
+              {/* Precio promocional */}
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 700,
+                  color: "error.main",
+                  fontSize: "1.25rem",
+                }}
+              >
+                ${precioPromocionValido.toFixed(2)}
+              </Typography>
+
+              {/* Chip de ahorro */}
+              <Chip
+                label={`Ahorra $${(precioValido - precioPromocionValido).toFixed(2)}`}
+                size="small"
+                color="success"
+                variant="outlined"
+                sx={{
+                  fontSize: "0.7rem",
+                  height: "20px",
+                  fontWeight: "bold",
+                }}
+              />
+            </>
+          ) : (
+            <>
+              {/* Precio normal */}
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 700,
+                  color: "primary.main",
+                  fontSize: "1.25rem",
+                }}
+              >
+                ${precioValido.toFixed(2)}
+              </Typography>
+
+              {hasPromotion && (
+                <Chip
+                  label="¡Oferta!"
+                  size="small"
+                  color="error"
+                  variant="outlined"
+                  sx={{
+                    fontSize: "0.7rem",
+                    height: "20px",
+                  }}
+                />
+              )}
+            </>
           )}
         </Box>
+
+        {/* Mostrar detalles de la promoción si existe */}
+        {hasPromotion && promotionDetails && (
+          <Typography
+            variant="caption"
+            sx={{
+              mt: 0.5,
+              color: "success.main",
+              fontWeight: 600,
+              fontSize: "0.75rem",
+            }}
+          >
+            {promotionDetails.discountType === "porcentaje"
+              ? `${promotionDetails.discountValue}% de descuento`
+              : `$${promotionDetails.discountValue} de descuento`}
+          </Typography>
+        )}
       </CardContent>
 
       <CardActions sx={{ p: 2.5, pt: 0 }}>
@@ -210,7 +272,7 @@ const CardFood = ({ name, description, price, photo, category, hasPromotion, onA
         </Button>
       </CardActions>
     </Card>
-  );
-};
+  )
+}
 
-export default CardFood;
+export default CardFood

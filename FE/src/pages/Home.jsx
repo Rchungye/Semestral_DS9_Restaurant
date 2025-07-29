@@ -1,13 +1,14 @@
 "use client"
 
-import { Container, Typography, Grid, Box, Chip, Button, TextField, InputAdornment, Drawer, Tabs, Tab, Fade, Paper, useTheme, alpha } from "@mui/material"
-import { Search, FilterList, Star } from "@mui/icons-material"
+import { Container, Typography, Grid, Box, Chip, Button, IconButton, TextField, InputAdornment, Drawer, Tabs, Tab, Fade, Paper, useTheme, alpha } from "@mui/material"
+import { Search, FilterList, Star, Add, Remove, Delete } from "@mui/icons-material"
 import { useState, useMemo, useEffect } from "react"
-import { fetchDishes } from "../services/dishService"
+import { useSearchParams } from "react-router-dom"
+import { loadStripe } from "@stripe/stripe-js"
+import { fetchDishesWithPromotions } from "../services/dishService" // ← CAMBIO AQUÍ
 import CardFood from "../components/CardFood"
 import Navbar from "../components/Navbar"
 import AdsFood from "../components/AdsFood"
-
 
 const categorias = [
   { id: "todos", label: "Todos", icon: "🍽️" },
@@ -30,23 +31,68 @@ const Home = () => {
   const [busqueda, setBusqueda] = useState("")
   const [categoriaActiva, setCategoriaActiva] = useState("todos")
   const [mostrarFiltros, setMostrarFiltros] = useState(false)
+  const [orderType, setOrderType] = useState("local")
+  const [tableNumber, setTableNumber] = useState("")
   const [cartOpen, setCartOpen] = useState(false)
   const [cartItems, setCartItems] = useState([])
+  const [cartNote, setCartNote] = useState("")
+  const [searchParams] = useSearchParams()
+
+  useEffect(() => {
+  const mesa = searchParams.get("mesa");
+  if (mesa) {
+    setOrderType("local");
+    setTableNumber(mesa);
+  }
+}, [searchParams]);
 
   const handleAddToCart = (dish) => {
     setCartItems((prev) => {
-      const idx = prev.findIndex(item => item.name === dish.name)
+      const idx = prev.findIndex((item) => item.name === dish.name)
       if (idx !== -1) {
         const updated = [...prev]
         updated[idx].quantity += 1
         return updated
       }
-      return [...prev, { ...dish, quantity: 1 }]
+      // Usar precio promocional si existe, sino precio normal
+      const finalPrice = dish.hasPromotion && dish.promotionPrice ? dish.promotionPrice : dish.price
+      return [...prev, { ...dish, price: finalPrice, quantity: 1 }]
     })
   }
 
+  const handleQuantityChange = (idx, delta) => {
+    setCartItems((prev) => {
+      const updated = [...prev]
+      updated[idx].quantity = Math.max(1, updated[idx].quantity + delta)
+      return updated
+    })
+  }
+
+  const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+
+  const handleRemoveFromCart = (idx) => {
+    setCartItems((prev) => prev.filter((_, i) => i !== idx))
+  }
+
+  const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY)
+
+  const handleCheckout = async () => {
+    const stripe = await stripePromise;
+    const response = await fetch('http://localhost:3000/api/stripe/create-checkout-session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ cartItems, note: cartNote }),
+    });
+    const data = await response.json();
+    if (data.url) {
+      window.location.href = data.url
+    } else {
+      alert("Error al iniciar el pago")
+    }
+  }
+
   useEffect(() => {
-    fetchDishes() // Solo platos con availability: true
+    fetchDishesWithPromotions() // ← CAMBIO AQUÍ: usar la nueva función
       .then((data) => {
         setDishes(data)
       })
@@ -60,12 +106,10 @@ const Home = () => {
   // Filtrar platos
   const dishesFiltrados = useMemo(() => {
     let resultado = dishes
-
     // Filtro por categoría
     if (categoriaActiva !== "todos") {
       resultado = resultado.filter((dish) => dish.category === categoriaActiva)
     }
-
     // Filtro por búsqueda
     if (busqueda.trim()) {
       resultado = resultado.filter(
@@ -74,7 +118,6 @@ const Home = () => {
           (dish.description && dish.description.toLowerCase().includes(busqueda.toLowerCase())),
       )
     }
-
     return resultado
   }, [dishes, categoriaActiva, busqueda])
 
@@ -100,32 +143,63 @@ const Home = () => {
   return (
     <>
       <Navbar onCartClick={() => setCartOpen(true)} cartCount={cartItems.length} />
-          <Drawer anchor="right" open={cartOpen} onClose={() => setCartOpen(false)}>
-          <Box sx={{ width: 350, p: 2 }}>
+        <Drawer anchor="right" open={cartOpen} onClose={() => setCartOpen(false)}>
+          <Box sx={{ width: 350, p: 2, display: "flex", flexDirection: "column", height: "100%" }}>
             <Typography variant="h5" fontWeight="bold" gutterBottom>
               Tu carrito
             </Typography>
             {cartItems.length === 0 ? (
               <Typography color="text.secondary">El carrito está vacío.</Typography>
             ) : (
-              cartItems.map((item, idx) => (
-                <Box key={idx} sx={{ mb: 2 }}>
-                  <Typography variant="subtitle1">{item.name}</Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    ${item.price} x {item.quantity}
+              <>
+                {cartItems.map((item, idx) => (
+                  <Box key={idx} sx={{ mb: 2, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <Box>
+                      <Typography variant="subtitle1">{item.name}</Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        ${item.price} x {item.quantity}
+                      </Typography>
+                    </Box>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <IconButton size="small" onClick={() => handleQuantityChange(idx, -1)} disabled={item.quantity === 1}>
+                        <Remove fontSize="small" />
+                      </IconButton>
+                      <Typography>{item.quantity}</Typography>
+                      <IconButton size="small" onClick={() => handleQuantityChange(idx, 1)}>
+                        <Add fontSize="small" />
+                      </IconButton>
+                      <IconButton size="small" color="error" onClick={() => handleRemoveFromCart(idx)}>
+                        <Delete fontSize="small" />
+                      </IconButton>
+                    </Box>
+                  </Box>
+                ))}
+                <Box sx={{ my: 2 }}>
+                  <Typography variant="subtitle1" fontWeight="bold">
+                    Total: ${total.toFixed(2)}
                   </Typography>
                 </Box>
-              ))
+                <TextField
+                  label="Anotaciones"
+                  multiline
+                  minRows={2}
+                  fullWidth
+                  value={cartNote}
+                  onChange={e => setCartNote(e.target.value)}
+                  sx={{ mb: 2 }}
+                />
+                <Button
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  sx={{ mt: 1 }}
+                  disabled={cartItems.length === 0}
+                  onClick={handleCheckout}
+                >
+                  Ir a pagar
+                </Button>
+              </>
             )}
-            <Button
-              variant="contained"
-              color="primary"
-              fullWidth
-              sx={{ mt: 2 }}
-              disabled={cartItems.length === 0}
-            >
-              Ir a pagar
-            </Button>
           </Box>
         </Drawer>
       <AdsFood />
@@ -190,7 +264,7 @@ const Home = () => {
                     }}
                   >
                     <Typography variant="h4" fontWeight="bold" color="warning.main">
-                      15
+                      20
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
                       Min
@@ -221,7 +295,7 @@ const Home = () => {
         </Container>
       </Box>
 
-      <Container id="menu" maxWidth="lg" sx={{ py: 6 }}>
+      <Container id="menu" maxWidth="lg" sx={{ py: 6, mt: 5, scrollMarginTop: { xs: "90px", md: "110px" } }}>
         {/* Header del menú con búsqueda */}
         <Box sx={{ mb: 4 }}>
           <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 3 }}>
@@ -374,6 +448,8 @@ const Home = () => {
                           photo={dish.photo}
                           category={categorias.find((c) => c.id === dish.category)?.label}
                           hasPromotion={dish.hasPromotion}
+                          promotionPrice={dish.promotionPrice} // ← NUEVO PROP
+                          promotionDetails={dish.promotionDetails} // ← NUEVO PROP
                           onAddToCart={() => handleAddToCart(dish)}
                         />
                       </Box>
