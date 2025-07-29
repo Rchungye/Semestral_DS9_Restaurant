@@ -13,22 +13,13 @@ export default function SalesAnalytics() {
     const fetchData = async () => {
       try {
         setLoading(true)
+        setError(null)
+
         const data = await getWeeklyData()
         setWeeklyData(data)
-        setError(null)
       } catch (err) {
         console.error("Error loading sales data:", err)
         setError("Error al cargar los datos de ventas")
-        // Datos de fallback en caso de error
-        setWeeklyData([
-          { name: "Lun", sales: 0, orders: 0, percentage: 0 },
-          { name: "Mar", sales: 0, orders: 0, percentage: 0 },
-          { name: "Mié", sales: 0, orders: 0, percentage: 0 },
-          { name: "Jue", sales: 0, orders: 0, percentage: 0 },
-          { name: "Vie", sales: 0, orders: 0, percentage: 0 },
-          { name: "Sáb", sales: 0, orders: 0, percentage: 0 },
-          { name: "Dom", sales: 0, orders: 0, percentage: 0 },
-        ])
       } finally {
         setLoading(false)
       }

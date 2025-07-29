@@ -1,6 +1,6 @@
-// src/pages/AdminPage/admin-dashboard.jsx
 "use client"
-import { useNavigate } from "react-router-dom";
+
+import { useNavigate } from "react-router-dom"
 import { useState } from "react"
 import {
   AppBar,
@@ -17,9 +17,9 @@ import {
   Button,
   CircularProgress,
 } from "@mui/material"
-import useUserStore from "../../store/userStore";
+import useUserStore from "../../store/userStore"
 
-// Importar todos los componentes
+// Importar todos los componentes (sin ConfiAdmin)
 import DashboardResumen from "./dashboard-resumen"
 import MenuAdmin from "./menu-admin"
 import OrderAdmin from "./order-admin"
@@ -27,10 +27,10 @@ import PromocionAdmin from "./promocion-admin"
 import MesaAdmin from "./mesa-admin"
 import UsuariosAdmin from "./usuario-admin"
 import VentasAdmin from "./ventas-admin"
-import ConfiAdmin from "./confi-admin"
 
 const drawerWidth = 280
 
+// Lista actualizada sin la opción de configuración
 const sidebarItems = [
   { text: "Resumen", icon: "■", key: "dashboard" },
   { text: "Menú", icon: "☰", key: "menu" },
@@ -39,26 +39,23 @@ const sidebarItems = [
   { text: "Mesas", icon: "□", key: "tables" },
   { text: "Promociones", icon: "◆", key: "promotions" },
   { text: "Crear Cuentas", icon: "+", key: "users" },
-  { text: "Configuración", icon: "⚙", key: "settings" },
 ]
 
 export default function AdminDashboard() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [activeSection, setActiveSection] = useState("dashboard")
-
-  const navigate = useNavigate();
-  const { user, logout, isLoading } = useUserStore();
+  const navigate = useNavigate()
+  const { user, logout, isLoading } = useUserStore()
 
   const handleLogout = async () => {
     try {
-      await logout();
-      navigate("/login");
+      await logout()
+      navigate("/login")
     } catch (error) {
-      console.error("Error during logout:", error);
-      // Navigate to login anyway
-      navigate("/login");
+      console.error("Error during logout:", error)
+      navigate("/login")
     }
-  };
+  }
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen)
@@ -84,8 +81,6 @@ export default function AdminDashboard() {
         return <PromocionAdmin />
       case "users":
         return <UsuariosAdmin />
-      case "settings":
-        return <ConfiAdmin />
       default:
         return <DashboardResumen />
     }
@@ -144,23 +139,16 @@ export default function AdminDashboard() {
           >
             ☰
           </IconButton>
-
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             Panel de Administración
           </Typography>
-
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             {user && (
               <Typography variant="body2" sx={{ mr: 2 }}>
                 Bienvenido, {user.name} {user.lastName}
               </Typography>
             )}
-            <Button color="inherit">⚙ Configuración</Button>
-            <Button
-              color="inherit"
-              onClick={handleLogout}
-              disabled={isLoading}
-            >
+            <Button color="inherit" onClick={handleLogout} disabled={isLoading}>
               {isLoading ? (
                 <>
                   <CircularProgress size={16} sx={{ mr: 1 }} />
