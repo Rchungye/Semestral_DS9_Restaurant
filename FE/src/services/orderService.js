@@ -83,3 +83,83 @@ export const getMostOrderedDishes = async (limit = 10) => {
     throw error
   }
 }
+
+// ============= FUNCIONES PARA ADMIN =============
+
+// Obtener todas las órdenes (admin)
+export const fetchAllOrders = async () => {
+  try {
+    const response = await ApiService.get("/api/admin/orders")
+    return response.data
+  } catch (error) {
+    console.error("Error fetching all orders:", error)
+    return []
+  }
+}
+
+// Obtener una orden específica por ID
+export const fetchOrderById = async (id) => {
+  try {
+    const response = await ApiService.get(`/api/admin/orders/${id}`)
+    return response.data
+  } catch (error) {
+    console.error("Error fetching order:", error)
+    return null
+  }
+}
+
+// Actualizar una orden (admin)
+export const updateOrder = async (id, orderData) => {
+  try {
+    const response = await ApiService.put(`/api/admin/orders/${id}`, orderData)
+    return response.data
+  } catch (error) {
+    console.error("Error updating order:", error)
+    throw error
+  }
+}
+
+// Eliminar una orden (admin)
+export const deleteOrder = async (id) => {
+  try {
+    const response = await ApiService.delete(`/api/admin/orders/${id}`)
+    return response.data
+  } catch (error) {
+    console.error("Error deleting order:", error)
+    throw error
+  }
+}
+
+// Obtener órdenes por estado
+export const fetchOrdersByStatus = async (status) => {
+  try {
+    const response = await ApiService.get(`/api/admin/orders/monitor?status=${status}`)
+    return response.data
+  } catch (error) {
+    console.error("Error fetching orders by status:", error)
+    return []
+  }
+}
+
+// Obtener órdenes de hoy
+export const fetchTodayOrders = async () => {
+  try {
+    const response = await ApiService.get("/api/admin/orders/today")
+    return response.data
+  } catch (error) {
+    console.error("Error fetching today orders:", error)
+    return []
+  }
+}
+
+// Obtener estadísticas diarias
+export const fetchDailyStats = async (date) => {
+  try {
+    const dateParam = date ? `?date=${date}` : ""
+    const response = await ApiService.get(`/api/admin/dashboard/stats${dateParam}`)
+    return response.data
+  } catch (error) {
+    console.error("Error fetching daily stats:", error)
+    return null
+  }
+}

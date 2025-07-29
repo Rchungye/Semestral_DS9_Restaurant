@@ -1,6 +1,6 @@
 import { ApiService } from "./api.config"
 
-// Obtiene todos los platos disponibles del menú público
+// Obtiene todos los platos disponibles del menú público (sin promociones)
 export const fetchDishes = async () => {
   try {
     const response = await ApiService.get("/api/menu")
@@ -8,6 +8,18 @@ export const fetchDishes = async () => {
   } catch (error) {
     console.error("Error fetching dishes:", error)
     return []
+  }
+}
+
+// NUEVA FUNCIÓN: Obtiene platos con promociones aplicables
+export const fetchDishesWithPromotions = async () => {
+  try {
+    const response = await ApiService.get("/api/menu/with-promotions")
+    return response.data
+  } catch (error) {
+    console.error("Error fetching dishes with promotions:", error)
+    // Fallback a la función original si falla
+    return await fetchDishes()
   }
 }
 

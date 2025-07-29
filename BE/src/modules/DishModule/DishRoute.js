@@ -5,7 +5,8 @@ import {
     createDish,
     updateDish,
     deleteDish,
-    getAvailableDishes
+    getAvailableDishes,
+    getAvailableDishesWithPromotions, // ← NUEVA FUNCIÓN
 } from './DishService.js'
 
 import { verificarAdmin } from '../../common/middleware/AuthMiddleware.js'
@@ -22,10 +23,10 @@ export function dishAdminRoutes(fastify) {
     fastify.post('/api/admin/dishes',
         { preHandler: verificarAdmin }, 
         createDish)
-    fastify.put('/api/admin/dishes/:id',
+    fastify.put("/api/admin/dishes/:id", 
         { preHandler: verificarAdmin }, 
         updateDish)
-    fastify.delete('/api/admin/dishes/:id',
+    fastify.delete("/api/admin/dishes/:id", 
         { preHandler: verificarAdmin }, 
         deleteDish)
 }
@@ -34,6 +35,8 @@ export function dishAdminRoutes(fastify) {
 export function dishPublicRoutes(fastify) {
     // US-002: Visualización del menú (nombres, precios, fotografías)
     fastify.get('/api/menu', getAvailableDishes)
+    // NUEVA RUTA: Menú con promociones
+    fastify.get("/api/menu/with-promotions", getAvailableDishesWithPromotions)
     // US-003: Ver descripción detallada del platillo
     fastify.get('/api/menu/:id', getDish)
 }
