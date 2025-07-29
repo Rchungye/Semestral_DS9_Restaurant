@@ -6,7 +6,7 @@ import { OrderCard } from "../../components/order-card.jsx"
 import { useNavigate } from "react-router-dom";
 import useUserStore from "../../store/userStore";
 import { fetchAllOrders } from "../../services/orderService";
-import { updateOrder } from "../../services/orderService";
+import { updateOrderStatusKitchen } from "../../services/orderService";
 
 export default function KitchenDashboard() {
   const navigate = useNavigate();
@@ -32,7 +32,8 @@ export default function KitchenDashboard() {
         console.log('DATA DE API', data);
         // Mapear los datos de la API al formato esperado por la UI
         const mapped = data.map(order => ({
-          id: order._id,
+          id: order._id, // para React key
+          idIncremental: order.idIncremental, // para backend
           mesa: order.type === 'local' && order.tableId ? `Mesa ${order.tableId.tableNumber}` : 'Para Llevar',
           items: (order.details || []).map(item => ({
             quantity: item.quantity,
@@ -70,13 +71,22 @@ export default function KitchenDashboard() {
       prevOrders.map((order) => {
         if (order.id === orderId) {
           let nextStatus = order.status;
-          if (order.status === "pendiente") nextStatus = "preparando";
-          else if (order.status === "preparando") nextStatus = "listo";
-          else if (order.status === "listo") nextStatus = null;
+              if (order.status === "pendiente") {
+                 nextStatus = "preparando";
+               } else if (order.status === "preparando") {
+                 nextStatus = "finalizado";
+               } else if (order.status === "finalizado") {
+                 nextStatus = "entregado";
+               } else if (order.status === "entregado") {
+                 nextStatus = null;
+               }
+
+          // Mapear 'listo' a 'finalizado' para el backend
+              let backendStatus = nextStatus === "listo" ? "finalizado" : nextStatus === "entregado" ? "entregado" : nextStatus;
 
           if (nextStatus) {
-            // Actualiza en backend y luego en frontend
-            updateOrder(orderId, { status: nextStatus })
+            // Usar idIncremental para el backend
+            updateOrderStatusKitchen(order.idIncremental, backendStatus)
               .then(() => {
                 setOrders((current) =>
                   current.map((o) =>
@@ -96,8 +106,8 @@ export default function KitchenDashboard() {
 
   const pendingOrders = orders.filter((order) => order.status === "pendiente")
   const preparingOrders = orders.filter((order) => order.status === "preparando")
-  const readyOrders = orders.filter((order) => order.status === "listo")
-  const totalActive = orders.length
+  const readyOrders = orders.filter((order) => order.status === "finalizado")
+  const totalActive = pendingOrders.length + preparingOrders.length + readyOrders.length
 
   return (
     <div className="min-h-screen bg-gray-50">

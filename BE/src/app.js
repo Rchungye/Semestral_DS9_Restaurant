@@ -13,7 +13,7 @@ const fastify = Fastify({ logger: true })
 
 await fastify.register(cors, {
     origin: '*',
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // ← ESTO ES LO IMPORTANTE
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"], // ← ESTO ES LO IMPORTANTE
     allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
     credentials: true,
 })

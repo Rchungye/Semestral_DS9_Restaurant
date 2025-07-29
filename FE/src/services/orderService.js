@@ -24,6 +24,11 @@ export const getCartDetails = async (orderId) => {
   }
 }
 
+export const updateOrderStatusKitchen = async (orderId, status) => {
+  const response = await ApiService.patch(`/api/kitchen/orders/${orderId}/status`, { status });
+  return response.data;
+};
+
 // ============= GESTIÓN DE ORDER DETAILS =============
 
 // Crear un detalle de orden individual (agregar item al carrito)

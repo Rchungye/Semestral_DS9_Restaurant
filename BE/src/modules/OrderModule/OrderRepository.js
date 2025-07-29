@@ -65,7 +65,7 @@ export const deleteOrder = async (idIncremental) => {
 // US-012: Visualizar órdenes con tipo de pedido (para cocineros)
 export const getOrdersForKitchen = async () => {
   return await Order.find({
-    status: { $in: ['pendiente', 'preparando'] }
+    status: { $in: ['pendiente', 'preparando', 'finalizado'] }
   })
     .populate('tableId', 'tableNumber')
     .sort({ orderDate: 1 }) // Más antiguos primero (FIFO)

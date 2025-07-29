@@ -17,7 +17,7 @@ export function OrderCard({ mesa, items, status, onAction }) {
           buttonText: "Listo",
           buttonColor: "success"
         }
-      case "listo":
+      case "finalizado":
         return {
           borderColor: "2px solid green",
           headerBg: "#ECFDF5",
