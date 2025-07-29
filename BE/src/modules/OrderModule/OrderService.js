@@ -1,6 +1,7 @@
 // src/modules/OrderServices.js
 import * as orderRepo from './OrderRepository.js'
 import * as tableRepo from '../TableModule/TableRepository.js'
+import * as orderDetailRepo from '../OrderDetailModule/OrderDetailRepository.js'
 
 // ============= CRUD BÁSICO =============
 
@@ -31,56 +32,43 @@ export const getOrder = async (request, reply) => {
 
 export const createOrder = async (request, reply) => {
   try {
-    const data = request.body
-    
-    // Validar campos obligatorios
-    if (!data.subtotal || !data.total || !data.type) {
-      return reply.code(400).send({ 
-        error: 'Missing required fields: subtotal, total, type' 
-      })
+    const data = request.body;
+    console.log('Pedido recibido en backend:', data);
+    // Solo validar subtotal y total
+    if (!data.subtotal || !data.total) {
+      return reply.code(400).send({
+        error: 'Missing required fields: subtotal, total'
+      });
     }
-
-    // Validar tipo de orden
-    if (!['local', 'takeout'].includes(data.type)) {
-      return reply.code(400).send({ 
-        error: 'Invalid order type. Must be "local" or "takeout"' 
-      })
+    // Si no se envía type, asumir 'local' por default
+    if (!data.type) {
+      data.type = 'local';
     }
-
-    // Validaciones específicas según el tipo
-    if (data.type === 'local') {
-      if (!data.tableId) {
-        return reply.code(400).send({ 
-          error: 'tableId is required for local orders' 
-        })
+    // Crear el pedido principal
+    const newOrder = await orderRepo.createOrder(data);
+    // Crear detalles de pedido si vienen en la petición
+    if (data.cartItems && Array.isArray(data.cartItems)) {
+      console.log('cartItems recibidos:', data.cartItems);
+      for (const item of data.cartItems) {
+        const detailPayload = {
+          orderId: newOrder._id,
+          dishId: item._id, // Asegúrate que el frontend envía _id del platillo
+          quantity: item.quantity,
+          unitPrice: item.price,
+          subtotal: item.price * item.quantity,
+          specialInstructions: item.note || ''
+        };
+        console.log('Creando OrderDetail:', detailPayload);
+        const createdDetail = await orderDetailRepo.createOrderDetail(detailPayload);
+        console.log('OrderDetail creado:', createdDetail);
       }
-      
-      // Verificar que la mesa existe
-      const table = await tableRepo.getTableByIncrementalId(data.tableId)
-      if (!table) {
-        return reply.code(404).send({ error: 'Table not found' })
-      }
-      
-      // Convertir tableId incremental al ObjectId real
-      data.tableId = table._id
+    } else {
+      console.log('No se recibieron cartItems o no es un array');
     }
-
-    if (data.type === 'takeout') {
-      if (!data.customerName || !data.customerEmail) {
-        return reply.code(400).send({ 
-          error: 'customerName and customerEmail are required for takeout orders' 
-        })
-      }
-      
-      // Limpiar campos de mesa para takeout
-      delete data.tableId
-    }
-
-    const newOrder = await orderRepo.createOrder(data)
-    return reply.code(201).send(newOrder)
+    return reply.code(201).send(newOrder);
   } catch (error) {
-    console.error('Create order error:', error)
-    return reply.code(500).send({ error: 'Error creating order' })
+    console.error('Create order error:', error);
+    return reply.code(500).send({ error: 'Error creating order' });
   }
 }
 

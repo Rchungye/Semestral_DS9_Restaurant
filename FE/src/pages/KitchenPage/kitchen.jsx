@@ -5,7 +5,7 @@ import { StatusCounters } from "../../components/status-counters.jsx"
 import { OrderCard } from "../../components/order-card.jsx"
 import { useNavigate } from "react-router-dom";
 import useUserStore from "../../store/userStore";
-import { fetchAllOrders } from "../../services/orderService";
+import { fetchKitchenOrders } from "../../services/orderService";
 import { updateOrderStatusKitchen } from "../../services/orderService";
 
 export default function KitchenDashboard() {
@@ -28,7 +28,7 @@ export default function KitchenDashboard() {
   useEffect(() => {
     const loadOrders = async () => {
       try {
-        const data = await fetchAllOrders();
+        const data = await fetchKitchenOrders();
         console.log('DATA DE API', data);
         // Mapear los datos de la API al formato esperado por la UI
         const mapped = data.map(order => ({

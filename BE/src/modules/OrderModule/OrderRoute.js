@@ -56,6 +56,8 @@ export function orderAdminRoutes(fastify) {
 
 // Rutas públicas
 export function orderPublicRoutes(fastify) {
+    // Endpoint general para crear pedido (sin tipo obligatorio)
+    fastify.post('/api/orders', createOrder)
     // US-001: Crear pedido local via QR (escaneo de mesa)
     fastify.post('/api/orders/local', createOrder)
     // US-008: Crear pedido para llevar (sin QR)

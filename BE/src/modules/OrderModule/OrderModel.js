@@ -18,8 +18,8 @@ const orderSchema = new mongoose.Schema({
   },
   status: { 
     type: String, 
-    enum: ['pendiente', 'preparando', 'finalizado', 'entregado', 'cancelado'], 
-    default: 'pendiente' 
+    enum: ['unpaid', 'pendiente', 'preparando', 'finalizado', 'entregado', 'cancelado'], 
+    default: 'unpaid' 
   },
   
   // Para pedidos locales
