@@ -64,11 +64,25 @@ export const deleteOrder = async (idIncremental) => {
 
 // US-012: Visualizar órdenes con tipo de pedido (para cocineros)
 export const getOrdersForKitchen = async () => {
-  return await Order.find({
+  const orders = await Order.find({
     status: { $in: ['pendiente', 'preparando', 'finalizado'] }
   })
     .populate('tableId', 'tableNumber')
-    .sort({ orderDate: 1 }) // Más antiguos primero (FIFO)
+    .sort({ orderDate: 1 }); // Más antiguos primero (FIFO)
+
+  // Para cada orden, buscar sus detalles y agregarlos
+  const ordersWithDetails = await Promise.all(
+    orders.map(async (order) => {
+      const details = await OrderDetail.find({ orderId: order._id })
+        .populate('dishId', 'name price category photo');
+      // Convertir a objeto plano y agregar detalles
+      const orderObj = order.toObject();
+      orderObj.details = details;
+      return orderObj;
+    })
+  );
+
+  return ordersWithDetails;
 }
 
 // US-015 y US-016: Cambiar estado de orden (cocinero)

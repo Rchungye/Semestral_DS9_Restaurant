@@ -168,3 +168,14 @@ export const fetchDailyStats = async (date) => {
     return null
   }
 }
+
+// Obtener todas las órdenes (cocina)
+export const fetchKitchenOrders = async () => {
+  try {
+    const response = await ApiService.get("/api/kitchen/orders")
+    return response.data
+  } catch (error) {
+    console.error("Error fetching kitchen orders:", error)
+    return []
+  }
+}
