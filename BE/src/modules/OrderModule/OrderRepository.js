@@ -1,13 +1,28 @@
 // src/modules/OrderModule/OrderRepository.js
 import Order from './OrderModel.js'
+import OrderDetail from '../OrderDetailModule/OrderDetailModel.js'
 
 // ============= CONSULTAS BÁSICAS =============
 
 export const getAllOrders = async () => {
-  return await Order.find()
+  const orders = await Order.find()
     .populate('tableId', 'tableNumber capacity')
-    .sort({ orderDate: -1 }) // Más recientes primero
-}
+    .sort({ orderDate: -1 });
+
+  // Para cada orden, buscar sus detalles y agregarlos
+  const ordersWithDetails = await Promise.all(
+    orders.map(async (order) => {
+      const details = await OrderDetail.find({ orderId: order._id })
+        .populate('dishId', 'name price category photo');
+      // Convertir a objeto plano y agregar detalles
+      const orderObj = order.toObject();
+      orderObj.details = details;
+      return orderObj;
+    })
+  );
+
+  return ordersWithDetails;
+};
 
 export const getOrderByIncrementalId = async (idIncremental) => {
   const id = parseInt(idIncremental)

@@ -1,23 +1,23 @@
 import { Button, Card, CardContent, CardHeader } from '@mui/material';
 
-export function OrderCard({ orderId, orderType, timeAgo, items, total, status, onAction }) {
+export function OrderCard({ mesa, items, status, onAction }) {
   const getStatusConfig = () => {
     switch (status) {
-      case "pending":
+      case "pendiente":
         return {
           borderColor: "2px solid orange",
           headerBg: "#FFF7ED",
-          buttonText: "Comenzar Preparación",
+          buttonText: "Preparar",
           buttonColor: "primary"
         }
-      case "preparing":
+      case "preparando":
         return {
           borderColor: "2px solid blue",
           headerBg: "#EFF6FF",
-          buttonText: "Marcar Listo",
+          buttonText: "Listo",
           buttonColor: "success"
         }
-      case "ready":
+      case "listo":
         return {
           borderColor: "2px solid green",
           headerBg: "#ECFDF5",
@@ -38,18 +38,9 @@ export function OrderCard({ orderId, orderType, timeAgo, items, total, status, o
 
   return (
     <Card style={{ border: config.borderColor }}>
-      <CardHeader style={{ backgroundColor: config.headerBg, paddingBottom: 12 }}
-        title={
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <div>
-              <h3 style={{ fontWeight: "bold", fontSize: "1.1rem" }}>{orderId}</h3>
-              <p style={{ fontSize: "0.9rem", color: "#4B5563" }}>{orderType}</p>
-            </div>
-            <div style={{ fontSize: "0.8rem", color: "#6B7280" }}>
-              ⏰ {timeAgo}
-            </div>
-          </div>
-        }
+      <CardHeader
+        style={{ backgroundColor: config.headerBg, paddingBottom: 12 }}
+        title={<span style={{ fontWeight: "bold", fontSize: "1.1rem" }}>{mesa}</span>}
       />
       <CardContent style={{ paddingTop: 16 }}>
         <div style={{ marginBottom: 16 }}>
@@ -60,8 +51,7 @@ export function OrderCard({ orderId, orderType, timeAgo, items, total, status, o
             </div>
           ))}
         </div>
-        <div style={{ display: "flex", justifyContent: "space-between", borderTop: "1px solid #E5E7EB", paddingTop: 12 }}>
-          <span style={{ fontWeight: "bold" }}>Total: {total}</span>
+        <div style={{ display: "flex", justifyContent: "flex-end", borderTop: "1px solid #E5E7EB", paddingTop: 12 }}>
           <Button onClick={onAction} variant="contained" color={config.buttonColor}>
             {config.buttonText}
           </Button>
