@@ -1,3 +1,8 @@
+// Cambiar estado de una orden a 'pendiente' (endpoint público)
+export const updateOrderStatusPublic = async (orderId) => {
+  const response = await ApiService.patch(`/api/orders/${orderId}/status`, { status: 'pendiente' });
+  return response.data;
+};
 import { ApiService } from "./api.config"
 
 // ============= GESTIÓN DE ÓRDENES =============
@@ -166,5 +171,16 @@ export const fetchDailyStats = async (date) => {
   } catch (error) {
     console.error("Error fetching daily stats:", error)
     return null
+  }
+}
+
+// Obtener todas las órdenes (cocina)
+export const fetchKitchenOrders = async () => {
+  try {
+    const response = await ApiService.get("/api/kitchen/orders")
+    return response.data
+  } catch (error) {
+    console.error("Error fetching kitchen orders:", error)
+    return []
   }
 }
