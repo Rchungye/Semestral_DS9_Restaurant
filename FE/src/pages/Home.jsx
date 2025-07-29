@@ -1,8 +1,9 @@
 "use client"
 
-import { Container, Typography, Grid, Box, Chip, Button, TextField, InputAdornment, Drawer, Tabs, Tab, Fade, Paper, useTheme, alpha } from "@mui/material"
-import { Search, FilterList, Star } from "@mui/icons-material"
+import { Container, Typography, Grid, Box, Chip, Button, IconButton, TextField, InputAdornment, Drawer, Tabs, Tab, Fade, Paper, useTheme, alpha } from "@mui/material"
+import { Search, FilterList, Star, Add, Remove, Delete } from "@mui/icons-material"
 import { useState, useMemo, useEffect } from "react"
+import { loadStripe } from "@stripe/stripe-js"
 import { fetchDishes } from "../services/dishService"
 import CardFood from "../components/CardFood"
 import Navbar from "../components/Navbar"
@@ -32,6 +33,7 @@ const Home = () => {
   const [mostrarFiltros, setMostrarFiltros] = useState(false)
   const [cartOpen, setCartOpen] = useState(false)
   const [cartItems, setCartItems] = useState([])
+  const [cartNote, setCartNote] = useState("")
 
   const handleAddToCart = (dish) => {
     setCartItems((prev) => {
@@ -44,6 +46,37 @@ const Home = () => {
       return [...prev, { ...dish, quantity: 1 }]
     })
   }
+
+  const handleQuantityChange = (idx, delta) => {
+    setCartItems(prev => {
+      const updated = [...prev];
+      updated[idx].quantity = Math.max(1, updated[idx].quantity + delta);
+      return updated;
+    });
+  };
+
+  const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  const handleRemoveFromCart = (idx) => {
+    setCartItems(prev => prev.filter((_, i) => i !== idx));
+  };
+
+  const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY); // Reemplaza con tu clave pública de Stripe
+
+  const handleCheckout = async () => {
+    const stripe = await stripePromise;
+    const response = await fetch('http://localhost:3000/api/stripe/create-checkout-session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ cartItems, note: cartNote }),
+    });
+    const data = await response.json();
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      alert('Error al iniciar el pago');
+    }
+  };
 
   useEffect(() => {
     fetchDishes() // Solo platos con availability: true
@@ -100,32 +133,63 @@ const Home = () => {
   return (
     <>
       <Navbar onCartClick={() => setCartOpen(true)} cartCount={cartItems.length} />
-          <Drawer anchor="right" open={cartOpen} onClose={() => setCartOpen(false)}>
-          <Box sx={{ width: 350, p: 2 }}>
+        <Drawer anchor="right" open={cartOpen} onClose={() => setCartOpen(false)}>
+          <Box sx={{ width: 350, p: 2, display: "flex", flexDirection: "column", height: "100%" }}>
             <Typography variant="h5" fontWeight="bold" gutterBottom>
               Tu carrito
             </Typography>
             {cartItems.length === 0 ? (
               <Typography color="text.secondary">El carrito está vacío.</Typography>
             ) : (
-              cartItems.map((item, idx) => (
-                <Box key={idx} sx={{ mb: 2 }}>
-                  <Typography variant="subtitle1">{item.name}</Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    ${item.price} x {item.quantity}
+              <>
+                {cartItems.map((item, idx) => (
+                  <Box key={idx} sx={{ mb: 2, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <Box>
+                      <Typography variant="subtitle1">{item.name}</Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        ${item.price} x {item.quantity}
+                      </Typography>
+                    </Box>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <IconButton size="small" onClick={() => handleQuantityChange(idx, -1)} disabled={item.quantity === 1}>
+                        <Remove fontSize="small" />
+                      </IconButton>
+                      <Typography>{item.quantity}</Typography>
+                      <IconButton size="small" onClick={() => handleQuantityChange(idx, 1)}>
+                        <Add fontSize="small" />
+                      </IconButton>
+                      <IconButton size="small" color="error" onClick={() => handleRemoveFromCart(idx)}>
+                        <Delete fontSize="small" />
+                      </IconButton>
+                    </Box>
+                  </Box>
+                ))}
+                <Box sx={{ my: 2 }}>
+                  <Typography variant="subtitle1" fontWeight="bold">
+                    Total: ${total.toFixed(2)}
                   </Typography>
                 </Box>
-              ))
+                <TextField
+                  label="Anotaciones"
+                  multiline
+                  minRows={2}
+                  fullWidth
+                  value={cartNote}
+                  onChange={e => setCartNote(e.target.value)}
+                  sx={{ mb: 2 }}
+                />
+                <Button
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  sx={{ mt: 1 }}
+                  disabled={cartItems.length === 0}
+                  onClick={handleCheckout}
+                >
+                  Ir a pagar
+                </Button>
+              </>
             )}
-            <Button
-              variant="contained"
-              color="primary"
-              fullWidth
-              sx={{ mt: 2 }}
-              disabled={cartItems.length === 0}
-            >
-              Ir a pagar
-            </Button>
           </Box>
         </Drawer>
       <AdsFood />
