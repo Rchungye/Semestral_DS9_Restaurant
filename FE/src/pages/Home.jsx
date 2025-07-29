@@ -77,6 +77,26 @@ const Home = () => {
   const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY)
 
   const handleCheckout = async () => {
+    console.log("Checkout clickeado")
+    // 1. Crear el pedido en /api/orders
+    const orderPayload = {
+      subtotal: total,
+      total: total,
+      note: cartNote,
+      cartItems, // Ahora se envía el carrito completo al backend
+      // type y otros campos no son obligatorios, pero puedes agregar si quieres
+    };
+    console.log(orderPayload);
+    const orderRes = await fetch('http://localhost:3000/api/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(orderPayload),
+    });
+    if (!orderRes.ok) {
+      alert('Error al crear el pedido');
+      return;
+    }
+    // 2. Continuar con Stripe solo si el pedido se creó correctamente
     const stripe = await stripePromise;
     const response = await fetch('http://localhost:3000/api/stripe/create-checkout-session', {
       method: 'POST',
@@ -85,9 +105,9 @@ const Home = () => {
     });
     const data = await response.json();
     if (data.url) {
-      window.location.href = data.url
+      window.location.href = data.url;
     } else {
-      alert("Error al iniciar el pago")
+      alert('Error al iniciar el pago');
     }
   }
 
