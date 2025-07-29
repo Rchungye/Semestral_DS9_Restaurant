@@ -19,7 +19,7 @@ import { verificarAdmin, verificarCocina } from '../../common/middleware/AuthMid
 // Rutas de administrador
 export function orderAdminRoutes(fastify) {
     fastify.get('/api/admin/orders',
-        // { preHandler: verificarAdmin },
+        { preHandler: verificarAdmin },
         listOrders)
     fastify.get('/api/admin/orders/:id',
         { preHandler: verificarAdmin }, 
