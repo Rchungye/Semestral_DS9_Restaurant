@@ -1,10 +1,12 @@
 // src/pages/KitchenPage/kitchen.jsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { KitchenHeader } from "./kitchen-header.jsx";
 import { StatusCounters } from "../../components/status-counters.jsx"
 import { OrderCard } from "../../components/order-card.jsx"
 import { useNavigate } from "react-router-dom";
 import useUserStore from "../../store/userStore";
+import { fetchAllOrders } from "../../services/orderService";
+import { updateOrderStatusKitchen } from "../../services/orderService";
 
 export default function KitchenDashboard() {
   const navigate = useNavigate();
@@ -21,69 +23,91 @@ export default function KitchenDashboard() {
     }
   };
 
-  const [orders, setOrders] = useState([
-    {
-      id: "1",
-      orderId: "GP-2024-001",
-      orderType: "Para Llevar",
-      timeAgo: "hace 5 min",
-      items: [
-        { quantity: 2, name: "Pollo Kung Pao", note: "Extra maní por favor" },
-        { quantity: 2, name: "Arroz al Vapor" },
-      ],
-      total: "$37.98",
-      status: "pending",
-    },
-    {
-      id: "2",
-      orderId: "GP-2024-002",
-      orderType: "Para Comer Aquí",
-      timeAgo: "hace 12 min",
-      items: [
-        { quantity: 1, name: "Cerdo Agridulce" },
-        { quantity: 1, name: "Arroz Frito", note: "Sin huevos" },
-        { quantity: 1, name: "Sopa Agripicante", note: "Picante suave" },
-      ],
-      total: "$32.97",
-      status: "preparing",
-    },
-    {
-      id: "3",
-      orderId: "GP-2024-003",
-      orderType: "Para Llevar",
-      timeAgo: "hace 20 min",
-      items: [
-        { quantity: 1, name: "Tofu Mapo", note: "Extra picante" },
-        { quantity: 1, name: "Arroz al Vapor" },
-      ],
-      total: "$18.98",
-      status: "ready",
-    },
-  ])
+  const [orders, setOrders] = useState([])
 
-  const handleOrderAction = (orderId) => {
-    setOrders((prevOrders) =>
-      prevOrders
-        .map((order) => {
-          if (order.id === orderId) {
-            if (order.status === "pending") {
-              return { ...order, status: "preparing" }
-            } else if (order.status === "preparing") {
-              return { ...order, status: "ready" }
-            } else if (order.status === "ready") {
-              return null
-            }
-          }
-          return order
-        })
-        .filter(Boolean),
-    )
+  useEffect(() => {
+    const loadOrders = async () => {
+      try {
+        const data = await fetchAllOrders();
+        console.log('DATA DE API', data);
+        // Mapear los datos de la API al formato esperado por la UI
+        const mapped = data.map(order => ({
+          id: order._id, // para React key
+          idIncremental: order.idIncremental, // para backend
+          mesa: order.type === 'local' && order.tableId ? `Mesa ${order.tableId.tableNumber}` : 'Para Llevar',
+          items: (order.details || []).map(item => ({
+            quantity: item.quantity,
+            name: item.dishId?.name || 'Platillo',
+            note: item.specialInstructions || ''
+          })),
+          status: order.status
+        }));
+        console.log('MAPPED PARA UI', mapped);
+        setOrders(mapped);
+      } catch (e) {
+        setOrders([]);
+      }
+    };
+    loadOrders();
+  }, []);
+
+  // Función para calcular el tiempo transcurrido
+  function calcularTiempo(fecha) {
+    if (!fecha) return '';
+    const date = new Date(fecha);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMin = Math.floor(diffMs / 60000);
+    if (diffMin < 1) return 'recién';
+    if (diffMin < 60) return `hace ${diffMin} min`;
+    const diffHrs = Math.floor(diffMin / 60);
+    if (diffHrs < 24) return `hace ${diffHrs} h`;
+    const diffDays = Math.floor(diffHrs / 24);
+    return `hace ${diffDays} d`;
   }
 
-  const pendingOrders = orders.filter((order) => order.status === "pending")
-  const preparingOrders = orders.filter((order) => order.status === "preparing")
-  const readyOrders = orders.filter((order) => order.status === "ready")
-  const totalActive = orders.length
+  const handleOrderAction = async (orderId) => {
+    setOrders((prevOrders) =>
+      prevOrders.map((order) => {
+        if (order.id === orderId) {
+          let nextStatus = order.status;
+              if (order.status === "pendiente") {
+                 nextStatus = "preparando";
+               } else if (order.status === "preparando") {
+                 nextStatus = "finalizado";
+               } else if (order.status === "finalizado") {
+                 nextStatus = "entregado";
+               } else if (order.status === "entregado") {
+                 nextStatus = null;
+               }
+
+          // Mapear 'listo' a 'finalizado' para el backend
+              let backendStatus = nextStatus === "listo" ? "finalizado" : nextStatus === "entregado" ? "entregado" : nextStatus;
+
+          if (nextStatus) {
+            // Usar idIncremental para el backend
+            updateOrderStatusKitchen(order.idIncremental, backendStatus)
+              .then(() => {
+                setOrders((current) =>
+                  current.map((o) =>
+                    o.id === orderId ? { ...o, status: nextStatus } : o
+                  )
+                );
+              });
+          } else {
+            // Si es null, elimina del frontend
+            setOrders((current) => current.filter((o) => o.id !== orderId));
+          }
+        }
+        return order;
+      })
+    );
+  };
+
+  const pendingOrders = orders.filter((order) => order.status === "pendiente")
+  const preparingOrders = orders.filter((order) => order.status === "preparando")
+  const readyOrders = orders.filter((order) => order.status === "finalizado")
+  const totalActive = pendingOrders.length + preparingOrders.length + readyOrders.length
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -108,11 +132,8 @@ export default function KitchenDashboard() {
               {pendingOrders.map((order) => (
                 <OrderCard
                   key={order.id}
-                  orderId={order.orderId}
-                  orderType={order.orderType}
-                  timeAgo={order.timeAgo}
+                  mesa={order.mesa}
                   items={order.items}
-                  total={order.total}
                   status={order.status}
                   onAction={() => handleOrderAction(order.id)}
                 />
@@ -130,11 +151,8 @@ export default function KitchenDashboard() {
               {preparingOrders.map((order) => (
                 <OrderCard
                   key={order.id}
-                  orderId={order.orderId}
-                  orderType={order.orderType}
-                  timeAgo={order.timeAgo}
+                  mesa={order.mesa}
                   items={order.items}
-                  total={order.total}
                   status={order.status}
                   onAction={() => handleOrderAction(order.id)}
                 />
@@ -152,11 +170,8 @@ export default function KitchenDashboard() {
               {readyOrders.map((order) => (
                 <OrderCard
                   key={order.id}
-                  orderId={order.orderId}
-                  orderType={order.orderType}
-                  timeAgo={order.timeAgo}
+                  mesa={order.mesa}
                   items={order.items}
-                  total={order.total}
                   status={order.status}
                   onAction={() => handleOrderAction(order.id)}
                 />
