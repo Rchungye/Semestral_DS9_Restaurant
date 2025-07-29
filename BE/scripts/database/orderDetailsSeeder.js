@@ -29,14 +29,14 @@ export async function seedOrderDetails() {
         const orderDetailsData = [
             // Orden 1 (Local - Mesa 1)
             [
-                { dishIndex: 0, quantity: 2, accompaniments: 'Salsa de soja', specialInstructions: 'Extra picante' }, // Siu Mai
-                { dishIndex: 4, quantity: 1, preparationType: 'Bien cocido' }, // Pato Laqueado
+                { dishIndex: 0, quantity: 2, specialInstructions: 'Extra picante' }, // Siu Mai
+                { dishIndex: 4, quantity: 1 }, // Pato Laqueado
                 { dishIndex: 8, quantity: 2 } // Té Verde Jasmine
             ],
             // Orden 2 (Local - Mesa 3)
             [
                 { dishIndex: 1, quantity: 1 }, // Hakao
-                { dishIndex: 5, quantity: 2, accompaniments: 'Vegetales extra' }, // Chow Mein
+                { dishIndex: 5, quantity: 2 }, // Chow Mein
                 { dishIndex: 10, quantity: 3 } // Arroz Blanco
             ],
             // Orden 3 (Local - Mesa 6)
@@ -48,8 +48,8 @@ export async function seedOrderDetails() {
             // Orden 4 (Takeout - María)
             [
                 { dishIndex: 3, quantity: 2 }, // Wonton Frito
-                { dishIndex: 4, quantity: 1, preparationType: 'Término medio' }, // Pato Laqueado
-                { dishIndex: 7, quantity: 2, accompaniments: 'Arroz blanco' }, // Pollo Agridulce
+                { dishIndex: 4, quantity: 1 }, // Pato Laqueado
+                { dishIndex: 7, quantity: 2 }, // Pollo Agridulce
                 { dishIndex: 11, quantity: 1 } // Vegetales Salteados
             ],
             // Orden 5 (Takeout - Carlos)
@@ -61,7 +61,7 @@ export async function seedOrderDetails() {
             // Orden 6 (Takeout - Ana)
             [
                 { dishIndex: 0, quantity: 1 }, // Siu Mai
-                { dishIndex: 5, quantity: 1, accompaniments: 'Sin vegetales' }, // Chow Mein
+                { dishIndex: 5, quantity: 1 }, // Chow Mein
                 { dishIndex: 8, quantity: 1 } // Té Verde
             ]
         ]
@@ -85,9 +85,7 @@ export async function seedOrderDetails() {
                     dishId: dish._id,
                     quantity: item.quantity,
                     unitPrice: unitPrice,
-                    subtotal: subtotal, // Calcular explícitamente
-                    accompaniments: item.accompaniments || '',
-                    preparationType: item.preparationType || '',
+                    subtotal: subtotal,
                     specialInstructions: item.specialInstructions || ''
                 }
 

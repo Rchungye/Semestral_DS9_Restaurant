@@ -30,7 +30,7 @@ export async function seedOrders() {
                 tableId: tables[0]._id, // Mesa 1
                 subtotal: 25.48,
                 total: 25.48,
-                status: 'entregado',
+                status: 'pendiente',
                 orderDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // Hace 2 días
                 notes: 'Cliente pidió agua extra'
             },
@@ -48,7 +48,7 @@ export async function seedOrders() {
                 tableId: tables[5]._id, // Mesa 6
                 subtotal: 18.75,
                 total: 18.75,
-                status: 'finalizado',
+                status: 'pendiente',
                 orderDate: new Date(Date.now() - 45 * 60 * 1000), // Hace 45 minutos
                 notes: 'Orden rápida'
             },
@@ -60,7 +60,7 @@ export async function seedOrders() {
                 customerEmail: 'maria.gonzalez@email.com',
                 subtotal: 42.72,
                 total: 42.72,
-                status: 'entregado',
+                status: 'pendiente',
                 orderDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), // Hace 1 día
                 notes: 'Pedido para oficina'
             },

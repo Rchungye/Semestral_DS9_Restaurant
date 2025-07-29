@@ -15,8 +15,6 @@ const orderDetailSchema = new mongoose.Schema({
   subtotal: { type: Number, required: true }, // quantity * unitPrice
   
   // Personalizaciones del platillo
-  accompaniments: { type: String }, // Tipo de acompañamiento
-  preparationType: { type: String }, // Tipo de preparación
   specialInstructions: { type: String } // Observaciones del cliente
 }, { timestamps: true })
 
