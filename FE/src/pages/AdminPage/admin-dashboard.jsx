@@ -17,6 +17,17 @@ import {
   Button,
   CircularProgress,
 } from "@mui/material"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import {
+  faTachometerAlt,
+  faUtensils,
+  faClipboardList,
+  faChartLine,
+  faTable,
+  faTags,
+  faUser
+} from "@fortawesome/free-solid-svg-icons"
+
 import useUserStore from "../../store/userStore"
 
 // Importar todos los componentes (sin ConfiAdmin)
@@ -30,15 +41,15 @@ import VentasAdmin from "./ventas-admin"
 
 const drawerWidth = 280
 
-// Lista actualizada sin la opción de configuración
+// Lista actualizada con iconos FontAwesome
 const sidebarItems = [
-  { text: "Resumen", icon: "■", key: "dashboard" },
-  { text: "Menú", icon: "☰", key: "menu" },
-  { text: "Pedidos", icon: "◉", key: "orders" },
-  { text: "Ventas", icon: "▲", key: "sales" },
-  { text: "Mesas", icon: "□", key: "tables" },
-  { text: "Promociones", icon: "◆", key: "promotions" },
-  { text: "Manejar Usuarios", icon: "+", key: "users" },
+  { text: "Resumen", icon: faTachometerAlt, key: "dashboard" },
+  { text: "Menú", icon: faUtensils, key: "menu" },
+  { text: "Pedidos", icon: faClipboardList, key: "orders" },
+  { text: "Ventas", icon: faChartLine, key: "sales" },
+  { text: "Mesas", icon: faTable, key: "tables" },
+  { text: "Promociones", icon: faTags, key: "promotions" },
+  { text: "Usuarios", icon: faUser, key: "users" },
 ]
 
 export default function AdminDashboard() {
@@ -107,7 +118,9 @@ export default function AdminDashboard() {
                 },
               }}
             >
-              <Box sx={{ mr: 2, fontSize: "1.2rem" }}>{item.icon}</Box>
+              <Box sx={{ mr: 2, fontSize: "1.2rem" }}>
+                <FontAwesomeIcon icon={item.icon} />
+              </Box>
               <ListItemText primary={item.text} />
             </ListItemButton>
           </ListItem>
@@ -137,7 +150,7 @@ export default function AdminDashboard() {
             onClick={handleDrawerToggle}
             sx={{ mr: 2, display: { sm: "none" } }}
           >
-            ☰
+            <FontAwesomeIcon icon={faUtensils} />
           </IconButton>
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             Panel de Administración

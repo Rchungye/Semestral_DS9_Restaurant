@@ -1,4 +1,4 @@
-// src/pages/KitchenPage/kitchen.jsx - VERSIÓN SENCILLA
+// src/pages/KitchenPage/kitchen.jsx
 
 import { useState } from "react";
 import { KitchenHeader } from "./kitchen-header.jsx";

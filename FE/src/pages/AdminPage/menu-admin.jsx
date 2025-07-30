@@ -29,6 +29,15 @@ import {
   CircularProgress,
 } from "@mui/material"
 import { fetchAllDishes, createDish, updateDish, deleteDish } from "../../services/dishService"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import {
+  faBars,
+  faPlus,
+  faToggleOn,
+  faToggleOff,
+  faEdit,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons"
 
 const categoryOptions = [
   { value: "entrada", label: "Entrada" },
@@ -218,10 +227,12 @@ export default function MenuAdmin() {
         <CardContent>
           <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
             <Typography variant="h5" gutterBottom>
-              ☰ Gestión de Menú
+              <FontAwesomeIcon icon={faBars} style={{ marginRight: 8 }} />
+              Gestión de Menú
             </Typography>
             <Button variant="contained" color="primary" onClick={() => handleOpenDialog()}>
-              + Agregar Plato
+              <FontAwesomeIcon icon={faPlus} style={{ marginRight: 6 }} />
+              Agregar Plato
             </Button>
           </Box>
 
@@ -263,26 +274,18 @@ export default function MenuAdmin() {
                     </TableCell>
                     <TableCell>${dish.price.toFixed(2)}</TableCell>
                     <TableCell>
-                      <Chip
-                        label={getStatusText(dish.availability)}
-                        size="small"
-                        color={getStatusColor(dish.availability)}
-                      />
+                      <Chip label={getStatusText(dish.availability)} size="small" color={getStatusColor(dish.availability)} />
                     </TableCell>
                     <TableCell>
-                      <Button
-                        size="small"
-                        sx={{ mr: 1 }}
-                        onClick={() => toggleAvailability(dish)}
-                        title={dish.availability ? "Desactivar" : "Activar"}
-                      >
-                        {dish.availability ? "◉" : "○"}
+                      <Button size="small" sx={{ mr: 1 }} onClick={() => toggleAvailability(dish)}
+                        title={dish.availability ? "Desactivar" : "Activar"} >
+                        <FontAwesomeIcon icon={dish.availability ? faToggleOn : faToggleOff} />
                       </Button>
                       <Button size="small" sx={{ mr: 1 }} onClick={() => handleOpenDialog(dish)} title="Editar">
-                        ✎
+                        <FontAwesomeIcon icon={faEdit} />
                       </Button>
                       <Button size="small" color="error" onClick={() => handleDelete(dish)} title="Eliminar">
-                        ×
+                        <FontAwesomeIcon icon={faTrash} />
                       </Button>
                     </TableCell>
                   </TableRow>

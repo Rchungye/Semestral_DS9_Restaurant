@@ -32,6 +32,8 @@ import {
   Paper,
 } from "@mui/material"
 import { fetchAllPromotions, createPromotion, updatePromotion, deletePromotion } from "../../services/promotionService"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faTags, faToggleOn, faToggleOff, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons"
 
 const discountTypeOptions = [
   { value: "porcentaje", label: "Porcentaje (%)" },
@@ -290,7 +292,8 @@ export default function PromotionsManagement() {
         <CardContent>
           <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
             <Typography variant="h5" gutterBottom>
-              ◆ Promociones y Descuentos
+              <FontAwesomeIcon icon={faTags} style={{ marginRight: 8 }} />
+              Promociones y Descuentos
             </Typography>
             <Button variant="contained" color="primary" onClick={() => handleOpenDialog()}>
               + Crear Promoción
@@ -343,19 +346,15 @@ export default function PromotionsManagement() {
                       <Chip label={getStatusText(promotion)} size="small" color={getStatusColor(promotion)} />
                     </TableCell>
                     <TableCell>
-                      <Button
-                        size="small"
-                        sx={{ mr: 1 }}
-                        onClick={() => toggleActive(promotion)}
-                        title={promotion.isActive ? "Desactivar" : "Activar"}
-                      >
-                        {promotion.isActive ? "◉" : "○"}
+                      <Button size="small" sx={{ mr: 1 }} onClick={() => toggleActive(promotion)}
+                        title={promotion.isActive ? "Desactivar" : "Activar"} >
+                        <FontAwesomeIcon icon={promotion.isActive ? faToggleOn : faToggleOff} />
                       </Button>
                       <Button size="small" sx={{ mr: 1 }} onClick={() => handleOpenDialog(promotion)} title="Editar">
-                        ✎
+                        <FontAwesomeIcon icon={faEdit} />
                       </Button>
                       <Button size="small" color="error" onClick={() => handleDelete(promotion)} title="Eliminar">
-                        ×
+                        <FontAwesomeIcon icon={faTrash} />
                       </Button>
                     </TableCell>
                   </TableRow>

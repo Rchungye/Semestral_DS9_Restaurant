@@ -27,7 +27,9 @@ import {
   Grid,
   Divider,
 } from "@mui/material"
-import { fetchAllOrders, deleteOrder } from "../../services/orderService"
+import { fetchAllOrders, deleteOrder } from "../../services/orderService";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClipboardList, faEye, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 const statusOptions = [
   { value: "todos", label: "Todos" },
@@ -215,7 +217,8 @@ export default function OrderManagement() {
       <Card>
         <CardContent>
           <Typography variant="h5" gutterBottom>
-            ◉ Gestión de Pedidos
+            <FontAwesomeIcon icon={faClipboardList} style={{ marginRight: 8 }} />
+            Gestión de Pedidos
           </Typography>
 
           <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
@@ -303,11 +306,11 @@ export default function OrderManagement() {
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Button size="small" sx={{ mr: 1 }} onClick={() => handleViewOrder(order)} title="Ver detalles">
-                        👁
+                      <Button size="small" onClick={() => handleViewOrder(order)} title="Ver detalles">
+                        <FontAwesomeIcon icon={faEye} />
                       </Button>
                       <Button size="small" color="error" onClick={() => handleDeleteOrder(order)} title="Eliminar">
-                        ×
+                        <FontAwesomeIcon icon={faTrash} />
                       </Button>
                     </TableCell>
                   </TableRow>

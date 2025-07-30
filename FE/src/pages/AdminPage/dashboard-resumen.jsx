@@ -2,6 +2,15 @@
 
 import { useState, useEffect } from "react"
 import { Grid, Card, CardContent, Typography, Box, LinearProgress, CircularProgress, Alert } from "@mui/material"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import {
+  faDollarSign,
+  faClipboardList,
+  faUsers,
+  faChartLine,
+  faStore,
+  faShoppingBag
+} from "@fortawesome/free-solid-svg-icons"
 import { getDashboardMetrics, getWeeklyDashboardData, getOrderTypesStats } from "../../services/salesService"
 
 export default function DashboardOverview() {
@@ -80,7 +89,8 @@ export default function DashboardOverview() {
           <Card>
             <CardContent>
               <Typography color="textSecondary" gutterBottom variant="body2">
-                $ Ingresos Totales
+                <FontAwesomeIcon icon={faDollarSign} style={{ marginRight: 8 }} />
+                Ingresos Totales
               </Typography>
               <Typography variant="h4" component="div" sx={{ fontWeight: "bold" }}>
                 {formatCurrency(metrics?.totalRevenue || 0)}
@@ -96,7 +106,8 @@ export default function DashboardOverview() {
           <Card>
             <CardContent>
               <Typography color="textSecondary" gutterBottom variant="body2">
-                • Pedidos
+                <FontAwesomeIcon icon={faClipboardList} style={{ marginRight: 8 }} />
+                Pedidos
               </Typography>
               <Typography variant="h4" component="div" sx={{ fontWeight: "bold" }}>
                 {metrics?.totalOrders || 0}
@@ -112,7 +123,8 @@ export default function DashboardOverview() {
           <Card>
             <CardContent>
               <Typography color="textSecondary" gutterBottom variant="body2">
-                ◦ Clientes
+                <FontAwesomeIcon icon={faUsers} style={{ marginRight: 8 }} />
+                Clientes
               </Typography>
               <Typography variant="h4" component="div" sx={{ fontWeight: "bold" }}>
                 {metrics?.totalCustomers || 0}
@@ -124,21 +136,6 @@ export default function DashboardOverview() {
           </Card>
         </Grid>
 
-        <Grid item xs={12} sm={6} md={3}>
-          <Card>
-            <CardContent>
-              <Typography color="textSecondary" gutterBottom variant="body2">
-                ↗ Crecimiento
-              </Typography>
-              <Typography variant="h4" component="div" sx={{ fontWeight: "bold" }}>
-                {formatPercentage(metrics?.overallGrowth || 0)}
-              </Typography>
-              <Typography variant="body2" color={getGrowthColor(metrics?.overallGrowth || 0)}>
-                Promedio general
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
       </Grid>
 
       {/* Charts */}
@@ -147,7 +144,8 @@ export default function DashboardOverview() {
           <Card>
             <CardContent>
               <Typography variant="h6" gutterBottom>
-                ▬ Ventas Semanales
+                <FontAwesomeIcon icon={faChartLine} style={{ marginRight: 8 }} />
+                Ventas Semanales
               </Typography>
               <Box sx={{ mt: 2 }}>
                 {weeklyData.map((day) => (
@@ -181,12 +179,16 @@ export default function DashboardOverview() {
           <Card>
             <CardContent>
               <Typography variant="h6" gutterBottom>
-                ◐ Tipos de Pedidos
+                <FontAwesomeIcon icon={faClipboardList} style={{ marginRight: 8 }} />
+                Tipos de Pedidos
               </Typography>
               <Box sx={{ mt: 3 }}>
                 <Box sx={{ mb: 3 }}>
                   <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
-                    <Typography variant="body1">• En Local</Typography>
+                    <Typography variant="body1">
+                      <FontAwesomeIcon icon={faStore} style={{ marginRight: 8 }} />
+                      En Local
+                    </Typography>
                     <Typography variant="body1" sx={{ fontWeight: "bold" }}>
                       {orderTypes?.local?.percentage || 0}%
                     </Typography>
@@ -210,7 +212,10 @@ export default function DashboardOverview() {
 
                 <Box>
                   <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
-                    <Typography variant="body1">◦ Para Llevar</Typography>
+                    <Typography variant="body1">
+                      <FontAwesomeIcon icon={faShoppingBag} style={{ marginRight: 8 }} />
+                      Para Llevar
+                    </Typography>
                     <Typography variant="body1" sx={{ fontWeight: "bold" }}>
                       {orderTypes?.takeaway?.percentage || 0}%
                     </Typography>

@@ -30,7 +30,8 @@ import {
   InputAdornment,
 } from "@mui/material"
 import { Visibility, VisibilityOff } from "@mui/icons-material"
-import { getAllUsers, createUserAdmin, updateUserAdmin, deleteUserAdmin } from "../../services/userService" // ← USANDO EL SERVICIO EXISTENTE
+import { getAllUsers, createUserAdmin, updateUserAdmin, deleteUserAdmin } from "../../services/userService"
+import { Edit, Delete } from "@mui/icons-material"
 
 const roleOptions = [
   { value: "administrador", label: "Administrador", color: "primary" },
@@ -302,20 +303,20 @@ export default function UserManagement() {
                       <Typography variant="caption">
                         {user.createdAt
                           ? new Date(user.createdAt).toLocaleDateString("es-ES", {
-                              year: "numeric",
-                              month: "short",
-                              day: "numeric",
-                            })
+                            year: "numeric", month: "short", day: "numeric",
+                          })
                           : "N/A"}
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Button size="small" sx={{ mr: 1 }} onClick={() => handleOpenDialog(user)} title="Editar">
-                        ✎
-                      </Button>
-                      <Button size="small" color="error" onClick={() => handleDelete(user)} title="Eliminar">
-                        ×
-                      </Button>
+                      <IconButton size="small" color="primary" sx={{ mr: 1 }}
+                        onClick={() => handleOpenDialog(user)} title="Editar">
+                        <Edit fontSize="small" />
+                      </IconButton>
+                      <IconButton size="small" color="error"
+                        onClick={() => handleDelete(user)} title="Eliminar" >
+                        <Delete fontSize="small" />
+                      </IconButton>
                     </TableCell>
                   </TableRow>
                 ))}

@@ -25,6 +25,8 @@ import {
 import { getAllTables, createTable, deleteTable } from "../../services/tableService"
 import SimpleTableQRCode from "../../components/SimpleTableQRCode"
 import CreateTableDialog from "../../components/CreateTableDialog"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faTable, faPlus, faEye, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons"
 
 export default function TableManagement() {
   const [tables, setTables] = useState([])
@@ -105,10 +107,12 @@ export default function TableManagement() {
         <CardContent>
           <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
             <Typography variant="h5" gutterBottom>
-              □ Gestión de Mesas
+              <FontAwesomeIcon icon={faTable} style={{ marginRight: 8 }} />
+              Gestión de Mesas
             </Typography>
             <Button variant="contained" color="primary" onClick={() => setCreateDialogOpen(true)}>
-              + Agregar Mesa
+              <FontAwesomeIcon icon={faPlus} style={{ marginRight: 6 }} />
+              Agregar Mesa
             </Button>
           </Box>
 
@@ -148,20 +152,13 @@ export default function TableManagement() {
                     </TableCell>
                     <TableCell>
                       <Button size="small" sx={{ mr: 1 }} onClick={() => handleShowQR(table)}>
-                        👁️
+                        <FontAwesomeIcon icon={faEye} />
                       </Button>
-                      <Button size="small" sx={{ mr: 1 }} disabled>
-                        ✎
-                      </Button>
-                      <Button
-                        size="small"
-                        color="error"
-                        onClick={() => {
-                          setTableToDelete(table)
-                          setDeleteDialogOpen(true)
-                        }}
-                      >
-                        ×
+                      <Button size="small" color="error" onClick={() => {
+                        setTableToDelete(table)
+                        setDeleteDialogOpen(true)
+                      }} >
+                        <FontAwesomeIcon icon={faTrash} />
                       </Button>
                     </TableCell>
                   </TableRow>

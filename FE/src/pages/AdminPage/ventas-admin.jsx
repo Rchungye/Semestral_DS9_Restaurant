@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react"
 import { Card, CardContent, Typography, Grid, Box, LinearProgress, CircularProgress, Alert } from "@mui/material"
 import { getWeeklyData } from "../../services/salesService"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faChartLine } from "@fortawesome/free-solid-svg-icons"
 
 export default function SalesAnalytics() {
   const [weeklyData, setWeeklyData] = useState([])
@@ -44,7 +46,8 @@ export default function SalesAnalytics() {
     <Card>
       <CardContent>
         <Typography variant="h5" gutterBottom>
-          ▲ Análisis de Ventas
+          <FontAwesomeIcon icon={faChartLine} style={{ marginRight: 6 }} />
+          Análisis de Ventas
         </Typography>
 
         {error && (
