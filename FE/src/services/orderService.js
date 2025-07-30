@@ -184,3 +184,14 @@ export const fetchKitchenOrders = async () => {
     return []
   }
 }
+
+// Función sencilla de polling
+export const fetchKitchenOrdersPolling = async () => {
+  try {
+    const response = await ApiService.get("/api/kitchen/orders/poll");
+    return response.data;
+  } catch (error) {
+    console.error("Error in kitchen orders polling:", error);
+    return [];
+  }
+};

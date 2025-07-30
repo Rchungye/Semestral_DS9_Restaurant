@@ -86,7 +86,7 @@ export const updateOrder = async (request, reply) => {
   try {
     const idIncremental = request.params.id
     const data = request.body
-    
+
     const updatedOrder = await orderRepo.updateOrder(idIncremental, data)
     if (!updatedOrder) {
       return reply.code(404).send({ error: 'Order not found' })
@@ -107,7 +107,7 @@ export const deleteOrder = async (request, reply) => {
     if (!deleted) {
       return reply.code(404).send({ error: 'Order not found' })
     }
-    return reply.code(200).send({ 
+    return reply.code(200).send({
       message: 'Order deleted successfully',
       id: parseInt(idIncremental)
     })
@@ -136,16 +136,16 @@ export const updateOrderStatus = async (request, reply) => {
   try {
     const idIncremental = request.params.id
     const { status } = request.body
-    
+
     if (!status) {
       return reply.code(400).send({ error: 'Status is required' })
     }
-    
+
     const updatedOrder = await orderRepo.updateOrderStatus(idIncremental, status)
     if (!updatedOrder) {
       return reply.code(404).send({ error: 'Order not found' })
     }
-    
+
     return reply.code(200).send({
       message: `Order status updated to ${status}`,
       order: updatedOrder
@@ -176,11 +176,11 @@ export const getOrdersByStatus = async (request, reply) => {
 export const getOrdersByType = async (request, reply) => {
   try {
     const type = request.params.type
-    
+
     if (type && !['local', 'takeout'].includes(type)) {
       return reply.code(400).send({ error: 'Invalid order type' })
     }
-    
+
     const orders = await orderRepo.getOrdersByType(type)
     return orders
   } catch (error) {
@@ -203,7 +203,7 @@ export const getDailyStats = async (request, reply) => {
   try {
     const date = request.query.date || new Date().toISOString().split('T')[0]
     const stats = await orderRepo.getDailyStats(date)
-    
+
     // Formatear respuesta para mejor comprensión
     const formattedStats = {
       date,
@@ -220,7 +220,7 @@ export const getDailyStats = async (request, reply) => {
         totalRevenue: stats.reduce((sum, stat) => sum + stat.totalRevenue, 0)
       }
     }
-    
+
     return formattedStats
   } catch (error) {
     return reply.code(500).send({ error: 'Error retrieving daily stats' })
@@ -240,3 +240,15 @@ export const getOrderByInvoice = async (request, reply) => {
     return reply.code(500).send({ error: 'Error retrieving order by invoice' })
   }
 }
+
+
+// Polling sencillo para cocina
+export const getKitchenOrdersPolling = async (request, reply) => {
+  try {
+    const orders = await orderRepo.getOrdersForKitchen();
+    return reply.code(200).send(orders);
+  } catch (error) {
+    console.error('Error in kitchen polling:', error);
+    return reply.code(500).send({ error: 'Error retrieving kitchen orders' });
+  }
+};

@@ -11,7 +11,8 @@ import {
     getOrdersByType,
     getTodayOrders,
     getDailyStats,
-    getOrderByInvoice
+    getOrderByInvoice,
+    getKitchenOrdersPolling,
 } from './OrderService.js'
 
 import { verificarAdmin, verificarCocina } from '../../common/middleware/AuthMiddleware.js'
@@ -22,35 +23,31 @@ export function orderAdminRoutes(fastify) {
         { preHandler: verificarAdmin },
         listOrders)
     fastify.get('/api/admin/orders/:id',
-        { preHandler: verificarAdmin }, 
+        { preHandler: verificarAdmin },
         getOrder)
     fastify.put('/api/admin/orders/:id',
-        { preHandler: verificarAdmin }, 
+        { preHandler: verificarAdmin },
         updateOrder)
     fastify.delete('/api/admin/orders/:id',
-        { preHandler: verificarAdmin }, 
+        { preHandler: verificarAdmin },
         deleteOrder)
-
-
 
     // US-023: Supervisar flujo en tiempo real de pedidos
     fastify.get('/api/admin/orders/monitor',
-        { preHandler: verificarAdmin }, 
+        { preHandler: verificarAdmin },
         getOrdersByStatus)
     // US-021: Estadísticas de ventas diarias
     fastify.get('/api/admin/dashboard/stats',
-        { preHandler: verificarAdmin }, 
+        { preHandler: verificarAdmin },
         getDailyStats)
     // Órdenes de hoy para dashboard
     fastify.get('/api/admin/orders/today',
-        { preHandler: verificarAdmin }, 
+        { preHandler: verificarAdmin },
         getTodayOrders)
     // Órdenes por tipo (local/takeout) para análisis
     fastify.get('/api/admin/orders/type/:type',
-        { preHandler: verificarAdmin }, 
+        { preHandler: verificarAdmin },
         getOrdersByType)
-
-
 
 }
 
@@ -98,6 +95,11 @@ export function orderChefRoutes(fastify) {
     fastify.patch('/api/kitchen/orders/:id/status',
         { preHandler: verificarCocina },
         updateOrderStatus)
+
+    // Ruta sencilla de polling
+    fastify.get('/api/kitchen/orders/poll',
+        { preHandler: verificarCocina },
+        getKitchenOrdersPolling)
 
 }
 
