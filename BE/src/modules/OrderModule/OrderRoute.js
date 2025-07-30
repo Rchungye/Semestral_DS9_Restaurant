@@ -58,6 +58,26 @@ export function orderAdminRoutes(fastify) {
 export function orderPublicRoutes(fastify) {
     // Endpoint general para crear pedido (sin tipo obligatorio)
     fastify.post('/api/orders', createOrder)
+    // Endpoint público para actualizar estado a 'pendiente' solo si está 'unpaid'
+    fastify.patch('/api/orders/:id/status', async (request, reply) => {
+        const id = request.params.id;
+        const { status } = request.body;
+        if (status !== 'pendiente') {
+            return reply.code(400).send({ error: 'Solo se permite cambiar a estado pendiente' });
+        }
+        // Importar el modelo Order directamente
+        const Order = (await import('./OrderModel.js')).default;
+        const order = await Order.findById(id);
+        if (!order) {
+            return reply.code(404).send({ error: 'Order not found' });
+        }
+        if (order.status !== 'unpaid') {
+            return reply.code(400).send({ error: 'Solo se puede cambiar a pendiente si el estado es unpaid' });
+        }
+        order.status = 'pendiente';
+        await order.save();
+        return reply.code(200).send({ message: 'Estado actualizado a pendiente', order });
+    });
     // US-001: Crear pedido local via QR (escaneo de mesa)
     fastify.post('/api/orders/local', createOrder)
     // US-008: Crear pedido para llevar (sin QR)

@@ -82,9 +82,8 @@ const Home = () => {
     const orderPayload = {
       subtotal: total,
       total: total,
-      note: cartNote,
-      cartItems, // Ahora se envía el carrito completo al backend
-      // type y otros campos no son obligatorios, pero puedes agregar si quieres
+      notes: cartNote, 
+      cartItems, 
     };
     console.log(orderPayload);
     const orderRes = await fetch('http://localhost:3000/api/orders', {
@@ -96,12 +95,15 @@ const Home = () => {
       alert('Error al crear el pedido');
       return;
     }
+    const orderData = await orderRes.json();
+    // Guardar el orderId en localStorage para usarlo en /success
+    localStorage.setItem('lastOrderId', orderData._id);
     // 2. Continuar con Stripe solo si el pedido se creó correctamente
     const stripe = await stripePromise;
     const response = await fetch('http://localhost:3000/api/stripe/create-checkout-session', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ cartItems, note: cartNote }),
+      body: JSON.stringify({ cartItems, note: cartNote, orderId: orderData._id }),
     });
     const data = await response.json();
     if (data.url) {
