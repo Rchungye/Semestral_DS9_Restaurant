@@ -1,6 +1,5 @@
 // src/pages/KitchenPage/kitchen.jsx
 
-import { useState } from "react";
 import { KitchenHeader } from "./kitchen-header.jsx";
 import { StatusCounters } from "../../components/status-counters.jsx"
 import { OrderCard } from "../../components/order-card.jsx"

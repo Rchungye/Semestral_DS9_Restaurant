@@ -39,12 +39,12 @@ const Home = () => {
   const [searchParams] = useSearchParams()
 
   useEffect(() => {
-  const mesa = searchParams.get("mesa");
-  if (mesa) {
-    setOrderType("local");
-    setTableNumber(mesa);
-  }
-}, [searchParams]);
+    const mesa = searchParams.get("mesa");
+    if (mesa) {
+      setOrderType("local");
+      setTableNumber(mesa);
+    }
+  }, [searchParams]);
 
   const handleAddToCart = (dish) => {
     setCartItems((prev) => {
@@ -82,8 +82,8 @@ const Home = () => {
     const orderPayload = {
       subtotal: total,
       total: total,
-      notes: cartNote, 
-      cartItems, 
+      notes: cartNote,
+      cartItems,
       type: orderType,
       tableNumber: orderType === "local" && tableNumber ? tableNumber : undefined,
     };
@@ -167,97 +167,71 @@ const Home = () => {
   return (
     <>
       <Navbar onCartClick={() => setCartOpen(true)} cartCount={cartItems.length} />
-        <Drawer anchor="right" open={cartOpen} onClose={() => setCartOpen(false)}>
-          <Box sx={{ width: 350, p: 2, display: "flex", flexDirection: "column", height: "100%" }}>
-            <Typography variant="h5" fontWeight="bold" gutterBottom>
-              Tu carrito
-            </Typography>
-            {cartItems.length === 0 ? (
-              <Typography color="text.secondary">El carrito está vacío.</Typography>
-            ) : (
-              <>
-                {cartItems.map((item, idx) => (
-                  <Box key={idx} sx={{ mb: 2, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <Box>
-                      <Typography variant="subtitle1">{item.name}</Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        ${item.price} x {item.quantity}
-                      </Typography>
-                    </Box>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                      <IconButton size="small" onClick={() => handleQuantityChange(idx, -1)} disabled={item.quantity === 1}>
-                        <Remove fontSize="small" />
-                      </IconButton>
-                      <Typography>{item.quantity}</Typography>
-                      <IconButton size="small" onClick={() => handleQuantityChange(idx, 1)}>
-                        <Add fontSize="small" />
-                      </IconButton>
-                      <IconButton size="small" color="error" onClick={() => handleRemoveFromCart(idx)}>
-                        <Delete fontSize="small" />
-                      </IconButton>
-                    </Box>
+      <Drawer anchor="right" open={cartOpen} onClose={() => setCartOpen(false)}>
+        <Box sx={{ width: 350, p: 2, display: "flex", flexDirection: "column", height: "100%" }}>
+          <Typography variant="h5" fontWeight="bold" gutterBottom>
+            Tu carrito
+          </Typography>
+          {cartItems.length === 0 ? (
+            <Typography color="text.secondary">El carrito está vacío.</Typography>
+          ) : (
+            <>
+              {cartItems.map((item, idx) => (
+                <Box key={idx} sx={{ mb: 2, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <Box>
+                    <Typography variant="subtitle1">{item.name}</Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      ${item.price} x {item.quantity}
+                    </Typography>
                   </Box>
-                ))}
-                <Box sx={{ my: 2 }}>
-                  <Typography variant="subtitle1" fontWeight="bold">
-                    Total: ${total.toFixed(2)}
-                  </Typography>
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                    <IconButton size="small" onClick={() => handleQuantityChange(idx, -1)} disabled={item.quantity === 1}>
+                      <Remove fontSize="small" />
+                    </IconButton>
+                    <Typography>{item.quantity}</Typography>
+                    <IconButton size="small" onClick={() => handleQuantityChange(idx, 1)}>
+                      <Add fontSize="small" />
+                    </IconButton>
+                    <IconButton size="small" color="error" onClick={() => handleRemoveFromCart(idx)}>
+                      <Delete fontSize="small" />
+                    </IconButton>
+                  </Box>
                 </Box>
-                {/* Selección de tipo de pedido */}
-                <Box sx={{ mb: 2 }}>
-                  <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                    ¿Cómo comerás?
-                  </Typography>
-                  <Button
-                    variant={orderType === "local" ? "contained" : "outlined"}
-                    color="primary"
-                    sx={{ mr: 1 }}
-                    onClick={() => setOrderType("local")}
-                  >
-                    Local
-                  </Button>
-                  <Button
-                    variant={orderType === "takeout" ? "contained" : "outlined"}
-                    color="primary"
-                    onClick={() => setOrderType("takeout")}
-                  >
-                    Retiro
-                  </Button>
-                </Box>
-                {/* Si es local, pedir número de mesa */}
-                {orderType === "local" && (
-                  <TextField
-                    label="Número de mesa (opcional)"
-                    type="number"
-                    value={tableNumber}
-                    onChange={e => setTableNumber(e.target.value)}
-                    sx={{ mb: 2 }}
-                    fullWidth
-                  />
-                )}
-                <TextField
-                  label="Anotaciones"
-                  multiline
-                  minRows={2}
-                  fullWidth
-                  value={cartNote}
-                  onChange={e => setCartNote(e.target.value)}
-                  sx={{ mb: 2 }}
-                />
-                <Button
-                  variant="contained"
-                  color="primary"
-                  fullWidth
-                  sx={{ mt: 1 }}
-                  disabled={cartItems.length === 0}
-                  onClick={handleCheckout}
-                >
-                  Ir a pagar
+              ))}
+              <Box sx={{ my: 2 }}>
+                <Typography variant="subtitle1" fontWeight="bold">
+                  Total: ${total.toFixed(2)}
+                </Typography>
+              </Box>
+              {/* Selección de tipo de pedido */}
+              <Box sx={{ mb: 2 }}>
+                <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                  ¿Cómo comerás?
+                </Typography>
+                <Button variant={orderType === "local" ? "contained" : "outlined"} color="primary"
+                  sx={{ mr: 1 }} onClick={() => setOrderType("local")}>
+                  Local
                 </Button>
-              </>
-            )}
-          </Box>
-        </Drawer>
+                <Button variant={orderType === "takeout" ? "contained" : "outlined"}
+                  color="primary" onClick={() => setOrderType("takeout")}>
+                  Retiro
+                </Button>
+              </Box>
+              {/* Si es local, pedir número de mesa */}
+              {orderType === "local" && (
+                <TextField label="Número de mesa (opcional)" type="number" value={tableNumber}
+                  onChange={e => setTableNumber(e.target.value)} sx={{ mb: 2 }} fullWidth />
+              )}
+              <TextField label="Anotaciones" multiline minRows={2} fullWidth
+                value={cartNote} onChange={e => setCartNote(e.target.value)} sx={{ mb: 2 }} />
+              <Button variant="contained" color="primary" fullWidth sx={{ mt: 1 }}
+                disabled={cartItems.length === 0} onClick={handleCheckout} >
+                Ir a pagar
+              </Button>
+            </>
+          )}
+        </Box>
+      </Drawer>
       <AdsFood />
 
       {/* Hero Section con estadísticas */}
@@ -355,26 +329,12 @@ const Home = () => {
         {/* Header del menú con búsqueda */}
         <Box sx={{ mb: 4 }}>
           <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 3 }}>
-            <Typography
-              variant="h3"
-              sx={{
-                fontWeight: 700,
-                fontSize: { xs: "2rem", md: "2.5rem" },
-                color: "text.primary",
-              }}
-            >
+            <Typography variant="h3"
+              sx={{ fontWeight: 700, fontSize: { xs: "2rem", md: "2.5rem" }, color: "text.primary", }} >
               Nuestro Menú
             </Typography>
-            <Button
-              variant="outlined"
-              startIcon={<FilterList />}
-              onClick={() => setMostrarFiltros(!mostrarFiltros)}
-              sx={{
-                borderRadius: 3,
-                textTransform: "none",
-                fontWeight: 600,
-              }}
-            >
+            <Button variant="outlined" startIcon={<FilterList />} onClick={() => setMostrarFiltros(!mostrarFiltros)}
+              sx={{ borderRadius: 3,textTransform: "none",fontWeight: 600,}} >
               Filtros
             </Button>
           </Box>

@@ -3,7 +3,7 @@ import { ShoppingCart } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 
 const Navbar = ({ onCartClick, cartCount = 0 }) => {
-  
+
   const getRoutePath = (item) => {
     switch (item.toLowerCase()) {
       case 'inicio':
@@ -34,15 +34,15 @@ const Navbar = ({ onCartClick, cartCount = 0 }) => {
           }
         }}
       >
-        <Toolbar 
-          sx={{ 
+        <Toolbar
+          sx={{
             justifyContent: 'space-between',
             py: 1.5,
             px: { xs: 2, md: 4 }
           }}
         >
           {/* Logo mejorado */}
-          <Box 
+          <Box
             component={Link}
             to="/"
             sx={{
@@ -57,7 +57,7 @@ const Navbar = ({ onCartClick, cartCount = 0 }) => {
             }}
           >
             <Typography>
-              🐼 
+              🐼
             </Typography>
             <Typography
               variant="h4"
@@ -73,13 +73,13 @@ const Navbar = ({ onCartClick, cartCount = 0 }) => {
                 fontSize: { xs: '1.5rem', md: '2rem' }
               }}
             >
-            Golden Panda
+              Golden Panda
             </Typography>
           </Box>
 
           {/* Navigation mejorada */}
           <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 1 }}>
-            {['Inicio','Area Staff'].map((item) => (
+            {['Inicio', 'Area Staff'].map((item) => (
               <Button
                 key={item}
                 component={Link}
@@ -118,7 +118,7 @@ const Navbar = ({ onCartClick, cartCount = 0 }) => {
                 {item}
               </Button>
             ))}
-            
+
             {/* Cart icon con badge */}
             <IconButton
               sx={{
@@ -135,8 +135,8 @@ const Navbar = ({ onCartClick, cartCount = 0 }) => {
               }}
               onClick={onCartClick}
             >
-              <Badge 
-                badgeContent={cartCount} 
+              <Badge
+                badgeContent={cartCount}
                 sx={{
                   '& .MuiBadge-badge': {
                     backgroundColor: '#d32f2f',

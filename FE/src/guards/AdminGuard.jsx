@@ -1,4 +1,4 @@
-// src/guards/AdminGuard.jsx
+// src/guards/AdminGuard.jsx - ACTUALIZADO
 import { Navigate } from 'react-router-dom';
 import { Box, CircularProgress } from '@mui/material';
 import useUserStore from '../store/userStore';
@@ -36,11 +36,13 @@ const AdminGuard = ({ children }) => {
     return <Navigate to="/login" replace />;
   }
 
-  // Redirect to appropriate page if not admin
+  // ACCESO EXCLUSIVO: Solo administradores pueden acceder
   if (user.role !== 'administrador') {
+    // Si es cocinero, redirigir a cocina
     if (user.role === 'cocinero') {
       return <Navigate to="/kitchen" replace />;
     }
+    // Para otros roles, redirigir a home
     return <Navigate to="/" replace />;
   }
 

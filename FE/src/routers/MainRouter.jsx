@@ -1,4 +1,4 @@
-// src/routers/MainRouter.jsx
+// src/routers/MainRouter.jsx - ACTUALIZADO
 import { Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
 import Home from "../pages/Home";
@@ -27,7 +27,7 @@ const MainRouter = () => {
             <Route path="/success" element={<Success />} />
             <Route path="/cancel" element={<Cancel />} />
 
-            {/* Protected routes */}
+            {/* Protected routes with EXCLUSIVE access */}
             <Route
                 path="/kitchen"
                 element={
@@ -38,6 +38,16 @@ const MainRouter = () => {
             />
             <Route
                 path="/admin"
+                element={
+                    <AdminGuard>
+                        <Admin />
+                    </AdminGuard>
+                }
+            />
+
+            {/* Catch-all route for admin panel subroutes */}
+            <Route
+                path="/admin/*"
                 element={
                     <AdminGuard>
                         <Admin />

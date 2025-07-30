@@ -1,7 +1,9 @@
 // src/pages/Login/LoginForm.jsx
-import { Box, Button, TextField, Typography, Paper, Alert, CircularProgress } from "@mui/material";
+import { Box, Button, TextField, Typography, Paper, Alert, CircularProgress, InputAdornment, IconButton } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPaw, faUser, faLock, faSignInAlt, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import useUserStore from "../../store/userStore";
 
 export default function LoginForm() {
@@ -11,35 +13,24 @@ export default function LoginForm() {
 
   const { login, isLoading, error, clearError, isAuthenticated, user } = useUserStore();
 
-  // Clear error when component mounts
   useEffect(() => {
     clearError();
   }, [clearError]);
 
-  // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated && user) {
-      if (user.role === 'administrador') {
-        navigate('/admin');
-      } else if (user.role === 'cocinero') {
-        navigate('/kitchen');
+      if (user.role === "administrador") {
+        navigate("/admin");
+      } else if (user.role === "cocinero") {
+        navigate("/kitchen");
       }
     }
   }, [isAuthenticated, user, navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
-    if (!username.trim() || !password.trim()) {
-      return;
-    }
-
-    const result = await login(username.trim(), password);
-
-    if (result.success) {
-      // Navigation will be handled by useEffect above
-      console.log('Login successful:', result.user);
-    }
+    if (!username.trim() || !password.trim()) return;
+    await login(username.trim(), password);
   };
 
   return (
@@ -69,6 +60,13 @@ export default function LoginForm() {
             onChange={(e) => setUsername(e.target.value)}
             disabled={isLoading}
             required
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <FontAwesomeIcon icon={faUser} />
+                </InputAdornment>
+              ),
+            }}
           />
           <TextField
             label="Contraseña"
@@ -79,6 +77,13 @@ export default function LoginForm() {
             onChange={(e) => setPassword(e.target.value)}
             disabled={isLoading}
             required
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <FontAwesomeIcon icon={faLock} />
+                </InputAdornment>
+              ),
+            }}
           />
 
           {error && (
@@ -101,7 +106,10 @@ export default function LoginForm() {
                 Iniciando sesión...
               </>
             ) : (
-              'Acceder'
+              <>
+                <FontAwesomeIcon icon={faSignInAlt} style={{ marginRight: 8 }} />
+                Acceder
+              </>
             )}
           </Button>
         </form>
@@ -114,6 +122,7 @@ export default function LoginForm() {
             onClick={() => navigate("/")}
             disabled={isLoading}
           >
+            <FontAwesomeIcon icon={faArrowLeft} style={{ marginRight: 6 }} />
             Volver
           </Button>
         </Box>

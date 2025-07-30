@@ -25,7 +25,8 @@ import {
   faChartLine,
   faTable,
   faTags,
-  faUser
+  faUser,
+  faRightFromBracket
 } from "@fortawesome/free-solid-svg-icons"
 
 import useUserStore from "../../store/userStore"
@@ -76,6 +77,11 @@ export default function AdminDashboard() {
     setActiveSection(section)
   }
 
+  // Función para navegar al home
+  const handleLogoClick = () => {
+    navigate("/")
+  }
+
   const renderContent = () => {
     switch (activeSection) {
       case "dashboard":
@@ -100,9 +106,41 @@ export default function AdminDashboard() {
   const drawer = (
     <Box>
       <Toolbar>
-        <Typography variant="h6" noWrap component="div" sx={{ fontWeight: "bold", color: "#ffa726" }}>
-          🐼 Golden Panda
-        </Typography>
+        {/* Logo clickeable con el mismo estilo del Navbar */}
+        <Box
+          onClick={handleLogoClick}
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            textDecoration: 'none',
+            gap: 1.5,
+            cursor: 'pointer',
+            transition: 'transform 0.2s ease',
+            '&:hover': {
+              transform: 'scale(1.02)',
+            }
+          }}
+        >
+          <Typography sx={{ fontSize: '1.5rem' }}>
+            🐼
+          </Typography>
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 800,
+              fontFamily: '"Playfair Display", "Times New Roman", serif',
+              background: 'linear-gradient(45deg, #ffa726, #ffcc02)',
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
+              letterSpacing: '1px',
+              fontSize: '1.2rem'
+            }}
+          >
+            Golden Panda
+          </Typography>
+        </Box>
       </Toolbar>
       <List sx={{ px: 2 }}>
         {sidebarItems.map((item) => (
@@ -168,7 +206,10 @@ export default function AdminDashboard() {
                   Cerrando...
                 </>
               ) : (
-                "× Cerrar Sesión"
+                <>
+                  <FontAwesomeIcon icon={faRightFromBracket} style={{ marginRight: 6 }} />
+                  Cerrar Sesión
+                </>
               )}
             </Button>
           </Box>

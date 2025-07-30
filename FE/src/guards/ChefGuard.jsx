@@ -1,4 +1,4 @@
-// src/guards/ChefGuard.jsx
+// src/guards/ChefGuard.jsx - ACTUALIZADO
 import { Navigate } from 'react-router-dom';
 import { Box, CircularProgress } from '@mui/material';
 import useUserStore from '../store/userStore';
@@ -36,12 +36,17 @@ const ChefGuard = ({ children }) => {
     return <Navigate to="/login" replace />;
   }
 
-  // Check if user has chef or admin role (both can access kitchen)
-  if (!['cocinero', 'administrador'].includes(user.role)) {
+  // ACCESO EXCLUSIVO: Solo cocineros pueden acceder a kitchen
+  if (user.role !== 'cocinero') {
+    // Si es administrador, redirigir a admin
+    if (user.role === 'administrador') {
+      return <Navigate to="/admin" replace />;
+    }
+    // Para otros roles, redirigir a home
     return <Navigate to="/" replace />;
   }
 
-  // User is authenticated and has appropriate role
+  // User is authenticated and is chef
   return children;
 };
 
