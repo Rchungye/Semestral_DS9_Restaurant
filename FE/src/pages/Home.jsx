@@ -82,9 +82,8 @@ const Home = () => {
     const orderPayload = {
       subtotal: total,
       total: total,
-      note: cartNote,
-      cartItems, // Ahora se envía el carrito completo al backend
-      // type y otros campos no son obligatorios, pero puedes agregar si quieres
+      notes: cartNote, 
+      cartItems, 
     };
     console.log(orderPayload);
     const orderRes = await fetch('http://localhost:3000/api/orders', {

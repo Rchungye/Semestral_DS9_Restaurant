@@ -56,7 +56,6 @@ export const createOrder = async (request, reply) => {
           quantity: item.quantity,
           unitPrice: item.price,
           subtotal: item.price * item.quantity,
-          specialInstructions: item.note || ''
         };
         console.log('Creando OrderDetail:', detailPayload);
         const createdDetail = await orderDetailRepo.createOrderDetail(detailPayload);

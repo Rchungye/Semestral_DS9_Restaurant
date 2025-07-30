@@ -40,9 +40,9 @@ export default function KitchenDashboard() {
               : 'Para Llevar',
           items: (order.details || []).map(item => ({
             quantity: item.quantity,
-            name: item.dishId?.name || 'Platillo',
-            note: item.specialInstructions || ''
+            name: item.dishId?.name || 'Platillo'
           })),
+          note: order.notes || '',
           status: order.status
         }));
         console.log('MAPPED PARA UI', mapped);
@@ -137,6 +137,7 @@ export default function KitchenDashboard() {
                   key={order.id}
                   mesa={order.mesa}
                   items={order.items}
+                  note={order.note}
                   status={order.status}
                   onAction={() => handleOrderAction(order.id)}
                 />

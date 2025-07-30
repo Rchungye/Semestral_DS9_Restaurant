@@ -1,6 +1,6 @@
 import { Button, Card, CardContent, CardHeader } from '@mui/material';
 
-export function OrderCard({ mesa, items, status, onAction }) {
+export function OrderCard({ mesa, items, status, onAction, note }) {
   const getStatusConfig = () => {
     switch (status) {
       case "pendiente":
@@ -43,11 +43,17 @@ export function OrderCard({ mesa, items, status, onAction }) {
         title={<span style={{ fontWeight: "bold", fontSize: "1.1rem" }}>{mesa}</span>}
       />
       <CardContent style={{ paddingTop: 16 }}>
+        {/* Mostrar nota global si existe */}
+        {typeof note === 'string' && note.trim() !== '' && (
+          <div style={{ marginBottom: 10 }}>
+            <span style={{ fontSize: "0.95rem", fontStyle: "italic", color: "#374151" }}>Anotaciones: "{note}"</span>
+          </div>
+        )}
         <div style={{ marginBottom: 16 }}>
           {items.map((item, index) => (
             <div key={index} style={{ display: "flex", justifyContent: "space-between", alignItems: "start", marginBottom: 4 }}>
               <span>{item.quantity}x {item.name}</span>
-              {item.note && <span style={{ fontSize: "0.8rem", fontStyle: "italic", color: "#6B7280" }}>"{item.note}"</span>}
+              {/* Si algún día hay nota por item, mostrar aquí */}
             </div>
           ))}
         </div>
