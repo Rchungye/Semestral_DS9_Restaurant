@@ -6,14 +6,15 @@ export const generateInvoiceHTML = (invoiceData) => {
         customerEmail,
         invoiceNumber,
         orderNumber,
-        orderType,
+        orderType, // 'local' o 'takeout' (basado en Order.type)
         tableNumber,
-        items,
+        orderDetails, // Array de OrderDetail con datos de platillos
         subtotal,
-        tax,
+        taxAmount,
         total,
         orderDate,
-        estimatedTime
+        estimatedTime,
+        notes
     } = invoiceData;
 
     const formatCurrency = (amount) => {
@@ -354,27 +355,25 @@ export const generateInvoiceHTML = (invoiceData) => {
                 <!-- Order Items -->
                 <div class="items-section">
                     <h3>🍜 Detalles del Pedido</h3>
-                    ${items.map(item => `
+                    ${orderDetails?.map(detail => `
                         <div class="item">
                             <div class="item-details">
                                 <div class="item-name">
-                                    <span class="quantity">${item.quantity}</span>
-                                    ${item.name}
+                                    <span class="quantity">${detail.quantity}</span>
+                                    ${detail.dishName || detail.dish?.name || 'Platillo'}
                                 </div>
-                                ${item.customizations ? `
-                                    <div class="item-customizations">
-                                        <strong>Personalización:</strong> ${item.customizations}
-                                    </div>
-                                ` : ''}
-                                ${item.observations ? `
+                                <div class="item-customizations">
+                                    <strong>Precio unitario:</strong> ${formatCurrency(detail.unitPrice)}
+                                </div>
+                                ${detail.notes ? `
                                     <div class="item-observations">
-                                        <strong>Observaciones:</strong> ${item.observations}
+                                        <strong>Observaciones:</strong> ${detail.notes}
                                     </div>
                                 ` : ''}
                             </div>
-                            <div class="item-price">${formatCurrency(item.totalPrice)}</div>
+                            <div class="item-price">${formatCurrency(detail.subtotal)}</div>
                         </div>
-                    `).join('')}
+                    `).join('') || '<p>No hay detalles del pedido disponibles</p>'}
                 </div>
                 
                 <!-- Totals -->
@@ -383,10 +382,12 @@ export const generateInvoiceHTML = (invoiceData) => {
                         <span>Subtotal:</span>
                         <span>${formatCurrency(subtotal)}</span>
                     </div>
-                    <div class="total-row">
-                        <span>Impuestos (7%):</span>
-                        <span>${formatCurrency(tax)}</span>
-                    </div>
+                    ${taxAmount ? `
+                        <div class="total-row">
+                            <span>Impuestos (ITBMS 7%):</span>
+                            <span>${formatCurrency(taxAmount)}</span>
+                        </div>
+                    ` : ''}
                     <div class="total-row final">
                         <span>TOTAL:</span>
                         <span>${formatCurrency(total)}</span>
@@ -419,6 +420,11 @@ export const generateInvoiceHTML = (invoiceData) => {
                         `}
                         <li>Si tienes alguna pregunta, no dudes en contactarnos</li>
                     </ul>
+                    ${notes ? `
+                        <div style="margin-top: 10px; padding: 10px; background-color: #fff3cd; border-radius: 5px;">
+                            <strong>Notas del pedido:</strong> ${notes}
+                        </div>
+                    ` : ''}
                 </div>
             </div>
             
