@@ -1,16 +1,77 @@
-import { Grid, Card, CardContent, Typography, Box, LinearProgress } from "@mui/material"
+"use client"
 
-const weeklyData = [
-  { name: "Lun", sales: 1200, percentage: 33 },
-  { name: "Mar", sales: 1900, percentage: 53 },
-  { name: "Mié", sales: 1100, percentage: 31 },
-  { name: "Jue", sales: 2400, percentage: 67 },
-  { name: "Vie", sales: 3100, percentage: 86 },
-  { name: "Sáb", sales: 3600, percentage: 100 },
-  { name: "Dom", sales: 3400, percentage: 94 },
-]
+import { useState, useEffect } from "react"
+import { Grid, Card, CardContent, Typography, Box, LinearProgress, CircularProgress, Alert } from "@mui/material"
+import { getDashboardMetrics, getWeeklyDashboardData, getOrderTypesStats } from "../../services/salesService"
 
 export default function DashboardOverview() {
+  const [metrics, setMetrics] = useState(null)
+  const [weeklyData, setWeeklyData] = useState([])
+  const [orderTypes, setOrderTypes] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+
+        const [metricsData, weeklyDataResult, orderTypesData] = await Promise.all([
+          getDashboardMetrics(),
+          getWeeklyDashboardData(),
+          getOrderTypesStats(),
+        ])
+
+        setMetrics(metricsData)
+        setWeeklyData(weeklyDataResult)
+        setOrderTypes(orderTypesData)
+      } catch (err) {
+        console.error("Error loading dashboard data:", err)
+        setError("Error al cargar los datos del dashboard")
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchDashboardData()
+  }, [])
+
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat("es-PA", {
+      style: "currency",
+      currency: "USD",
+    }).format(amount)
+  }
+
+  const formatPercentage = (percentage) => {
+    const sign = percentage >= 0 ? "+" : ""
+    return `${sign}${percentage.toFixed(1)}%`
+  }
+
+  const getGrowthColor = (growth) => {
+    return growth >= 0 ? "success.main" : "error.main"
+  }
+
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+        <CircularProgress />
+        <Typography variant="body2" sx={{ ml: 2 }}>
+          Cargando dashboard...
+        </Typography>
+      </Box>
+    )
+  }
+
+  if (error) {
+    return (
+      <Alert severity="error" sx={{ mb: 3 }}>
+        {error}
+      </Alert>
+    )
+  }
+
   return (
     <>
       {/* Metrics Cards */}
@@ -22,14 +83,15 @@ export default function DashboardOverview() {
                 $ Ingresos Totales
               </Typography>
               <Typography variant="h4" component="div" sx={{ fontWeight: "bold" }}>
-                $15,231
+                {formatCurrency(metrics?.totalRevenue || 0)}
               </Typography>
-              <Typography variant="body2" color="success.main">
-                +20.1% desde el mes pasado
+              <Typography variant="body2" color={getGrowthColor(metrics?.revenueGrowth || 0)}>
+                {formatPercentage(metrics?.revenueGrowth || 0)} desde el mes pasado
               </Typography>
             </CardContent>
           </Card>
         </Grid>
+
         <Grid item xs={12} sm={6} md={3}>
           <Card>
             <CardContent>
@@ -37,14 +99,15 @@ export default function DashboardOverview() {
                 • Pedidos
               </Typography>
               <Typography variant="h4" component="div" sx={{ fontWeight: "bold" }}>
-                624
+                {metrics?.totalOrders || 0}
               </Typography>
-              <Typography variant="body2" color="success.main">
-                +15% desde el mes pasado
+              <Typography variant="body2" color={getGrowthColor(metrics?.ordersGrowth || 0)}>
+                {formatPercentage(metrics?.ordersGrowth || 0)} desde el mes pasado
               </Typography>
             </CardContent>
           </Card>
         </Grid>
+
         <Grid item xs={12} sm={6} md={3}>
           <Card>
             <CardContent>
@@ -52,14 +115,15 @@ export default function DashboardOverview() {
                 ◦ Clientes
               </Typography>
               <Typography variant="h4" component="div" sx={{ fontWeight: "bold" }}>
-                1,234
+                {metrics?.totalCustomers || 0}
               </Typography>
-              <Typography variant="body2" color="success.main">
-                +8% desde el mes pasado
+              <Typography variant="body2" color={getGrowthColor(metrics?.customersGrowth || 0)}>
+                {formatPercentage(metrics?.customersGrowth || 0)} desde el mes pasado
               </Typography>
             </CardContent>
           </Card>
         </Grid>
+
         <Grid item xs={12} sm={6} md={3}>
           <Card>
             <CardContent>
@@ -67,10 +131,10 @@ export default function DashboardOverview() {
                 ↗ Crecimiento
               </Typography>
               <Typography variant="h4" component="div" sx={{ fontWeight: "bold" }}>
-                +12.5%
+                {formatPercentage(metrics?.overallGrowth || 0)}
               </Typography>
-              <Typography variant="body2" color="success.main">
-                +2% desde el mes pasado
+              <Typography variant="body2" color={getGrowthColor(metrics?.overallGrowth || 0)}>
+                Promedio general
               </Typography>
             </CardContent>
           </Card>
@@ -91,7 +155,7 @@ export default function DashboardOverview() {
                     <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
                       <Typography variant="body2">{day.name}</Typography>
                       <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-                        ${day.sales}
+                        {formatCurrency(day.sales)}
                       </Typography>
                     </Box>
                     <LinearProgress
@@ -112,6 +176,7 @@ export default function DashboardOverview() {
             </CardContent>
           </Card>
         </Grid>
+
         <Grid item xs={12} md={4}>
           <Card>
             <CardContent>
@@ -123,12 +188,12 @@ export default function DashboardOverview() {
                   <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
                     <Typography variant="body1">• En Local</Typography>
                     <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                      65%
+                      {orderTypes?.local?.percentage || 0}%
                     </Typography>
                   </Box>
                   <LinearProgress
                     variant="determinate"
-                    value={65}
+                    value={orderTypes?.local?.percentage || 0}
                     sx={{
                       height: 12,
                       borderRadius: 6,
@@ -138,17 +203,21 @@ export default function DashboardOverview() {
                       },
                     }}
                   />
+                  <Typography variant="caption" color="textSecondary">
+                    {orderTypes?.local?.count || 0} pedidos
+                  </Typography>
                 </Box>
+
                 <Box>
                   <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
                     <Typography variant="body1">◦ Para Llevar</Typography>
                     <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                      35%
+                      {orderTypes?.takeaway?.percentage || 0}%
                     </Typography>
                   </Box>
                   <LinearProgress
                     variant="determinate"
-                    value={35}
+                    value={orderTypes?.takeaway?.percentage || 0}
                     sx={{
                       height: 12,
                       borderRadius: 6,
@@ -158,6 +227,9 @@ export default function DashboardOverview() {
                       },
                     }}
                   />
+                  <Typography variant="caption" color="textSecondary">
+                    {orderTypes?.takeaway?.count || 0} pedidos
+                  </Typography>
                 </Box>
               </Box>
             </CardContent>
