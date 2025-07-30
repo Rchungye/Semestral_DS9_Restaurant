@@ -38,7 +38,7 @@ const sidebarItems = [
   { text: "Ventas", icon: "▲", key: "sales" },
   { text: "Mesas", icon: "□", key: "tables" },
   { text: "Promociones", icon: "◆", key: "promotions" },
-  { text: "Crear Cuentas", icon: "+", key: "users" },
+  { text: "Manejar Usuarios", icon: "+", key: "users" },
 ]
 
 export default function AdminDashboard() {

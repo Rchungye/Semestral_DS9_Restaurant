@@ -2,53 +2,80 @@
 
 import QRCode from "react-qr-code"
 import { Box, Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography, Link } from "@mui/material"
+import { useRef } from "react"
 
 export default function SimpleTableQRCode({ table, open, onClose }) {
-  const downloadQRSimple = () => {
-    // Método más simple: usar un servicio online de QR
-    const qrValue = table._id
-    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qrValue)}&format=png`
+  const qrRef = useRef(null)
 
-    // Crear link de descarga
-    const link = document.createElement("a")
-    link.href = qrUrl
-    link.download = `Mesa-${table.tableNumber}-QR.png`
-    link.target = "_blank"
-    link.click()
-  }
+  const downloadQRFromSVG = () => {
+    if (!qrRef.current) return
 
-  const printQR = () => {
-    // Abrir ventana de impresión
-    const printWindow = window.open("", "_blank")
-    printWindow.document.write(`
-      <html>
-        <head>
-          <title>QR Mesa ${table.tableNumber}</title>
-          <style>
-            body { 
-              font-family: Arial, sans-serif; 
-              text-align: center; 
-              padding: 20px; 
-            }
-            .qr-container { 
-              border: 2px solid #000; 
-              padding: 20px; 
-              display: inline-block; 
-            }
-          </style>
-        </head>
-        <body>
-          <div class="qr-container">
-            <h2>🐼 Golden Panda</h2>
-            <h3>Mesa ${table.tableNumber} - ${table.capacity} personas</h3>
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(table._id)}" alt="QR Code" />
-            <p>Escanea para ver el menú</p>
-          </div>
-        </body>
-      </html>
-    `)
-    printWindow.document.close()
-    printWindow.print()
+    // Obtener el SVG del QR
+    const svg = qrRef.current.querySelector('svg')
+    if (!svg) return
+
+    // Crear un canvas para convertir SVG a imagen
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('2d')
+
+    // Configurar el tamaño del canvas (más grande para mejor calidad)
+    const size = 400
+    canvas.width = size
+    canvas.height = size + 120 // Espacio extra para texto
+
+    // Fondo blanco
+    ctx.fillStyle = 'white'
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+    // Añadir texto superior
+    ctx.fillStyle = 'black'
+    ctx.font = 'bold 20px Arial'
+    ctx.textAlign = 'center'
+    ctx.fillText('🐼 Golden Panda', size / 2, 30)
+
+    ctx.font = '16px Arial'
+    ctx.fillText(`Mesa ${table.tableNumber} - ${table.capacity} personas`, size / 2, 55)
+
+    // Convertir SVG a string
+    const svgData = new XMLSerializer().serializeToString(svg)
+    const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' })
+    const svgUrl = URL.createObjectURL(svgBlob)
+
+    // Crear imagen del SVG
+    const img = new Image()
+    img.onload = () => {
+      // Dibujar el QR en el canvas (centrado y con margen)
+      const qrSize = 300
+      const qrX = (size - qrSize) / 2
+      const qrY = 70
+      ctx.drawImage(img, qrX, qrY, qrSize, qrSize)
+
+      // Añadir texto inferior
+      ctx.font = '12px Arial'
+      ctx.fillStyle = 'gray'
+      ctx.fillText('Escanea para ver el menú', size / 2, qrY + qrSize + 25)
+
+      ctx.font = '10px Arial'
+      ctx.fillStyle = 'lightgray'
+      ctx.fillText(`ID: ${table._id}`, size / 2, qrY + qrSize + 45)
+
+      // Convertir canvas a imagen y descargar
+      canvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = url
+        link.download = `Mesa-${table.tableNumber}-QR.png`
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+
+        // Limpiar URLs
+        URL.revokeObjectURL(url)
+        URL.revokeObjectURL(svgUrl)
+      }, 'image/png', 1.0)
+    }
+
+    img.src = svgUrl
   }
 
   if (!table) return null
@@ -58,6 +85,7 @@ export default function SimpleTableQRCode({ table, open, onClose }) {
       <DialogTitle>Código QR - Mesa {table.tableNumber}</DialogTitle>
       <DialogContent>
         <Box
+          ref={qrRef}
           sx={{
             display: "flex",
             flexDirection: "column",
@@ -87,25 +115,12 @@ export default function SimpleTableQRCode({ table, open, onClose }) {
 
         {/* Opciones adicionales */}
         <Box sx={{ mt: 2, textAlign: "center" }}>
-          <Typography variant="body2" color="textSecondary">
-            También puedes:
-          </Typography>
-          <Link
-            href={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(table._id)}`}
-            target="_blank"
-            sx={{ display: "block", mt: 1 }}
-          >
-            Ver QR en tamaño grande
-          </Link>
         </Box>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Cerrar</Button>
-        <Button variant="outlined" onClick={printQR}>
-          Imprimir
-        </Button>
-        <Button variant="contained" onClick={downloadQRSimple}>
-          Descargar QR
+        <Button variant="contained" onClick={downloadQRFromSVG}>
+          Descargar QR Completo
         </Button>
       </DialogActions>
     </Dialog>
