@@ -1,12 +1,13 @@
-// src/pages/KitchenPage/kitchen.jsx
-import { useState, useEffect } from "react";
+// src/pages/KitchenPage/kitchen.jsx - VERSIÓN SENCILLA
+
+import { useState } from "react";
 import { KitchenHeader } from "./kitchen-header.jsx";
 import { StatusCounters } from "../../components/status-counters.jsx"
 import { OrderCard } from "../../components/order-card.jsx"
 import { useNavigate } from "react-router-dom";
 import useUserStore from "../../store/userStore";
-import { fetchKitchenOrders } from "../../services/orderService";
 import { updateOrderStatusKitchen } from "../../services/orderService";
+import { useSimplePolling } from "../../hooks/useOrderPolling.js";
 
 export default function KitchenDashboard() {
   const navigate = useNavigate();
@@ -18,99 +19,56 @@ export default function KitchenDashboard() {
       navigate("/login");
     } catch (error) {
       console.error("Error during logout:", error);
-      // Navigate to login anyway
       navigate("/login");
     }
   };
 
-  const [orders, setOrders] = useState([])
+  // Hook simple de polling - actualiza cada 3 segundos
+  const { orders, isLoading } = useSimplePolling(3000);
 
-  useEffect(() => {
-    const loadOrders = async () => {
-      try {
-        const data = await fetchKitchenOrders();
-        console.log('DATA DE API', data);
-        // Mapear los datos de la API al formato esperado por la UI
-        const mapped = data.map(order => ({
-          id: order._id, // para React key
-          idIncremental: order.idIncremental, // para backend
-          mesa:
-            order.type === 'local'
-              ? (order.tableId ? `Mesa ${order.tableId.tableNumber}` : 'Local (sin mesa)')
-              : 'Para Llevar',
-          items: (order.details || []).map(item => ({
-            quantity: item.quantity,
-            name: item.dishId?.name || 'Platillo'
-          })),
-          note: order.notes || '',
-          status: order.status
-        }));
-        console.log('MAPPED PARA UI', mapped);
-        setOrders(mapped);
-      } catch (e) {
-        setOrders([]);
-      }
-    };
-    loadOrders();
-  }, []);
-
-  // Función para calcular el tiempo transcurrido
-  function calcularTiempo(fecha) {
-    if (!fecha) return '';
-    const date = new Date(fecha);
-    const now = new Date();
-    const diffMs = now - date;
-    const diffMin = Math.floor(diffMs / 60000);
-    if (diffMin < 1) return 'recién';
-    if (diffMin < 60) return `hace ${diffMin} min`;
-    const diffHrs = Math.floor(diffMin / 60);
-    if (diffHrs < 24) return `hace ${diffHrs} h`;
-    const diffDays = Math.floor(diffHrs / 24);
-    return `hace ${diffDays} d`;
-  }
+  // Mapear datos para la UI (igual que antes)
+  const mappedOrders = orders.map(order => ({
+    id: order._id,
+    idIncremental: order.idIncremental,
+    mesa: order.type === 'local'
+      ? (order.tableId ? `Mesa ${order.tableId.tableNumber}` : 'Local (sin mesa)')
+      : 'Para Llevar',
+    items: (order.details || []).map(item => ({
+      quantity: item.quantity,
+      name: item.dishId?.name || 'Platillo'
+    })),
+    note: order.notes || '',
+    status: order.status
+  }));
 
   const handleOrderAction = async (orderId) => {
-    setOrders((prevOrders) =>
-      prevOrders.map((order) => {
-        if (order.id === orderId) {
-          let nextStatus = order.status;
-              if (order.status === "pendiente") {
-                 nextStatus = "preparando";
-               } else if (order.status === "preparando") {
-                 nextStatus = "finalizado";
-               } else if (order.status === "finalizado") {
-                 nextStatus = "entregado";
-               } else if (order.status === "entregado") {
-                 nextStatus = null;
-               }
+    const order = mappedOrders.find(o => o.id === orderId);
+    if (!order) return;
 
-          // Mapear 'listo' a 'finalizado' para el backend
-              let backendStatus = nextStatus === "listo" ? "finalizado" : nextStatus === "entregado" ? "entregado" : nextStatus;
+    let nextStatus = order.status;
+    if (order.status === "pendiente") {
+      nextStatus = "preparando";
+    } else if (order.status === "preparando") {
+      nextStatus = "finalizado";
+    } else if (order.status === "finalizado") {
+      nextStatus = "entregado";
+    }
 
-          if (nextStatus) {
-            // Usar idIncremental para el backend
-            updateOrderStatusKitchen(order.idIncremental, backendStatus)
-              .then(() => {
-                setOrders((current) =>
-                  current.map((o) =>
-                    o.id === orderId ? { ...o, status: nextStatus } : o
-                  )
-                );
-              });
-          } else {
-            // Si es null, elimina del frontend
-            setOrders((current) => current.filter((o) => o.id !== orderId));
-          }
-        }
-        return order;
-      })
-    );
+    if (nextStatus && nextStatus !== order.status) {
+      try {
+        await updateOrderStatusKitchen(order.idIncremental, nextStatus);
+        // El polling automáticamente actualizará la UI en 3 segundos
+      } catch (error) {
+        console.error('Error updating order status:', error);
+      }
+    }
   };
 
-  const pendingOrders = orders.filter((order) => order.status === "pendiente")
-  const preparingOrders = orders.filter((order) => order.status === "preparando")
-  const readyOrders = orders.filter((order) => order.status === "finalizado")
-  const totalActive = pendingOrders.length + preparingOrders.length + readyOrders.length
+  // Filtrar órdenes por estado
+  const pendingOrders = mappedOrders.filter(order => order.status === "pendiente");
+  const preparingOrders = mappedOrders.filter(order => order.status === "preparando");
+  const readyOrders = mappedOrders.filter(order => order.status === "finalizado");
+  const totalActive = pendingOrders.length + preparingOrders.length + readyOrders.length;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -142,6 +100,11 @@ export default function KitchenDashboard() {
                   onAction={() => handleOrderAction(order.id)}
                 />
               ))}
+              {pendingOrders.length === 0 && (
+                <div className="text-center text-gray-500 py-8">
+                  No hay órdenes pendientes
+                </div>
+              )}
             </div>
           </div>
 
@@ -161,6 +124,11 @@ export default function KitchenDashboard() {
                   onAction={() => handleOrderAction(order.id)}
                 />
               ))}
+              {preparingOrders.length === 0 && (
+                <div className="text-center text-gray-500 py-8">
+                  No hay órdenes en preparación
+                </div>
+              )}
             </div>
           </div>
 
@@ -180,10 +148,15 @@ export default function KitchenDashboard() {
                   onAction={() => handleOrderAction(order.id)}
                 />
               ))}
+              {readyOrders.length === 0 && (
+                <div className="text-center text-gray-500 py-8">
+                  No hay órdenes listas
+                </div>
+              )}
             </div>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
