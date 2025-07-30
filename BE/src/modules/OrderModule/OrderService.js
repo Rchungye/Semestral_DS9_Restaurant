@@ -44,6 +44,17 @@ export const createOrder = async (request, reply) => {
     if (!data.type) {
       data.type = 'local';
     }
+    // Si es local y se recibe tableNumber, buscar la mesa y asociar su ObjectId
+    if (data.type === 'local' && data.tableNumber) {
+      const mesa = await tableRepo.getTableByNumber(data.tableNumber);
+      if (mesa) {
+        data.tableId = mesa._id;
+      } else {
+        console.warn('No se encontró la mesa con número:', data.tableNumber);
+      }
+      // No guardar tableNumber en el modelo, solo tableId
+      delete data.tableNumber;
+    }
     // Crear el pedido principal
     const newOrder = await orderRepo.createOrder(data);
     // Crear detalles de pedido si vienen en la petición

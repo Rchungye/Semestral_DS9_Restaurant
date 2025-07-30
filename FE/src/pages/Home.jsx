@@ -31,7 +31,7 @@ const Home = () => {
   const [busqueda, setBusqueda] = useState("")
   const [categoriaActiva, setCategoriaActiva] = useState("todos")
   const [mostrarFiltros, setMostrarFiltros] = useState(false)
-  const [orderType, setOrderType] = useState("local")
+  const [orderType, setOrderType] = useState("local");
   const [tableNumber, setTableNumber] = useState("")
   const [cartOpen, setCartOpen] = useState(false)
   const [cartItems, setCartItems] = useState([])
@@ -84,6 +84,8 @@ const Home = () => {
       total: total,
       notes: cartNote, 
       cartItems, 
+      type: orderType,
+      tableNumber: orderType === "local" && tableNumber ? tableNumber : undefined,
     };
     console.log(orderPayload);
     const orderRes = await fetch('http://localhost:3000/api/orders', {
@@ -201,6 +203,38 @@ const Home = () => {
                     Total: ${total.toFixed(2)}
                   </Typography>
                 </Box>
+                {/* Selección de tipo de pedido */}
+                <Box sx={{ mb: 2 }}>
+                  <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                    ¿Cómo comerás?
+                  </Typography>
+                  <Button
+                    variant={orderType === "local" ? "contained" : "outlined"}
+                    color="primary"
+                    sx={{ mr: 1 }}
+                    onClick={() => setOrderType("local")}
+                  >
+                    Local
+                  </Button>
+                  <Button
+                    variant={orderType === "takeout" ? "contained" : "outlined"}
+                    color="primary"
+                    onClick={() => setOrderType("takeout")}
+                  >
+                    Retiro
+                  </Button>
+                </Box>
+                {/* Si es local, pedir número de mesa */}
+                {orderType === "local" && (
+                  <TextField
+                    label="Número de mesa (opcional)"
+                    type="number"
+                    value={tableNumber}
+                    onChange={e => setTableNumber(e.target.value)}
+                    sx={{ mb: 2 }}
+                    fullWidth
+                  />
+                )}
                 <TextField
                   label="Anotaciones"
                   multiline
