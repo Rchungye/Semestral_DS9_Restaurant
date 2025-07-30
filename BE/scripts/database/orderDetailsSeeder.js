@@ -42,7 +42,7 @@ export async function seedOrderDetails() {
             // Orden 3 (Local - Mesa 6)
             [
                 { dishIndex: 2, quantity: 2 }, // Rollitos Primavera
-                { dishIndex: 6, quantity: 1, specialInstructions: 'Sin cebolla' }, // Arroz Frito Golden Panda
+                { dishIndex: 6, quantity: 1 }, // Arroz Frito Golden Panda
                 { dishIndex: 9, quantity: 1 } // Té Oolong
             ],
             // Orden 4 (Takeout - María)
@@ -55,7 +55,7 @@ export async function seedOrderDetails() {
             // Orden 5 (Takeout - Carlos)
             [
                 { dishIndex: 1, quantity: 2 }, // Hakao
-                { dishIndex: 6, quantity: 1, specialInstructions: 'Para llevar en contenedor separado' }, // Arroz Frito
+                { dishIndex: 6, quantity: 1 }, // Arroz Frito
                 { dishIndex: 12, quantity: 1 } // Chee Cheong Fun
             ],
             // Orden 6 (Takeout - Ana)

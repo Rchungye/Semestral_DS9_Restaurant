@@ -14,8 +14,7 @@ const orderDetailSchema = new mongoose.Schema({
   unitPrice: { type: Number, required: true }, // Precio al momento del pedido
   subtotal: { type: Number, required: true }, // quantity * unitPrice
   
-  // Personalizaciones del platillo
-  specialInstructions: { type: String } // Observaciones del cliente
+  // Eliminado specialInstructions
 }, { timestamps: true })
 
 orderDetailSchema.pre('save', async function (next) {
