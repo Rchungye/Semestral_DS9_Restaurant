@@ -30,7 +30,7 @@ export const obtenerMetricasDashboard = async () => {
 
     return {
       ingresosTotales,
-      crecimientoIngresos: 0,
+      crecimientoIngresos: 0, // Por simplicidad, ponemos 0
       totalOrdenes,
       crecimientoOrdenes: 0,
       totalClientes,
